@@ -6,15 +6,16 @@
 #include "table.hpp"
 #include "strategy.hpp"
 #include "shoe.hpp"
+#include "utilities.hpp"
 
 const int STATUS_DOT = 25000;
 const int STATUS_LINE = 1000000;
 
 //
-Table::Table(Parameters* params, Rules* rules) : parameters(params), rules(rules) {
-	shoe = new Shoe(parameters->number_of_decks, rules->penetration);
-	dealer = new Dealer(rules->hit_soft_17);
-	player = new Player(parameters, rules, shoe->getNumberOfCards());
+Table::Table(Parameters* params) : parameters(params) {
+	shoe = new Shoe(parameters->number_of_decks, parameters->rules->penetration);
+	dealer = new Dealer(parameters->rules->hit_soft_17);
+	player = new Player(parameters, shoe->getNumberOfCards());
 	report = Report();
 }
 
@@ -27,7 +28,7 @@ Table::~Table() {
 
 // Function to simulate a session
 void Table::session(bool mimic) {
-	std::cout << "    Starting table (" << (mimic ? "mimic" : "strategy") << ") rounds: " << parameters->rounds << std::endl;
+	parameters->logger->simulation(std::string("      Starting table (") + (mimic ? "mimic" : "strategy") + ") rounds: " + Utilities::addCommas(parameters->rounds) + "\n");
 
 	report.start = std::time(nullptr);
 	report.total_rounds = parameters->rounds;
@@ -58,11 +59,11 @@ void Table::session(bool mimic) {
 			player->showCard(up);
 		}
 	}
-	std::cout << std::endl;
+	parameters->logger->simulation("\n");
 
 	report.end = std::time(nullptr);
 	report.duration = report.end - report.start;
-	std::cout << "    Ending table (" << (mimic ? "mimic" : "strategy") << "): total elapsed time: " << report.duration << " seconds" << std::endl;
+	parameters->logger->simulation(std::string("      Ending table (") + (mimic ? "mimic" : "strategy") + ")");
 }
 
 // Function to deal cards
@@ -84,14 +85,14 @@ void Table::show(Card* card) {
 //
 void Table::status(int64_t round) {
 	if(round == 0) {
-		std::cout << "      " << std::flush;
+		parameters->logger->simulation(std::string("      "));
 	}
 	if((round + 1) % STATUS_DOT == 0) {
-		std::cout << "." << std::flush;
+		parameters->logger->simulation(std::string("."));
 	}
 	if((round + 1) % STATUS_LINE == 0) {
-		std::cout << " : " << std::setfill('_') << std::setw(12) << std::right << (round + 1) << std::endl;
-		std::cout << "      " << std::flush;
+		parameters->logger->simulation(std::string(" : " + Utilities::addCommas(round + 1) + "\n"));
+		parameters->logger->simulation(std::string("      "));
 	}
 }
 

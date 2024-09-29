@@ -2,13 +2,12 @@
 #include <cstdlib>
 #include <cstring>
 #include "shoe.hpp"
-#include "rules.hpp"
 #include "player.hpp"
 #include "strategy.hpp"
 
 // Constructor for Player
-Player::Player(Parameters* parameters, Rules* rules, int number_of_cards)
-	: parameters(parameters), rules(rules), number_of_cards(number_of_cards), strategy(parameters->getPlaybook(), number_of_cards) {
+Player::Player(Parameters* parameters, int number_of_cards)
+	: parameters(parameters), number_of_cards(number_of_cards), strategy(parameters->getPlaybook(), number_of_cards) {
 }
 
 // Shuffle function (reinitializes seen cards)
@@ -43,12 +42,12 @@ void Player::play(Card* up, Shoe* shoe, bool mimic) {
 		return;
 	}
 
-	if (rules->surrender && strategy.getSurrender(seen_cards, wager.getHaveCards(), up)) {
+	if (parameters->rules->surrender && strategy.getSurrender(seen_cards, wager.getHaveCards(), up)) {
 		wager.surrender();
 		return;
 	}
 
-	if ((rules->double_any_two_cards || wager.getHandTotal() == 10 || wager.getHandTotal() == 11) && strategy.getDouble(seen_cards, wager.getHaveCards(), up)) {
+	if ((parameters->rules->double_any_two_cards || wager.getHandTotal() == 10 || wager.getHandTotal() == 11) && strategy.getDouble(seen_cards, wager.getHaveCards(), up)) {
 		wager.doubleBet();
 		drawCard(&wager, shoe->drawCard());
 		return;
@@ -60,7 +59,7 @@ void Player::play(Card* up, Shoe* shoe, bool mimic) {
 		wager.splitHand(split);
 
 		if (wager.isPairOfAces()) {
-			if (!rules->resplit_aces && !rules->hit_split_aces) {
+			if (!parameters->rules->resplit_aces && !parameters->rules->hit_split_aces) {
 				drawCard(&wager, shoe->drawCard());
 				drawCard(split, shoe->drawCard());
 				return;
@@ -83,7 +82,7 @@ void Player::play(Card* up, Shoe* shoe, bool mimic) {
 
 //
 void Player::playSplit(Wager* wager, Shoe* shoe, Card* up) {
-	if (rules->double_after_split && strategy.getDouble(seen_cards, wager->getHaveCards(), up)) {
+	if (parameters->rules->double_after_split && strategy.getDouble(seen_cards, wager->getHaveCards(), up)) {
 		wager->doubleBet();
 		drawCard(wager, shoe->drawCard());
 		return;
@@ -91,7 +90,7 @@ void Player::playSplit(Wager* wager, Shoe* shoe, Card* up) {
 
 	if (wager->isPair()) {
 		if (wager->isPairOfAces()) {
-			if (rules->resplit_aces && strategy.getSplit(seen_cards, wager->getCardPair(), up)) {
+			if (parameters->rules->resplit_aces && strategy.getSplit(seen_cards, wager->getCardPair(), up)) {
 				Wager* split = new Wager();
 				splits.push_back(split);
 				wager->splitHand(split);
@@ -179,7 +178,7 @@ void Player::payoffHand(Wager* wager, bool dealer_blackjack, bool dealer_busted,
 	} else {
 		wager->lostInsurance();
 		if (wager->isBlackjack()) {
-			wager->wonBlackjack(rules->blackjack_pays, rules->blackjack_bets);
+			wager->wonBlackjack(parameters->rules->blackjack_pays, parameters->rules->blackjack_bets);
 		} else if (wager->isBusted()) {
 			wager->lost();
 		} else if (dealer_busted || (wager->getHandTotal() > dealer_total)) {

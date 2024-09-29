@@ -66,9 +66,9 @@ void Rules::rulesFetchTable(const std::string &url) {
 	double_after_split = parseAuxBool(json, "doubleAfterSplit", false);
 	resplit_aces = parseAuxBool(json, "resplitAces", false);
 	hit_split_aces = parseAuxBool(json, "hitSplitAces", false);
-	//blackjack_bets = parseAuxInt(json, "blackjackBets", 2);
-	//blackjack_pays = parseAuxInt(json, "blackjackPays", 3);
-	//penetration = parseAuxDouble(json, "penetration", 0.75);
+	blackjack_bets = parseAuxInt(json, "blackjackBets", 1);
+	blackjack_pays = parseAuxInt(json, "blackjackPays", 1);
+	penetration = parseAuxDouble(json, "penetration", 0.65);
 
 	// Cleanup
 	cJSON_Delete(json);
@@ -78,16 +78,39 @@ void Rules::rulesFetchTable(const std::string &url) {
 }
 
 //
-void Rules::print(int indent) {
-	std::cout << std::left << std::setw(indent) << "Rules" << std::endl;
-	std::cout << std::left << std::setw(indent) << "  Table" << ": " << playbook << std::endl;
-	std::cout << std::boolalpha << std::left << std::setw(indent) << "  Hit soft 17" << ": " << hit_soft_17 << std::endl;
-	std::cout << std::boolalpha << std::left << std::setw(indent) << "  Surrender" << ": " << surrender << std::endl;
-	std::cout << std::boolalpha << std::left << std::setw(indent) << "  Double any two cards" << ": " << double_any_two_cards << std::endl;
-	std::cout << std::boolalpha << std::left << std::setw(indent) << "  Double after split" << ": " << double_after_split << std::endl;
-	std::cout << std::boolalpha << std::left << std::setw(indent) << "  Resplit aces" << ": " << resplit_aces << std::endl;
-	std::cout << std::boolalpha << std::left << std::setw(indent) << "  Hit split aces" << ": " << hit_split_aces << std::endl;
-	std::cout << std::left << std::setw(indent) << "  Blackjack bets" << ": " << blackjack_bets << std::endl;
-	std::cout << std::left << std::setw(indent) << "  Blackjack pays" << ": " << blackjack_pays << std::endl;
-	std::cout << std::left << std::setw(indent) << "  Penetration" << ": " << penetration << std::endl;
+void Rules::print(Logger *logger) {
+    char buffer[256];
+
+    std::snprintf(buffer, sizeof(buffer), "    %-24s\n", "Rules");
+	logger->simulation(buffer);
+
+    std::snprintf(buffer, sizeof(buffer), "      %-24s: %s\n", "Table", playbook);
+	logger->simulation(buffer);
+
+    std::snprintf(buffer, sizeof(buffer), "      %-24s: %s\n", "Hit soft 17", hit_soft_17 ? "true" : "false");
+	logger->simulation(buffer);
+
+    std::snprintf(buffer, sizeof(buffer), "      %-24s: %s\n", "Surrender", surrender ? "true" : "false");
+	logger->simulation(buffer);
+
+    std::snprintf(buffer, sizeof(buffer), "      %-24s: %s\n", "Double any two cards", double_any_two_cards ? "true" : "false");
+	logger->simulation(buffer);
+
+    std::snprintf(buffer, sizeof(buffer), "      %-24s: %s\n", "Double after split", double_after_split ? "true" : "false");
+	logger->simulation(buffer);
+
+    std::snprintf(buffer, sizeof(buffer), "      %-24s: %s\n", "Resplit aces", resplit_aces ? "true" : "false");
+	logger->simulation(buffer);
+
+    std::snprintf(buffer, sizeof(buffer), "      %-24s: %s\n", "Hit split aces", hit_split_aces ? "true" : "false");
+	logger->simulation(buffer);
+
+    std::snprintf(buffer, sizeof(buffer), "      %-24s: %d\n", "Blackjack bets", blackjack_bets);
+	logger->simulation(buffer);
+
+    std::snprintf(buffer, sizeof(buffer), "      %-24s: %d\n", "Blackjack pays", blackjack_pays);
+	logger->simulation(buffer);
+
+    std::snprintf(buffer, sizeof(buffer), "      %-24s: %f\n", "Penetration", penetration);
+	logger->simulation(buffer);
 }

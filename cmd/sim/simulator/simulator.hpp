@@ -28,7 +28,7 @@ public:
 //
 class Simulator {
   public:
-	Simulator(Parameters* params, Rules* rules);
+	Simulator(Parameters* params);
 
 	void simulatorRunOnce();
 
@@ -46,7 +46,6 @@ class Simulator {
 
   private:
 	void simulatorRunSimulation();
-	std::string serializeParameters(Parameters* parameters);
 	void simulatorInsert(SimulationDatabaseTable* sdt, std::string playbook);
 };
 

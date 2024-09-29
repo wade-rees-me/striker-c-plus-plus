@@ -13,7 +13,7 @@
 //
 class Player {
 public:
-	Player(Parameters* params, Rules* rules, int num_cards);
+	Player(Parameters* params, int num_cards);
 
 	void shuffle();
 	void placeBet(bool mimic);
@@ -28,7 +28,6 @@ public:
 
 //private:
 	Parameters* parameters;
-	Rules* rules;
 	int number_of_cards;
 
 	Wager wager;

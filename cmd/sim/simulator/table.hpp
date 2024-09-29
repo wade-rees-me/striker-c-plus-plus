@@ -2,7 +2,6 @@
 #define TABLE_HPP
 
 #include <cstdint>
-#include "rules.hpp"
 #include "player.hpp"
 #include "dealer.hpp"
 #include "shoe.hpp"
@@ -10,7 +9,7 @@
 
 class Table {
 public:
-	Table(Parameters* params, Rules* rules);
+	Table(Parameters* params);
 	~Table();
 
 	void session(bool mimic);
@@ -19,7 +18,6 @@ public:
 
 //private:
 	Parameters* parameters;
-	Rules* rules;
 	Shoe* shoe;
 	Dealer* dealer;
 	Player* player;

@@ -22,5 +22,7 @@ std::string getRulesUrl();
 std::string getStrategyUrl();
 std::string getStrategyMlbUrl();
 std::string getSimulationUrl();
+std::string getSimulationDirectory();
+int64_t getDatabaseMinimumRounds();
 
 #endif // CONSTANTS_HPP

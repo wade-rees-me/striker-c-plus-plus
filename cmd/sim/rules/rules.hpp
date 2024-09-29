@@ -2,6 +2,7 @@
 #define RULES_HPP
 
 #include <string>
+#include "logger.hpp"
 
 class Rules {
   public:
@@ -12,13 +13,13 @@ class Rules {
 	bool double_after_split = false;
 	bool resplit_aces = false;
 	bool hit_split_aces = false;
-	int blackjack_pays = 3;
-	int blackjack_bets = 2;
-	float penetration = 0.75;
+	int blackjack_pays = 5;
+	int blackjack_bets = 3;
+	float penetration = 0.70;
 
   public:
 	void rulesLoadTable(const std::string& decks);
-	void print(int indent);
+	void print(Logger *logger);
 
   private:
 	void rulesFetchTable(const std::string& url);
