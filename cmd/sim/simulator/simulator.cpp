@@ -8,6 +8,7 @@
 #include "player.hpp"
 #include "simulator.hpp"
 #include "utilities.hpp"
+#include "constants.hpp"
 
 //
 Simulator::Simulator(Parameters* parameters) : parameters(parameters), name(128, '\0') {
@@ -34,7 +35,7 @@ void Simulator::simulatorRunOnce() {
 	// Populate SimulationDatabaseTable
 	dbTable.playbook = parameters->playbook.c_str();
 	dbTable.guid = parameters->guid.c_str();
-	dbTable.simulator = "StrikerWhoAmI";
+	dbTable.simulator = STRIKER_WHO_AM_I;
 	dbTable.summary = "no";
 	dbTable.simulations = "1";
 	dbTable.parameters = parameters->serialize();
