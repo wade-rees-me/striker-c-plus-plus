@@ -10,31 +10,30 @@
 // Parameters class to store simulation parameters
 class Parameters {
   public:
-	Parameters(std::string d, std::string s, int n, int64_t r, Rules *rules, Logger *logger);
+	Parameters(std::string name, std::string decks, std::string strategy, int number_of_decks, int64_t number_of_hands, Rules *rules, Logger *logger);
 
   public:
 	Rules *rules;
 	Logger *logger;
 
+	std::string name;
 	std::string playbook;
-	std::string guid;
 	std::string processor;
 	std::string timestamp;
 	std::string decks;
 	std::string strategy;
 	int number_of_decks;
-	int64_t rounds;
+	int64_t number_of_hands;
 
   public:
 	void print();
 	std::string serialize();
 
-	std::string getPlaybook() const {
-		return playbook;
-	}
+	//std::string getPlaybook() const {
+		//return playbook;
+	//}
 
   private:
-	void generateUUID(std::string& buffer);
 	void getCurrentTime(std::string &buffer);
 };
 

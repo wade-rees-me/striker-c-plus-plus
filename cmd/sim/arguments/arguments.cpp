@@ -8,10 +8,10 @@
 // Parse command-line flags for simulation
 void Arguments::parseArguments(int argc, char *argv[]) {
 	for (int i = 1; i < argc; ++i) {
-		if ((std::strcmp(argv[i], "-r") == 0 || std::strcmp(argv[i], "--number-of-rounds") == 0) && i + 1 < argc) {
-			rounds = std::atoll(argv[++i]);
-			if (rounds < MINIMUM_NUMBER_OF_ROUNDS || rounds > MAXIMUM_NUMBER_OF_ROUNDS) {
-				std::cerr << "Number of rounds must be between " << MINIMUM_NUMBER_OF_ROUNDS << " and " << MAXIMUM_NUMBER_OF_ROUNDS << std::endl;
+		if ((std::strcmp(argv[i], "-h") == 0 || std::strcmp(argv[i], "--number-of-hands") == 0) && i + 1 < argc) {
+			number_of_hands = std::atoll(argv[++i]);
+			if (number_of_hands < MINIMUM_NUMBER_OF_HANDS || number_of_hands > MAXIMUM_NUMBER_OF_HANDS) {
+				std::cerr << "Number of hands must be between " << MINIMUM_NUMBER_OF_HANDS << " and " << MAXIMUM_NUMBER_OF_HANDS << std::endl;
 				std::exit(EXIT_FAILURE);
 			}
 		} else if (std::strcmp(argv[i], "-M") == 0 || std::strcmp(argv[i], "--mimic") == 0) {
@@ -56,19 +56,19 @@ void Arguments::printVersion() const {
 void Arguments::printHelpMessage() const {
 	std::cout << "Usage: strikerC++ [options]\n"
 			  << "Options:\n"
-			  << "  -h, --help                                 Show this help message\n"
-			  << "  -v, --version                              Display the program version\n"
-			  << "  -r, --number-of-rounds <number of rounds>  The number of rounds to play in this simulation\n"
-			  << "  -M, --mimic                                Use the mimic dealer player strategy\n"
-			  << "  -B, --basic                                Use the basic player strategy\n"
-			  << "  -L, --linear                               Use the liner regression player strategy\n"
-			  << "  -P, --polynomial                           Use the polynomial regression player strategy\n"
-			  << "  -H, --high-low                             Use the high low count player strategy\n"
-			  << "  -W, --wong                                 Use the Wong count player strategy\n"
-			  << "  -S, --striker                              Use the Striker machine learning player strategy\n"
-			  << "  -1, --single-deck                          Use a single deck of cards and rules\n"
-			  << "  -2, --double-deck                          Use a double deck of cards and rules\n"
-			  << "  -6, --six-shoe                             Use a six deck shoe of cards and rules\n"
+			  << "  -h, --help                               Show this help message\n"
+			  << "  -v, --version                            Display the program version\n"
+			  << "  -h, --number-of-hands <number of hands>  The number of hands to play in this simulation\n"
+			  << "  -M, --mimic                              Use the mimic dealer player strategy\n"
+			  << "  -B, --basic                              Use the basic player strategy\n"
+			  << "  -L, --linear                             Use the liner regression player strategy\n"
+			  << "  -P, --polynomial                         Use the polynomial regression player strategy\n"
+			  << "  -H, --high-low                           Use the high low count player strategy\n"
+			  << "  -W, --wong                               Use the Wong count player strategy\n"
+			  << "  -S, --striker                            Use the Striker machine learning player strategy\n"
+			  << "  -1, --single-deck                        Use a single deck of cards and rules\n"
+			  << "  -2, --double-deck                        Use a double deck of cards and rules\n"
+			  << "  -6, --six-shoe                           Use a six deck shoe of cards and rules\n"
 			  << std::endl;
 }
 

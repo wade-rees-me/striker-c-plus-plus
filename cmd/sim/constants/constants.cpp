@@ -22,9 +22,3 @@ std::string getSimulationDirectory() {
 	return std::getenv("STRIKER_SIMULATIONS");
 }
 
-int64_t getDatabaseMinimumRounds() {
-	char* mr = std::getenv("STRIKER_MINIMUM_ROUNDS");
-	char* end;
-	return std::strtoll(mr, &end, 10);
-}
-

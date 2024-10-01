@@ -24,7 +24,7 @@ public:
 	Report report;
 
 private:
-	void status(int64_t round);
+	void status(int64_t round, int64_t hand);
 };
 
 #endif // TABLE_HPP

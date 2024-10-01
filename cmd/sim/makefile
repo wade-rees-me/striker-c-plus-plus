@@ -1,6 +1,6 @@
 # Compiler and flags
 CXX = g++
-CXXFLAGS = -g -Wall -std=c++20 -I/usr/include -I/usr/local/include
+CXXFLAGS = -O3 -Wall -std=c++20 -I/usr/include -I/usr/local/include
 
 # Directories
 SRC_DIRS = arguments cards constants rules simulator utilities logger

@@ -10,10 +10,7 @@
 #include "logger.hpp"
 
 //
-// Striker/simulations/2024_09_27/striker-c-plus-plus_00000000_simulation.txt
-// Striker/simulations/2024_09_27/striker-c-plus-plus_00000000_debug.txt
-//
-Logger::Logger(std::string simulator, bool debugFlag) : simulator(simulator) {
+Logger::Logger(std::string name, bool debugFlag) : name(name) {
 	directory = getSimulationDirectory();
 	getSubdirectory();
 
@@ -22,11 +19,11 @@ Logger::Logger(std::string simulator, bool debugFlag) : simulator(simulator) {
 		}
 	}
 
-	simulationFileName = directory + "/" + subdirectory + "/" + simulator + "_" + guid + "_simulation.txt";
+	simulationFileName = directory + "/" + subdirectory + "/" + name + "_simulation.txt";
 	simulationFile.open(simulationFileName, std::ios::out);
 
 	if(debugFlag) {
-		std::string debugFileName = directory + "/" + subdirectory + "/" + simulator + "_" + guid + "_debug.txt";
+		std::string debugFileName = directory + "/" + subdirectory + "/" + name + "_debug.txt";
 		debugFile.open(debugFileName, std::ios::out);
 	}
 }
@@ -64,7 +61,7 @@ void Logger::debug(const std::string& message) {
 //
 void Logger::insert(const std::string& message) {
     std::lock_guard<std::mutex> lock(logMutex);  // Ensure thread-safe access to logFile
-	std::string insertFileName = directory + "/" + subdirectory + "/" + simulator + "_" + guid + "_insert.txt";
+	std::string insertFileName = directory + "/" + subdirectory + "/" + name + "_insert.txt";
 	std::ofstream insertFile;
 	insertFile.open(insertFileName, std::ios::out);
     if (insertFile.is_open()) {
@@ -80,8 +77,5 @@ void Logger::getSubdirectory() {
 
     oss << (localTime->tm_year + 1900) << "_" << std::setw(2) << std::setfill('0') << (localTime->tm_mon + 1) << "_" << std::setw(2) << std::setfill('0') << localTime->tm_mday;
     subdirectory = oss.str();
-
-    auto micros = std::chrono::duration_cast<std::chrono::microseconds>(now.time_since_epoch()) % 1000000;
-	guid = std::to_string(micros.count());
 }
 

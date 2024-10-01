@@ -27,6 +27,11 @@ Strategy::~Strategy() {
 	curl_global_cleanup();
 }
 
+//
+void Strategy::doPlay(const int *seenCards, const int *haveCards, Card* pair, Card* up) {
+	json_object = httpGet(urlPlay, buildParams(seenCards, haveCards, pair, up));
+}
+
 // Function to build the URL parameters
 std::string Strategy::buildParams(const int *seenData, const int *haveData, Card* pair, Card* up) {
 	std::string params = "playbook=" + playbook;

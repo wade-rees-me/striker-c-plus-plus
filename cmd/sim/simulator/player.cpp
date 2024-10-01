@@ -7,7 +7,7 @@
 
 // Constructor for Player
 Player::Player(Parameters* parameters, int number_of_cards)
-	: parameters(parameters), number_of_cards(number_of_cards), strategy(parameters->getPlaybook(), number_of_cards) {
+	: parameters(parameters), number_of_cards(number_of_cards), strategy(parameters->playbook, number_of_cards) {
 }
 
 // Shuffle function (reinitializes seen cards)
@@ -42,21 +42,25 @@ void Player::play(Card* up, Shoe* shoe, bool mimic) {
 		return;
 	}
 
+	strategy.doPlay(seen_cards, wager.getHaveCards(), wager.isPair() ? wager.getCardPair() : nullptr, up);
 	if (parameters->rules->surrender && strategy.getSurrender(seen_cards, wager.getHaveCards(), up)) {
+		strategy.clear();
 		wager.surrender();
 		return;
 	}
 
 	if ((parameters->rules->double_any_two_cards || wager.getHandTotal() == 10 || wager.getHandTotal() == 11) && strategy.getDouble(seen_cards, wager.getHaveCards(), up)) {
+		strategy.clear();
 		wager.doubleBet();
 		drawCard(&wager, shoe->drawCard());
 		return;
 	}
 
 	if (wager.isPair() && strategy.getSplit(seen_cards, wager.getCardPair(), up)) {
+		strategy.clear();
 		Wager* split = new Wager();
-		splits.push_back(split);
 		wager.splitHand(split);
+		splits.push_back(split);
 
 		if (wager.isPairOfAces()) {
 			if (!parameters->rules->resplit_aces && !parameters->rules->hit_split_aces) {
@@ -74,6 +78,7 @@ void Player::play(Card* up, Shoe* shoe, bool mimic) {
 	}
 
 	bool doStand = strategy.getStand(seen_cards, wager.getHaveCards(), up);
+	strategy.clear();
 	while (!wager.isBusted() && !doStand) {
 		drawCard(&wager, shoe->drawCard());
 		doStand = strategy.getStand(seen_cards, wager.getHaveCards(), up);

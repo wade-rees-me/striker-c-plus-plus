@@ -4,14 +4,15 @@
 #include <string>
 
 // General constants
-const static std::string STRIKER_WHO_AM_I = "striker-c++";
-const static std::string STRIKER_VERSION = "v01.01.00";;
+const static std::string STRIKER_WHO_AM_I = "striker-c-plus-plus";
+const static std::string STRIKER_VERSION = "v01.02.02";
 const static char* TIME_LAYOUT;
 
 // Simulation constants
-const static int64_t MAXIMUM_NUMBER_OF_ROUNDS = 1000000000LL;
-const static int64_t MINIMUM_NUMBER_OF_ROUNDS = 100LL;
-const static int64_t DEFAULT_NUMBER_OF_ROUNDS = 1000000LL;
+const static int64_t MAXIMUM_NUMBER_OF_HANDS = 1000000000LL;
+const static int64_t MINIMUM_NUMBER_OF_HANDS = 100LL;
+const static int64_t DEFAULT_NUMBER_OF_HANDS = 1000000LL;
+const static int64_t DATABASE_NUMBER_OF_HANDS = 1000000LL;
 
 // Bettting constants
 const static int64_t MAXIMUM_BET = 80LL;
@@ -23,6 +24,5 @@ std::string getStrategyUrl();
 std::string getStrategyMlbUrl();
 std::string getSimulationUrl();
 std::string getSimulationDirectory();
-int64_t getDatabaseMinimumRounds();
 
 #endif // CONSTANTS_HPP

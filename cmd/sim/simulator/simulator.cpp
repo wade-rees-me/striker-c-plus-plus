@@ -11,15 +11,7 @@
 #include "constants.hpp"
 
 //
-Simulator::Simulator(Parameters* parameters) : parameters(parameters), name(128, '\0') {
-	std::time_t t = std::time(nullptr);
-	struct tm* tm_info = std::localtime(&t);
-
-	year = tm_info->tm_year + 1900;
-	month = tm_info->tm_mon + 1;
-	day = tm_info->tm_mday;
-	std::snprintf(&name[0], 128, "striker-c-plus-plus_%4d_%02d_%02d_%012ld", year, month, day, t);
-
+Simulator::Simulator(Parameters* parameters) : parameters(parameters) {
 	table = new Table(parameters);
 	report = Report();
 }
@@ -27,14 +19,17 @@ Simulator::Simulator(Parameters* parameters) : parameters(parameters), name(128,
 // The simulator process function
 void Simulator::simulatorRunOnce() {
 	SimulationDatabaseTable dbTable;
+    char buffer[256];
 
-	parameters->logger->simulation("  Starting striker-c++ simulation(" + name + ")...\n");
+    std::snprintf(buffer, sizeof(buffer), "  Starting %s simulation(%s) ...\n", STRIKER_WHO_AM_I.c_str(), parameters->name.c_str());
+	parameters->logger->simulation(buffer);
 	simulatorRunSimulation();
-	parameters->logger->simulation("  Ending striker-c++ simulation(" + name + ")...\n");
+    std::snprintf(buffer, sizeof(buffer), "  Ending %s simulation(%s) ...\n", STRIKER_WHO_AM_I.c_str(), parameters->name.c_str());
+	parameters->logger->simulation(buffer);
 
 	// Populate SimulationDatabaseTable
 	dbTable.playbook = parameters->playbook.c_str();
-	dbTable.guid = parameters->guid.c_str();
+	dbTable.name = parameters->name.c_str();
 	dbTable.simulator = STRIKER_WHO_AM_I;
 	dbTable.summary = "no";
 	dbTable.simulations = "1";
@@ -50,13 +45,11 @@ void Simulator::simulatorRunOnce() {
 	std::snprintf(dbTable.advantage, 128, "%+04.3f%%", ((double)report.total_won / report.total_bet) * 100);
 
 	// Print out the results
-    char buffer[256];
-
     parameters->logger->simulation("\n  -- results ---------------------------------------------------------------------\n");
-    std::snprintf(buffer, sizeof(buffer), "    %-24s: %s\n", "Number of rounds", Utilities::addCommas(report.total_rounds).c_str());
+    std::snprintf(buffer, sizeof(buffer), "    %-24s: %s\n", "Number of hands", Utilities::addCommas(report.total_hands).c_str());
 	parameters->logger->simulation(buffer);
 
-    std::snprintf(buffer, sizeof(buffer), "    %-24s: %s\n", "Number of hands", Utilities::addCommas(report.total_hands).c_str());
+    std::snprintf(buffer, sizeof(buffer), "    %-24s: %s\n", "Number of rounds", Utilities::addCommas(report.total_rounds).c_str());
 	parameters->logger->simulation(buffer);
 
     std::snprintf(buffer, sizeof(buffer), "    %-24s: %s\n", "Total bet", Utilities::addCommas(report.total_bet).c_str());
@@ -68,7 +61,7 @@ void Simulator::simulatorRunOnce() {
     std::snprintf(buffer, sizeof(buffer), "    %-24s: %s\n", "Total time", Utilities::addCommas(report.duration).c_str());
 	parameters->logger->simulation(buffer);
 
-    std::snprintf(buffer, sizeof(buffer), "    %-24s: %s\n", "Average time", std::string(dbTable.average_time).c_str());
+    std::snprintf(buffer, sizeof(buffer), "    %-24s: %s per 1,000,000 hands\n", "Average time", std::string(dbTable.average_time).c_str());
 	parameters->logger->simulation(buffer);
 
     std::snprintf(buffer, sizeof(buffer), "    %-24s: %s\n", "Player advantage", std::string(dbTable.advantage).c_str());
@@ -76,7 +69,7 @@ void Simulator::simulatorRunOnce() {
     parameters->logger->simulation("  --------------------------------------------------------------------------------\n\n");
 
 
-	if(report.total_rounds >= getDatabaseMinimumRounds()) {
+	if(report.total_hands >= DATABASE_NUMBER_OF_HANDS) {
 		simulatorInsert(&dbTable, parameters->playbook);
 	}
 }
@@ -108,9 +101,10 @@ void Simulator::simulatorInsert(SimulationDatabaseTable* sdt, std::string playbo
 
 	if (curl) {
 		char url[256];
-		snprintf(url, sizeof(url), "http://%s/%s/%s/%s", getSimulationUrl().c_str(), sdt->simulator.c_str(), playbook.c_str(), sdt->guid.c_str());
+		snprintf(url, sizeof(url), "http://%s/%s/%s/%s", getSimulationUrl().c_str(), sdt->simulator.c_str(), playbook.c_str(), sdt->name.c_str());
 		curl_easy_setopt(curl, CURLOPT_URL, url);
 
+    	parameters->logger->simulation("  -- insert ----------------------------------------------------------------------\n");
 		// Set headers
 		headers = curl_slist_append(headers, "Content-Type: application/json");
 		curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
@@ -118,7 +112,7 @@ void Simulator::simulatorInsert(SimulationDatabaseTable* sdt, std::string playbo
 		// Convert SimulationDatabaseTable to JSON
 		cJSON* json = cJSON_CreateObject();
 		cJSON_AddStringToObject(json, "playbook", sdt->playbook.c_str());
-		cJSON_AddStringToObject(json, "guid", sdt->guid.c_str());
+		cJSON_AddStringToObject(json, "name", sdt->name.c_str());
 		cJSON_AddStringToObject(json, "simulator", sdt->simulator.c_str());
 		cJSON_AddStringToObject(json, "summary", "no");
 		cJSON_AddStringToObject(json, "simulations", "1");
@@ -146,6 +140,7 @@ void Simulator::simulatorInsert(SimulationDatabaseTable* sdt, std::string playbo
 		free(chunk.memory);
 		cJSON_Delete(json);
 		free(jsonStr);
+    	parameters->logger->simulation("\n  --------------------------------------------------------------------------------\n");
 	}
 
 	curl_global_cleanup();

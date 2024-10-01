@@ -13,9 +13,9 @@
 #include "constants.hpp"
 
 //
-Parameters::Parameters(std::string d, std::string s, int n, int64_t r, Rules *rules, Logger *logger) : rules(rules), logger(logger), decks(d), strategy(s), number_of_decks(n), rounds(r) {
+Parameters::Parameters(std::string name, std::string decks, std::string strategy, int number_of_decks, int64_t number_of_hands, Rules *rules, Logger *logger)
+		: rules(rules), logger(logger), name(name), decks(decks), strategy(strategy), number_of_decks(number_of_decks), number_of_hands(number_of_hands) {
 	playbook = decks + std::string("-") + strategy;
-	generateUUID(guid);
 	processor = STRIKER_WHO_AM_I;
 	getCurrentTime(timestamp);
 }
@@ -24,29 +24,23 @@ Parameters::Parameters(std::string d, std::string s, int n, int64_t r, Rules *ru
 void Parameters::print() {
     char buffer[256];
 
+    std::snprintf(buffer, sizeof(buffer), "    %-24s: %s\n", "Name", name.c_str());
+	logger->simulation(buffer);
+
     std::snprintf(buffer, sizeof(buffer), "    %-24s: %s\n", "Playbook", playbook.c_str());
 	logger->simulation(buffer);
 
     std::snprintf(buffer, sizeof(buffer), "    %-24s: %s\n", "Processor", processor.c_str());
 	logger->simulation(buffer);
 
-    std::snprintf(buffer, sizeof(buffer), "    %-24s: %s\n", "Number of rounds", Utilities::addCommas(rounds).c_str());
+    std::snprintf(buffer, sizeof(buffer), "    %-24s: %s\n", "Version", STRIKER_VERSION.c_str());
+	logger->simulation(buffer);
+
+    std::snprintf(buffer, sizeof(buffer), "    %-24s: %s\n", "Number of hands", Utilities::addCommas(number_of_hands).c_str());
 	logger->simulation(buffer);
 
     std::snprintf(buffer, sizeof(buffer), "    %-24s: %s\n", "Timestamp", timestamp.c_str());
 	logger->simulation(buffer);
-
-    std::snprintf(buffer, sizeof(buffer), "    %-24s: %s\n", "Guid", guid.c_str());
-	logger->simulation(buffer);
-}
-
-// Function to generate a UUID
-void Parameters::generateUUID(std::string& buffer) {
-	uuid_t uuid;
-	char uuid_str[37];
-	uuid_generate(uuid);
-	uuid_unparse(uuid, uuid_str);
-	buffer = uuid_str;
 }
 
 // Function to get current time and format it
@@ -62,12 +56,12 @@ std::string Parameters::serialize() {
     cJSON* json = cJSON_CreateObject();
 
     cJSON_AddStringToObject(json, "playbook", playbook.c_str());
-    cJSON_AddStringToObject(json, "guid", guid.c_str());
+    cJSON_AddStringToObject(json, "name", name.c_str());
     cJSON_AddStringToObject(json, "processor", processor.c_str());
     cJSON_AddStringToObject(json, "timestamp", timestamp.c_str());
     cJSON_AddStringToObject(json, "decks", decks.c_str());
     cJSON_AddStringToObject(json, "strategy", strategy.c_str());
-    cJSON_AddNumberToObject(json, "rounds", rounds);
+    cJSON_AddNumberToObject(json, "number_of_hands", number_of_hands);
     cJSON_AddNumberToObject(json, "number_of_decks", number_of_decks);
 
     cJSON_AddStringToObject(json, "hit_soft_17", rules->hit_soft_17 ? "true" : "false");

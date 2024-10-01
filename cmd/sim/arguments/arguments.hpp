@@ -12,8 +12,8 @@ class Arguments {
 	std::string getDecks() const;
 	int getNumberOfDecks() const;
 
-	int64_t getRounds() const {
-		return rounds;
+	int64_t getHands() const {
+		return number_of_hands;
 	}
 
   private:
@@ -31,7 +31,7 @@ class Arguments {
 	bool single_deck_flag = false;
 	bool double_deck_flag = false;
 	bool six_shoe_flag = false;
-	int64_t rounds = DEFAULT_NUMBER_OF_ROUNDS;
+	int64_t number_of_hands = DEFAULT_NUMBER_OF_HANDS;
 };
 
 #endif // ARGUMENTS_HPP

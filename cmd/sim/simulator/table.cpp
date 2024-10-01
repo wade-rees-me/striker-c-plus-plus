@@ -28,15 +28,14 @@ Table::~Table() {
 
 // Function to simulate a session
 void Table::session(bool mimic) {
-	parameters->logger->simulation(std::string("      Starting table (") + (mimic ? "mimic" : "strategy") + ") rounds: " + Utilities::addCommas(parameters->rounds) + "\n");
+	parameters->logger->simulation(std::string("      Starting table (") + (mimic ? "mimic" : "strategy") + ") number_of_hands: " + Utilities::addCommas(parameters->number_of_hands) + "\n");
 
 	report.start = std::time(nullptr);
-	report.total_rounds = parameters->rounds;
-
-	for (int64_t i = 0; i < parameters->rounds; ++i) {
-		status(i);
+	while (report.total_hands < parameters->number_of_hands) {
+		status(report.total_rounds, report.total_hands);
 		shoe->shuffle();
 		player->shuffle();
+		report.total_rounds++;
 
 		while (!shoe->shouldShuffle()) {
 			report.total_hands++;
@@ -83,16 +82,16 @@ void Table::show(Card* card) {
 }
 
 //
-void Table::status(int64_t round) {
+void Table::status(int64_t round, int64_t hand) {
 	if(round == 0) {
-		parameters->logger->simulation(std::string("      "));
+		parameters->logger->simulation(std::string("        "));
 	}
 	if((round + 1) % STATUS_DOT == 0) {
 		parameters->logger->simulation(std::string("."));
 	}
 	if((round + 1) % STATUS_LINE == 0) {
-		parameters->logger->simulation(std::string(" : " + Utilities::addCommas(round + 1) + "\n"));
-		parameters->logger->simulation(std::string("      "));
+		parameters->logger->simulation(std::string(" : " + Utilities::addCommas(round + 1) + " (rounds), " + Utilities::addCommas(hand) + " (hands)\n"));
+		parameters->logger->simulation(std::string("        "));
 	}
 }
 

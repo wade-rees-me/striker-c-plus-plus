@@ -12,16 +12,15 @@
 //
 class Logger {
 public:
-	Logger(std::string simulator, bool debugFlag);
+	Logger(std::string name, bool debugFlag);
     ~Logger();
 
 private:
     std::mutex logMutex;
 
-	std::string simulator;
+	std::string name;
 	std::string directory;
 	std::string subdirectory;
-	std::string guid;
 
 	std::string simulationFileName;
 	std::ofstream simulationFile;

@@ -11,7 +11,7 @@
 class SimulationDatabaseTable {
 public:
 	std::string playbook;
-	std::string guid;
+	std::string name;
 	std::string simulator;
 	std::string summary;
 	std::string simulations;
@@ -37,12 +37,6 @@ class Simulator {
 	Rules* rules;
 	Table* table;
 	Report report;
-
-  private:
-	std::string name;
-	int year;
-	int month;
-	int day;
 
   private:
 	void simulatorRunSimulation();
