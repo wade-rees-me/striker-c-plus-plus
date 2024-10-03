@@ -3,7 +3,7 @@ CXX = g++
 CXXFLAGS = -O3 -Wall -std=c++20 -I/usr/include -I/usr/local/include
 
 # Directories
-SRC_DIRS = arguments cards constants rules simulator utilities logger
+SRC_DIRS = arguments cards constants table simulator utilities logger
 INCLUDE_DIRS = $(SRC_DIRS)
 
 # Include all directories for header files

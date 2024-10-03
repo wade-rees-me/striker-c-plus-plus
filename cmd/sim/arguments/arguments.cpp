@@ -34,10 +34,10 @@ void Arguments::parseArguments(int argc, char *argv[]) {
 			double_deck_flag = true;
 		} else if (std::strcmp(argv[i], "-6") == 0 || std::strcmp(argv[i], "--six-shoe") == 0) {
 			six_shoe_flag = true;
-		} else if (std::strcmp(argv[i], "-h") == 0 || std::strcmp(argv[i], "--help") == 0) {
+		} else if (std::strcmp(argv[i], "--help") == 0) {
 			printHelpMessage();
 			std::exit(EXIT_SUCCESS);
-		} else if (std::strcmp(argv[i], "-v") == 0 || std::strcmp(argv[i], "--version") == 0) {
+		} else if (std::strcmp(argv[i], "--version") == 0) {
 			printVersion();
 			std::exit(EXIT_SUCCESS);
 		} else {
