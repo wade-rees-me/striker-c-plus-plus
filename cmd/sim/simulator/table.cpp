@@ -28,7 +28,9 @@ Table::~Table() {
 
 // Function to simulate a session
 void Table::session(bool mimic) {
-	parameters->logger->simulation(std::string("      Starting table (") + (mimic ? "mimic" : "strategy") + ") number_of_hands: " + Utilities::addCommas(parameters->number_of_hands) + "\n");
+    char buffer[256];
+	std::snprintf(buffer, sizeof(buffer), "      Start: table, playing %s hands\n", Utilities::addCommas(parameters->number_of_hands).c_str());
+	parameters->logger->simulation(buffer);
 
 	report.start = std::time(nullptr);
 	while (report.total_hands < parameters->number_of_hands) {
@@ -62,7 +64,8 @@ void Table::session(bool mimic) {
 
 	report.end = std::time(nullptr);
 	report.duration = report.end - report.start;
-	parameters->logger->simulation(std::string("      Ending table (") + (mimic ? "mimic" : "strategy") + ")");
+	std::snprintf(buffer, sizeof(buffer), "      End\n");
+	parameters->logger->simulation(buffer);
 }
 
 // Function to deal cards

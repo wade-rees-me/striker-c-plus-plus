@@ -25,7 +25,9 @@ int main(int argc, char* argv[]) {
 	rules.rulesLoadTable(arguments.getDecks());
 	Parameters params(name, arguments.getDecks(), arguments.getStrategy(), arguments.getNumberOfDecks(), arguments.getHands(), &rules, &logger);
 
-	logger.simulation("Starting: " + name + " ...\n\n");
+    char buffer[256];
+	std::snprintf(&buffer[0], 256, "Start: %s\n\n", STRIKER_WHO_AM_I.c_str());
+	logger.simulation(buffer);
 	logger.simulation("  -- arguments -------------------------------------------------------------------\n");
 	params.print();
 	rules.print(&logger);
@@ -34,7 +36,8 @@ int main(int argc, char* argv[]) {
 	Simulator sim(&params);
 	sim.simulatorRunOnce();
 
-	logger.simulation("\nComplete: " + name + " ...\n");
+	std::snprintf(&buffer[0], 256, "End: %s\n\n", STRIKER_WHO_AM_I.c_str());
+	logger.simulation(buffer);
 	return 0;
 }
 

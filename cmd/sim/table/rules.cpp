@@ -111,6 +111,6 @@ void Rules::print(Logger *logger) {
     std::snprintf(buffer, sizeof(buffer), "      %-24s: %d\n", "Blackjack pays", blackjack_pays);
 	logger->simulation(buffer);
 
-    std::snprintf(buffer, sizeof(buffer), "      %-24s: %f\n", "Penetration", penetration);
+    std::snprintf(buffer, sizeof(buffer), "      %-24s: %0.3f %%\n", "Penetration", penetration);
 	logger->simulation(buffer);
 }

@@ -21,10 +21,10 @@ void Simulator::simulatorRunOnce() {
 	SimulationDatabaseTable dbTable;
     char buffer[256];
 
-    std::snprintf(buffer, sizeof(buffer), "  Starting %s simulation(%s) ...\n", STRIKER_WHO_AM_I.c_str(), parameters->name.c_str());
+    std::snprintf(buffer, sizeof(buffer), "  Start: simulation %s\n", parameters->name.c_str());
 	parameters->logger->simulation(buffer);
 	simulatorRunSimulation();
-    std::snprintf(buffer, sizeof(buffer), "  Ending %s simulation(%s) ...\n", STRIKER_WHO_AM_I.c_str(), parameters->name.c_str());
+    std::snprintf(buffer, sizeof(buffer), "  End: simulation\n");
 	parameters->logger->simulation(buffer);
 
 	// Populate SimulationDatabaseTable
@@ -42,7 +42,7 @@ void Simulator::simulatorRunOnce() {
 	std::snprintf(dbTable.total_won, 128, "%lld", report.total_won);
 	std::snprintf(dbTable.total_time, 128, "%lld", report.duration);
 	std::snprintf(dbTable.average_time, 128, "%06.2f seconds", (float)report.duration * 1000000 / (float)report.total_hands);
-	std::snprintf(dbTable.advantage, 128, "%+04.3f%%", ((double)report.total_won / report.total_bet) * 100);
+	std::snprintf(dbTable.advantage, 128, "%+04.3f %%", ((double)report.total_won / report.total_bet) * 100);
 
 	// Print out the results
     parameters->logger->simulation("\n  -- results ---------------------------------------------------------------------\n");
@@ -58,7 +58,7 @@ void Simulator::simulatorRunOnce() {
     std::snprintf(buffer, sizeof(buffer), "    %-24s: %s\n", "Total won", Utilities::addCommas(report.total_won).c_str());
 	parameters->logger->simulation(buffer);
 
-    std::snprintf(buffer, sizeof(buffer), "    %-24s: %s\n", "Total time", Utilities::addCommas(report.duration).c_str());
+    std::snprintf(buffer, sizeof(buffer), "    %-24s: %s seconds\n", "Total time", Utilities::addCommas(report.duration).c_str());
 	parameters->logger->simulation(buffer);
 
     std::snprintf(buffer, sizeof(buffer), "    %-24s: %s per 1,000,000 hands\n", "Average time", std::string(dbTable.average_time).c_str());
@@ -76,9 +76,9 @@ void Simulator::simulatorRunOnce() {
 
 // Function to run the simulation
 void Simulator::simulatorRunSimulation() {
-	parameters->logger->simulation("    Starting (" + parameters->strategy + ") table session...\n");
+	parameters->logger->simulation("    Start: " + parameters->strategy + " table session\n");
 	table->session(parameters->strategy == "mimic");
-	parameters->logger->simulation("\n    Ending (" + parameters->strategy + ") table session...\n");
+	parameters->logger->simulation("    End: table session\n");
 
 	report.total_bet += table->player->report.total_bet;
 	report.total_won += table->player->report.total_won;
@@ -128,11 +128,11 @@ void Simulator::simulatorInsert(SimulationDatabaseTable* sdt, std::string playbo
 
 		char* jsonStr = cJSON_Print(json);
 		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, jsonStr);
-		parameters->logger->insert(std::string("curl -X POST ") + std::string(url) + std::string(" -H \"Content-Type: application/json\" -d") + std::string(jsonStr) + std::string("\n\n"));
 
-		std::cout << "Insert results into the database..." << std::endl;
+		std::cout << "Insert results into the database" << std::endl;
 		CURLcode res = curl_easy_perform(curl);
 		if (res != CURLE_OK) {
+			parameters->logger->insert(std::string("curl -X POST ") + std::string(url) + std::string(" -H \"Content-Type: application/json\" -d") + std::string(jsonStr) + std::string("\n\n"));
 			std::cerr << "curl_easy_perform() failed: " << curl_easy_strerror(res) << "\n";
 		}
 
