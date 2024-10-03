@@ -52,10 +52,10 @@ void Simulator::simulatorRunOnce() {
     std::snprintf(buffer, sizeof(buffer), "    %-24s: %s\n", "Number of rounds", Utilities::addCommas(report.total_rounds).c_str());
 	parameters->logger->simulation(buffer);
 
-    std::snprintf(buffer, sizeof(buffer), "    %-24s: %s\n", "Total bet", Utilities::addCommas(report.total_bet).c_str());
+    std::snprintf(buffer, sizeof(buffer), "    %-24s: %s %+04.3f average bet per hand\n", "Total bet", Utilities::addCommas(report.total_bet).c_str(), (double)report.total_bet / report.total_hands);
 	parameters->logger->simulation(buffer);
 
-    std::snprintf(buffer, sizeof(buffer), "    %-24s: %s\n", "Total won", Utilities::addCommas(report.total_won).c_str());
+    std::snprintf(buffer, sizeof(buffer), "    %-24s: %s %+04.3f average won per hand\n", "Total won", Utilities::addCommas(report.total_won).c_str(), (double)report.total_won / report.total_hands);
 	parameters->logger->simulation(buffer);
 
     std::snprintf(buffer, sizeof(buffer), "    %-24s: %s seconds\n", "Total time", Utilities::addCommas(report.duration).c_str());
@@ -129,7 +129,6 @@ void Simulator::simulatorInsert(SimulationDatabaseTable* sdt, std::string playbo
 		char* jsonStr = cJSON_Print(json);
 		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, jsonStr);
 
-		std::cout << "Insert results into the database" << std::endl;
 		CURLcode res = curl_easy_perform(curl);
 		if (res != CURLE_OK) {
 			parameters->logger->insert(std::string("curl -X POST ") + std::string(url) + std::string(" -H \"Content-Type: application/json\" -d") + std::string(jsonStr) + std::string("\n\n"));

@@ -64,7 +64,7 @@ void Table::session(bool mimic) {
 
 	report.end = std::time(nullptr);
 	report.duration = report.end - report.start;
-	std::snprintf(buffer, sizeof(buffer), "      End\n");
+	std::snprintf(buffer, sizeof(buffer), "      End: table\n");
 	parameters->logger->simulation(buffer);
 }
 
