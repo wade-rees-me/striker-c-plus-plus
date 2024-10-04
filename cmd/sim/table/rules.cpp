@@ -81,7 +81,7 @@ void Rules::rulesFetchTable(const std::string &url) {
 void Rules::print(Logger *logger) {
     char buffer[256];
 
-    std::snprintf(buffer, sizeof(buffer), "    %-24s\n", "Rules");
+    std::snprintf(buffer, sizeof(buffer), "    %-24s\n", "Table Rules");
 	logger->simulation(buffer);
 
     std::snprintf(buffer, sizeof(buffer), "      %-24s: %s\n", "Table", playbook);

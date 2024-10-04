@@ -6,7 +6,7 @@
 // General constants
 const static std::string STRIKER_WHO_AM_I = "striker-c-plus-plus";
 const static std::string STRIKER_VERSION = "v01.02.02";
-const static char* TIME_LAYOUT;
+const static char* TIME_LAYOUT = "%Y-%m-%d %H:%M:%S %z";
 
 // Simulation constants
 const static int64_t MAXIMUM_NUMBER_OF_HANDS = 1000000000LL;
