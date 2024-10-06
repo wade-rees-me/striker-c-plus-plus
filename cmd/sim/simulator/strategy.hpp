@@ -8,6 +8,14 @@
 #include "json.hpp"
 #include "constants.hpp"
 
+const static std::string BET = "bet";
+const static std::string INSURANCE = "insurance";
+const static std::string SURRENDER = "surrender";
+const static std::string DOUBLE = "double";
+const static std::string SPLIT = "split";
+const static std::string STAND = "stand";
+const static std::string PLAY = "play";
+
 //
 class Strategy {
   public:
@@ -17,34 +25,34 @@ class Strategy {
   public:
 	int getBet(const int *seenCards) {
 		json_object = nullptr;
-		return parseAuxInt(httpGet(urlBet, buildParams(seenCards, nullptr, nullptr, nullptr)), "bet", 2);
+		return parseAuxInt(httpGet(urlBet, buildParams(seenCards, nullptr, nullptr, nullptr)), BET, 2);
 	}
 	bool getInsurance(const int *seenCards) {
-		return parseAuxBool(httpGet(urlInsurance, buildParams(seenCards, nullptr, nullptr, nullptr)), "insurance", false);
+		return parseAuxBool(httpGet(urlInsurance, buildParams(seenCards, nullptr, nullptr, nullptr)), INSURANCE, false);
 	}
 	bool getSurrender(const int *seenCards, const int *haveCards, Card* up) {
 		if(json_object != nullptr) {
-			return parseAuxBool(json_object, "surrender", false);
+			return parseAuxBool(json_object, SURRENDER, false);
 		}
-		return parseAuxBool(httpGet(urlSurrender, buildParams(seenCards, haveCards, nullptr, up)), "surrender", false);
+		return parseAuxBool(httpGet(urlSurrender, buildParams(seenCards, haveCards, nullptr, up)), SURRENDER, false);
 	}
 	bool getDouble(const int *seenCards, const int *haveCards, Card* up) {
 		if(json_object != nullptr) {
-			return parseAuxBool(json_object, "double", false);
+			return parseAuxBool(json_object, DOUBLE, false);
 		}
-		return parseAuxBool(httpGet(urlDouble, buildParams(seenCards, haveCards, nullptr, up)), "double", false);
+		return parseAuxBool(httpGet(urlDouble, buildParams(seenCards, haveCards, nullptr, up)), DOUBLE, false);
 	}
 	bool getSplit(const int *seenCards, Card* pair, Card* up) {
 		if(json_object != nullptr) {
-			return parseAuxBool(json_object, "split", false);
+			return parseAuxBool(json_object, SPLIT, false);
 		}
-		return parseAuxBool(httpGet(urlSplit, buildParams(seenCards, nullptr, pair, up)), "split", false);
+		return parseAuxBool(httpGet(urlSplit, buildParams(seenCards, nullptr, pair, up)), SPLIT, false);
 	}
 	bool getStand(const int *seenCards, const int *haveCards, Card* up) {
 		if(json_object != nullptr) {
-			return parseAuxBool(json_object, "stand", false);
+			return parseAuxBool(json_object, STAND, false);
 		}
-		return parseAuxBool(httpGet(urlStand, buildParams(seenCards, haveCards, nullptr, up)), "stand", true);
+		return parseAuxBool(httpGet(urlStand, buildParams(seenCards, haveCards, nullptr, up)), STAND, true);
 	}
 	void doPlay(const int *seenCards, const int *haveCards, Card* pair, Card* up);
 	void clear() {
@@ -55,12 +63,12 @@ class Strategy {
 	CURL *curl_handle;
 	cJSON* json_object;
 	std::string urlBet = "http://" + getStrategyUrl() + "/bet";
-	std::string urlInsurance = "http://" + getStrategyUrl() + "/insurance";
-	std::string urlSurrender = "http://" + getStrategyUrl() + "/surrender";
-	std::string urlDouble = "http://" + getStrategyUrl() + "/double";
-	std::string urlSplit = "http://" + getStrategyUrl() + "/split";
-	std::string urlStand = "http://" + getStrategyUrl() + "/stand";
-	std::string urlPlay = "http://" + getStrategyUrl() + "/play";
+	std::string urlInsurance = "http://" + getStrategyUrl() + "/" + INSURANCE;
+	std::string urlSurrender = "http://" + getStrategyUrl() + "/" + SURRENDER;
+	std::string urlDouble = "http://" + getStrategyUrl() + "/" + DOUBLE;
+	std::string urlSplit = "http://" + getStrategyUrl() + "/" + SPLIT;
+	std::string urlStand = "http://" + getStrategyUrl() + "/" + STAND;
+	std::string urlPlay = "http://" + getStrategyUrl() + "/" + PLAY;
 	std::string playbook;
 	int numberOfCards;
 
