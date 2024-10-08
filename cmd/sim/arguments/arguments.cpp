@@ -5,7 +5,7 @@
 #include "arguments.hpp"
 #include "constants.hpp"
 
-// Parse command-line flags for simulation
+//
 void Arguments::parseArguments(int argc, char *argv[]) {
 	for (int i = 1; i < argc; ++i) {
 		if ((std::strcmp(argv[i], "-h") == 0 || std::strcmp(argv[i], "--number-of-hands") == 0) && i + 1 < argc) {

@@ -7,7 +7,6 @@
 #include <string>
 #include <memory>
 #include <cstdint>
-#include "rank.hpp"
 #include "card.hpp"
 
 class Shoe {

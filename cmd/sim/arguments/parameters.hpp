@@ -29,10 +29,6 @@ class Parameters {
 	void print();
 	std::string serialize();
 
-	//std::string getPlaybook() const {
-		//return playbook;
-	//}
-
   private:
 	void getCurrentTime(std::string &buffer);
 };
