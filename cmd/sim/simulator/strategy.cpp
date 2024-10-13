@@ -66,12 +66,12 @@ std::string Strategy::buildParams(const int *seenData, const int *haveData, Card
 cJSON* Strategy::httpGet(std::string& url, std::string params) {
 	MemoryStruct chunk;
 	char fullUrl[2048];
+	long http_code = 0;
 
 	chunk.memory = static_cast<char *>(malloc(1));  // Will be grown as needed by realloc
 	chunk.size = 0;  // No data at this point
 
 	snprintf(fullUrl, sizeof(fullUrl), "%s?%s", url.c_str(), params.c_str());
-//std::cout << "http: " << fullUrl << std::endl;
 	curl_easy_setopt(curl_handle, CURLOPT_URL, fullUrl);
 	curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, writeMemoryCallback);
 	curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, static_cast<void *>(&chunk));
@@ -82,6 +82,14 @@ cJSON* Strategy::httpGet(std::string& url, std::string params) {
 		std::exit(EXIT_FAILURE);
 	}
 
+	curl_easy_getinfo(curl_handle, CURLINFO_RESPONSE_CODE, &http_code);
+	if (http_code != 200) {
+		std::cout << "http: " << fullUrl << " : " << chunk.memory << std::endl;
+		std::cerr << "HTTP Status Code: " << http_code << std::endl;
+		std::exit(EXIT_FAILURE);
+	}
+
+//std::cout << "http: " << fullUrl << " : " << res << " : " << " : " << CURLE_OK << " : " << chunk.memory << std::endl;
 	cJSON *json = cJSON_Parse(chunk.memory);
 	if (json == nullptr) {
 		std::cerr << "Failed to parse JSON\n";

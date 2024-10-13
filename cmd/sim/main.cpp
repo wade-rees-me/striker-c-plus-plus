@@ -25,7 +25,7 @@ int main(int argc, char* argv[]) {
 	rules.rulesLoadTable(arguments.getDecks());
 	Parameters params(name, arguments.getDecks(), arguments.getStrategy(), arguments.getNumberOfDecks(), arguments.getHands(), &rules, &logger);
 
-    char buffer[256];
+	char buffer[256];
 	std::snprintf(&buffer[0], 256, "Start: %s\n\n", STRIKER_WHO_AM_I.c_str());
 	logger.simulation(buffer);
 	logger.simulation("  -- arguments -------------------------------------------------------------------\n");
@@ -45,13 +45,13 @@ int main(int argc, char* argv[]) {
 std::string generateName() {
 	std::time_t t = std::time(nullptr);
 	struct tm* tm_info = std::localtime(&t);
-    char buffer[256];
+	char buffer[256];
 
 	int year = tm_info->tm_year + 1900;
 	int month = tm_info->tm_mon + 1;
 	int day = tm_info->tm_mday;
 
 	std::snprintf(&buffer[0], 128, "%s_%4d_%02d_%02d_%012ld", STRIKER_WHO_AM_I.c_str(), year, month, day, t);
-    return std::string(buffer);
+	return std::string(buffer);
 }
 
