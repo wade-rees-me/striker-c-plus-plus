@@ -2,33 +2,16 @@
 #define SIMULATOR_HPP
 
 #include <string>
+#include "parameters.hpp"
+#include "rules.hpp"
 #include "table.hpp"
 #include "report.hpp"
-#include "memory.hpp"
-#include "parameters.hpp"
-
-//
-class SimulationDatabaseTable {
-public:
-	std::string playbook;
-	std::string name;
-	std::string simulator;
-	std::string summary;
-	std::string simulations;
-	char rounds[128];
-	char hands[128];
-	char total_bet[128];
-	char total_won[128];
-	char advantage[128];
-	char total_time[128];
-	char average_time[128];
-	std::string parameters;
-};
+#include "simulation.hpp"
 
 //
 class Simulator {
   public:
-	Simulator(Parameters* params);
+	Simulator(Parameters* params, Rules* rules);
 
 	void simulatorRunOnce();
 
@@ -40,7 +23,7 @@ class Simulator {
 
   private:
 	void simulatorRunSimulation();
-	void simulatorInsert(SimulationDatabaseTable* sdt, std::string playbook);
+	void simulatorInsert(Simulation* sdt, std::string playbook);
 };
 
 #endif // SIMULATOR_HPP

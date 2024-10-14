@@ -4,24 +4,20 @@
 #include <string>
 #include <ctime>
 #include <cstdint>
-#include "rules.hpp"
-#include "logger.hpp"
+#include "constants.hpp"
 
 // Parameters class to store simulation parameters
 class Parameters {
   public:
-	Parameters(std::string name, std::string decks, std::string strategy, int number_of_decks, int64_t number_of_hands, Rules *rules, Logger *logger);
+	Parameters(std::string decks, std::string strategy, int number_of_decks, int64_t number_of_hands);
 
   public:
-	Rules *rules;
-	Logger *logger;
-
-	std::string name;
-	std::string playbook;
-	std::string processor;
-	std::string timestamp;
-	std::string decks;
-	std::string strategy;
+    char name[MAX_STRING_SIZE];
+    char playbook[MAX_STRING_SIZE];
+    char processor[MAX_STRING_SIZE];
+    char timestamp[MAX_STRING_SIZE];
+    std::string decks;
+    std::string strategy;
 	int number_of_decks;
 	int64_t number_of_hands;
 
@@ -30,7 +26,8 @@ class Parameters {
 	std::string serialize();
 
   private:
-	void getCurrentTime(std::string &buffer);
+	void getCurrentTime(char* buffer);
+	void generateName(char* buffer);
 };
 
 #endif // PARAMETERS_HPP

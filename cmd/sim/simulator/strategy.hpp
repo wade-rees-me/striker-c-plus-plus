@@ -5,7 +5,6 @@
 #include <curl/curl.h>
 #include <cjson/cJSON.h>
 #include "card.hpp"
-#include "json.hpp"
 #include "constants.hpp"
 
 const static std::string BET = "bet";

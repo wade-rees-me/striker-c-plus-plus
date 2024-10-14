@@ -7,12 +7,9 @@
 #include <curl/curl.h>
 #include <cjson/cJSON.h>
 #include "rules.hpp"
-#include "memory.hpp"
-#include "json.hpp"
-#include "constants.hpp"
 
 // Function to load table rules by calling fetchRulesTable
-void Rules::rulesLoadTable(const std::string &decks) {
+Rules::Rules(const std::string &decks) {
 	try {
 		rulesFetchTable(getRulesUrl() + "/" + decks);
 	}
@@ -24,12 +21,11 @@ void Rules::rulesLoadTable(const std::string &decks) {
 
 // Function to fetch rules table using libcurl
 void Rules::rulesFetchTable(const std::string &url) {
-	struct MemoryStruct chunk;
 	CURLcode res;
 	CURL *curl_handle;
 
-	chunk.memory = (char*) malloc(1);  // Will be grown as needed by realloc
-	chunk.size = 0;					// No data at this point
+	struct MemoryStruct chunk;
+	chunk.size = 0;
 
 	curl_global_init(CURL_GLOBAL_ALL);
 	curl_handle = curl_easy_init();
@@ -73,44 +69,41 @@ void Rules::rulesFetchTable(const std::string &url) {
 	// Cleanup
 	cJSON_Delete(json);
 	curl_easy_cleanup(curl_handle);
-	free(chunk.memory);
 	curl_global_cleanup();
 }
 
 //
-void Rules::print(Logger *logger) {
-    char buffer[256];
-
-    std::snprintf(buffer, sizeof(buffer), "    %-24s\n", "Table Rules");
-	logger->simulation(buffer);
-
-    std::snprintf(buffer, sizeof(buffer), "      %-24s: %s\n", "Table", playbook);
-	logger->simulation(buffer);
-
-    std::snprintf(buffer, sizeof(buffer), "      %-24s: %s\n", "Hit soft 17", hit_soft_17 ? "true" : "false");
-	logger->simulation(buffer);
-
-    std::snprintf(buffer, sizeof(buffer), "      %-24s: %s\n", "Surrender", surrender ? "true" : "false");
-	logger->simulation(buffer);
-
-    std::snprintf(buffer, sizeof(buffer), "      %-24s: %s\n", "Double any two cards", double_any_two_cards ? "true" : "false");
-	logger->simulation(buffer);
-
-    std::snprintf(buffer, sizeof(buffer), "      %-24s: %s\n", "Double after split", double_after_split ? "true" : "false");
-	logger->simulation(buffer);
-
-    std::snprintf(buffer, sizeof(buffer), "      %-24s: %s\n", "Resplit aces", resplit_aces ? "true" : "false");
-	logger->simulation(buffer);
-
-    std::snprintf(buffer, sizeof(buffer), "      %-24s: %s\n", "Hit split aces", hit_split_aces ? "true" : "false");
-	logger->simulation(buffer);
-
-    std::snprintf(buffer, sizeof(buffer), "      %-24s: %d\n", "Blackjack bets", blackjack_bets);
-	logger->simulation(buffer);
-
-    std::snprintf(buffer, sizeof(buffer), "      %-24s: %d\n", "Blackjack pays", blackjack_pays);
-	logger->simulation(buffer);
-
-    std::snprintf(buffer, sizeof(buffer), "      %-24s: %0.3f %%\n", "Penetration", penetration);
-	logger->simulation(buffer);
+void Rules::print() {
+    printf("    %-24s\n", "Table Rules");
+    printf("      %-24s: %s\n", "Table", playbook);
+    printf("      %-24s: %s\n", "Hit soft 17", boolToString(hit_soft_17));
+    printf("      %-24s: %s\n", "Surrender", boolToString(surrender));
+    printf("      %-24s: %s\n", "Double any two cards", boolToString(double_any_two_cards));
+    printf("      %-24s: %s\n", "Double after split", boolToString(double_after_split));
+    printf("      %-24s: %s\n", "Resplit aces", boolToString(resplit_aces));
+    printf("      %-24s: %s\n", "Hit split aces", boolToString(hit_split_aces));
+    printf("      %-24s: %d\n", "Blackjack bets", blackjack_bets);
+    printf("      %-24s: %d\n", "Blackjack pays", blackjack_pays);
+    printf("      %-24s: %0.3f %%\n", "Penetration", penetration);
 }
+
+//
+void Rules::serializeRules(char* buffer, int buffer_size) {
+    cJSON* json = cJSON_CreateObject();
+
+    cJSON_AddStringToObject(json, "hit_soft_17", hit_soft_17 ? "true" : "false");
+    cJSON_AddStringToObject(json, "surrender", surrender ? "true" : "false");
+    cJSON_AddStringToObject(json, "double_any_two_cards", double_any_two_cards ? "true" : "false");
+    cJSON_AddStringToObject(json, "double_after_split", double_after_split ? "true" : "false");
+    cJSON_AddStringToObject(json, "resplit_aces", resplit_aces ? "true" : "false");
+    cJSON_AddStringToObject(json, "hit_split_aces", hit_split_aces ? "true" : "false");
+    cJSON_AddNumberToObject(json, "blackjack_bets", blackjack_bets);
+    cJSON_AddNumberToObject(json, "blackjack_pays", blackjack_pays);
+    cJSON_AddNumberToObject(json, "penetration", penetration);
+
+    char* jsonString = cJSON_Print(json);
+    snprintf(buffer, buffer_size, "%s", jsonString);
+    free(jsonString);
+    cJSON_Delete(json);
+}
+

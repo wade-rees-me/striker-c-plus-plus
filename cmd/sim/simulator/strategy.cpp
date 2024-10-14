@@ -6,12 +6,19 @@
 #include <cctype>
 #include <curl/curl.h>
 #include "strategy.hpp"
-#include "memory.hpp"
-#include "json.hpp"
 #include "constants.hpp"
 
 //
 Strategy::Strategy(std::string p, int n) : playbook(p), numberOfCards(n) {
+
+	//std::string urlBet = "http://" + getStrategyUrl() + "/bet";
+	//std::string urlInsurance = "http://" + getStrategyUrl() + "/" + INSURANCE;
+	//std::string urlSurrender = "http://" + getStrategyUrl() + "/" + SURRENDER;
+	//std::string urlDouble = "http://" + getStrategyUrl() + "/" + DOUBLE;
+	//std::string urlSplit = "http://" + getStrategyUrl() + "/" + SPLIT;
+	//std::string urlStand = "http://" + getStrategyUrl() + "/" + STAND;
+	//std::string urlPlay = "http://" + getStrategyUrl() + "/" + PLAY;
+
 	curl_global_init(CURL_GLOBAL_ALL);
 	curl_handle = curl_easy_init();
 
@@ -64,11 +71,10 @@ std::string Strategy::buildParams(const int *seenData, const int *haveData, Card
 
 // Function to perform HTTP GET request
 cJSON* Strategy::httpGet(std::string& url, std::string params) {
-	MemoryStruct chunk;
 	char fullUrl[2048];
 	long http_code = 0;
 
-	chunk.memory = static_cast<char *>(malloc(1));  // Will be grown as needed by realloc
+	MemoryStruct chunk;
 	chunk.size = 0;  // No data at this point
 
 	snprintf(fullUrl, sizeof(fullUrl), "%s?%s", url.c_str(), params.c_str());
@@ -95,7 +101,6 @@ cJSON* Strategy::httpGet(std::string& url, std::string params) {
 		std::cerr << "Failed to parse JSON\n";
 		std::exit(EXIT_FAILURE);
 	}
-	free(chunk.memory);
 	return json;
 }
 

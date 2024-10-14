@@ -7,7 +7,8 @@
 //
 class Arguments {
   public:
-	void parseArguments(int argc, char *argv[]);
+	Arguments(int argc, char *argv[]);
+
 	std::string getStrategy() const;
 	std::string getDecks() const;
 	int getNumberOfDecks() const;

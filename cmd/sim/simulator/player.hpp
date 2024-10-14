@@ -8,12 +8,13 @@
 #include "report.hpp"
 #include "wager.hpp"
 #include "parameters.hpp"
+#include "rules.hpp"
 #include "constants.hpp"
 
 //
 class Player {
 public:
-	Player(Parameters* params, int num_cards);
+	Player(Parameters* params, Rules* rules, int num_cards);
 
 	void shuffle();
 	void placeBet(bool mimic);
@@ -28,6 +29,7 @@ public:
 
 //private:
 	Parameters* parameters;
+	Rules* rules;
 	int number_of_cards;
 
 	Wager wager;

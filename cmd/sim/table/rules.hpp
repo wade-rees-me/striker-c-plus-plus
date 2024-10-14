@@ -2,11 +2,15 @@
 #define RULES_HPP
 
 #include <string>
-#include "logger.hpp"
+#include "constants.hpp"
 
+//
 class Rules {
   public:
-	char playbook[128];
+	Rules(const std::string& decks);
+
+  public:
+	char playbook[MAX_STRING_SIZE];
 	bool hit_soft_17 = true;
 	bool surrender = false;
 	bool double_any_two_cards = true;
@@ -18,8 +22,8 @@ class Rules {
 	float penetration = 0.70;
 
   public:
-	void rulesLoadTable(const std::string& decks);
-	void print(Logger *logger);
+	void print();
+	void serializeRules(char* buffer, int buffer_size);
 
   private:
 	void rulesFetchTable(const std::string& url);
