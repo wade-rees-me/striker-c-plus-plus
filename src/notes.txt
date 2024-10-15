@@ -1,0 +1,185 @@
+. 
+. 
+. Run summary command after runAll....
+. Load summary simulations in database
+. Remove threading from Python
+. 
+. 
+. Convert ACE to Python
+. Exceptions
+. make_unique
+. noexcept()
+. DatabaseTable?????
+. 
+. 
+. Lisp from Python
+. Rust from C
+. 
+. 
+
+													C++		C		Go		Python	Java	Lisp	Rust	Bash	Scala	Ruby	x
+----------------------------------------------------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|------
+. Combine all arguments								x		x		x		x		x
+. Change to number of hands (not rounds)			x		x		x		x		x
+. Average time per 1,000,000 hands					x		x		x		x
+. Use simulation name for file names, guids, etc.	x		x
+. rounds to number_of_rounds, total_rounds			x		x
+. hands to number_of_hands, total_hands				x		x
+. In Results hands before rounds					x		x		x
+. Add commas										x		x
+. Renoive aux structures
+.
+-------------------------------------------------------------------------------------------------------------------------------------------
+
+
+. /usr/local/Cellar
+
+
+
+
+
+Starting: striker-c++ ...
+
+Playbook                : single-deck-basic
+Processor               : striker-c++
+Number of rounds        : 2,500,000
+Timestamp               : Sun Sep 22 21:10:09 2024
+Guid                    : 03D589F8-CC1C-4E2E-AB7B-1F1C9CDB1824
+Rules
+  Table                 : single-deck
+  Hit soft 17           : true
+  Surrender             : false
+  Double any two cards  : true
+  Double after split    : false
+  Resplit aces          : false
+  Hit split aces        : false
+  Blackjack bets        : 2
+  Blackjack pays        : 3
+  Penetration           : 0.75
+
+Starting striker-c++ simulation(striker-c-plus-plus_2024_09_22_001727061009)...
+  Starting (basic) table session...
+    Starting table (strategy) rounds: 2,500,000
+      ........................................ : ___1,000,000
+      ........................................ : ___2,000,000
+      ....................
+    Ending table (strategy): total elapsed time: 7,249 seconds
+  Ending (basic) table session...
+Ending striker-c++ simulation(striker-c-plus-plus_2024_09_22_001727061009)...
+
+Number of rounds:  2,500,000
+Number of hands:   18,396,521
+Total bet:         40,854,022, average bet per hand: 2.22075
+Total won:         -146,360, average win per hand: -0.00795585
+Total time:        7249 seconds
+Average time:      394.04 seconds per 1,000,000 hands
+Player advantage:  -0.358%
+
+Insert results into the database...
+{
+    "endpoint": "{{/striker/v1/simulation/StrikerWhoAmI/single-deck-basic/03D589F8-CC1C-4E2E-AB7B-1F1C9CDB1824}}"
+}
+
+Complete: striker-c++ ...
+
+
+
+
+
+Starting: striker-c++ ...
+
+Playbook                : single-deck-mimic
+Processor               : striker-c++
+Number of rounds        : 2,500,000
+Timestamp               : Mon Sep 23 08:54:38 2024
+Guid                    : 69C1770F-651A-46C5-BDE6-575CDCE719BA
+Rules
+  Table                 : single-deck
+  Hit soft 17           : true
+  Surrender             : false
+  Double any two cards  : true
+  Double after split    : false
+  Resplit aces          : false
+  Hit split aces        : false
+  Blackjack bets        : 2
+  Blackjack pays        : 3
+  Penetration           : 0.75
+
+Starting striker-c++ simulation(striker-c-plus-plus_2024_09_23_001727103278)...
+  Starting (mimic) table session...
+    Starting table (mimic) rounds: 2,500,000
+      ........................................ : ___1,000,000
+      ........................................ : ___2,000,000
+      ....................
+    Ending table (mimic): total elapsed time: 31 seconds
+  Ending (mimic) table session...
+Ending striker-c++ simulation(striker-c-plus-plus_2024_09_23_001727103278)...
+
+Number of rounds:  2,500,000
+Number of hands:   18,314,781
+Total bet:         36,629,562, average bet per hand: 2
+Total won:         -2,160,120, average win per hand: -0.117944
+Total time:        31 seconds
+Average time:      001.69 seconds per 1,000,000 hands
+Player advantage:  -5.897%
+
+Insert results into the database...
+{
+    "endpoint": "{{/striker/v1/simulation/StrikerWhoAmI/single-deck-mimic/69C1770F-651A-46C5-BDE6-575CDCE719BA}}"
+}
+
+Complete: striker-c++ ...
+
+
+
+
+
+Starting: striker-c++ ...
+
+Playbook                : single-deck-wong
+Processor               : striker-c++
+Number of rounds        : 2,500,000
+Timestamp               : Mon Sep 23 08:55:35 2024
+Guid                    : 28259D08-5BC7-49FB-AB81-1BA7A27DCC0D
+Rules
+  Table                 : single-deck
+  Hit soft 17           : true
+  Surrender             : false
+  Double any two cards  : true
+  Double after split    : false
+  Resplit aces          : false
+  Hit split aces        : false
+  Blackjack bets        : 2
+  Blackjack pays        : 3
+  Penetration           : 0.75
+
+Starting striker-c++ simulation(striker-c-plus-plus_2024_09_23_001727103335)...
+  Starting (wong) table session...
+    Starting table (strategy) rounds: 2,500,000
+      ........................................ : ___1,000,000
+      ........................................ : ___2,000,000
+      ....................
+    Ending table (strategy): total elapsed time: 7,120 seconds
+  Ending (wong) table session...
+Ending striker-c++ simulation(striker-c-plus-plus_2024_09_23_001727103335)...
+
+Number of rounds:  2,500,000
+Number of hands:   18,456,207
+Total bet:         95,350,510, average bet per hand: 5.16631
+Total won:         1,214,506, average win per hand: 0.0658047
+Total time:        7120 seconds
+Average time:      385.78 seconds per 1,000,000 hands
+Player advantage:  +1.274%
+
+Insert results into the database...
+{
+    "endpoint": "{{/striker/v1/simulation/StrikerWhoAmI/single-deck-wong/28259D08-5BC7-49FB-AB81-1BA7A27DCC0D}}"
+}
+
+Complete: striker-c++ ...
+
+
+
+
+
+
