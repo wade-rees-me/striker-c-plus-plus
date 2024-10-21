@@ -4,14 +4,13 @@
 #include <ctime>
 #include <string>
 #include "table.hpp"
-#include "strategy.hpp"
 #include "shoe.hpp"
 
 //
-Table::Table(Parameters* params, Rules* rules) : parameters(params) {
+Table::Table(Parameters* params, Rules* rules, Strategy* strategy) : parameters(params) {
 	shoe = new Shoe(parameters->number_of_decks, rules->penetration);
 	dealer = new Dealer(rules->hit_soft_17);
-	player = new Player(parameters, rules, shoe->getNumberOfCards());
+	player = new Player(parameters, rules, strategy, shoe->getNumberOfCards());
 	report = Report();
 }
 
@@ -25,8 +24,8 @@ Table::~Table() {
 // Function to simulate a session
 void Table::session(bool mimic) {
     char buffer[256];
-	std::snprintf(buffer, sizeof(buffer), "      Start: table, playing %lld hands\n", parameters->number_of_hands);
-	std::cout << buffer;
+	std::snprintf(buffer, sizeof(buffer), "      Start: table, playing %lld hands", parameters->number_of_hands);
+	std::cout << buffer << std::endl;
 
 	report.start = std::time(nullptr);
 	while (report.total_hands < parameters->number_of_hands) {
@@ -92,7 +91,6 @@ void Table::status(int64_t round, int64_t hand) {
     	char buffer[256];
 		std::snprintf(buffer, sizeof(buffer), " : %lld (rounds), %lld (hands)\n", (round + 1), hand);
 		std::cout << buffer;
-		//std::cout << std::string(" : ") + std::string(round + 1) + std::string" (rounds), ") + std::string(hand) + std::string" (hands)\n"));
 		std::cout << std::string("        ") << std::flush;
 	}
 }

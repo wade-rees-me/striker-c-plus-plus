@@ -18,8 +18,8 @@ public:
 	char advantage[MAX_STRING_SIZE];
 	char total_time[MAX_STRING_SIZE];
 	char average_time[MAX_STRING_SIZE];
-	std::string parameters;
-	std::string rules;
+	char parameters[MAX_MEMORY_SIZE];
+	char rules[MAX_MEMORY_SIZE];
 };
 
 #endif // SIMULATION_HPP

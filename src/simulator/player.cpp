@@ -3,11 +3,10 @@
 #include <cstring>
 #include "shoe.hpp"
 #include "player.hpp"
-#include "strategy.hpp"
 
 // Constructor for Player
-Player::Player(Parameters* parameters, Rules* rules, int number_of_cards)
-	: parameters(parameters), rules(rules), number_of_cards(number_of_cards), strategy(parameters->playbook, number_of_cards) {
+Player::Player(Parameters* parameters, Rules* rules, Strategy* strategy, int number_of_cards)
+	: parameters(parameters), rules(rules), strategy(strategy), number_of_cards(number_of_cards) {
 }
 
 // Shuffle function (reinitializes seen cards)
@@ -19,12 +18,13 @@ void Player::shuffle() {
 void Player::placeBet(bool mimic) {
 	splits.clear();
 	wager.reset();
-	wager.amount_bet = mimic ? MINIMUM_BET : strategy.getBet(seen_cards);;
+	wager.amount_bet = mimic ? MINIMUM_BET : strategy->getBet(seen_cards);;
 }
 
 // Simulate an insurance bet
 void Player::insurance() {
-	if (strategy.getInsurance(seen_cards)) {
+	//if (decision.getInsurance(seen_cards)) {
+	if (strategy->getInsurance(seen_cards)) {
 		wager.insurance_bet = wager.amount_bet / 2;
 	}
 }
@@ -42,22 +42,18 @@ void Player::play(Card* up, Shoe* shoe, bool mimic) {
 		return;
 	}
 
-	strategy.doPlay(seen_cards, wager.getHaveCards(), wager.isPair() ? wager.getCardPair() : nullptr, up);
-	if (rules->surrender && strategy.getSurrender(seen_cards, wager.getHaveCards(), up)) {
-		strategy.clear();
+	if (rules->surrender && strategy->getSurrender(seen_cards, wager.getHandTotal(), wager.isSoft(), up)) {
 		wager.surrender();
 		return;
 	}
 
-	if ((rules->double_any_two_cards || wager.getHandTotal() == 10 || wager.getHandTotal() == 11) && strategy.getDouble(seen_cards, wager.getHaveCards(), up)) {
-		strategy.clear();
+	if ((rules->double_any_two_cards || wager.getHandTotal() == 10 || wager.getHandTotal() == 11) && strategy->getDouble(seen_cards, wager.getHandTotal(), wager.isSoft(), up)) {
 		wager.doubleBet();
 		drawCard(&wager, shoe->drawCard());
 		return;
 	}
 
-	if (wager.isPair() && strategy.getSplit(seen_cards, wager.getCardPair(), up)) {
-		strategy.clear();
+	if (wager.isPair() && strategy->getSplit(seen_cards, wager.getCardPair(), up)) {
 		Wager* split = new Wager();
 		wager.splitHand(split);
 		splits.push_back(split);
@@ -77,17 +73,18 @@ void Player::play(Card* up, Shoe* shoe, bool mimic) {
 		return;
 	}
 
-	bool doStand = strategy.getStand(seen_cards, wager.getHaveCards(), up);
-	strategy.clear();
+	bool doStand = strategy->getStand(seen_cards, wager.getHandTotal(), wager.isSoft(), up);
 	while (!wager.isBusted() && !doStand) {
 		drawCard(&wager, shoe->drawCard());
-		doStand = strategy.getStand(seen_cards, wager.getHaveCards(), up);
+		if (!wager.isBusted()) {
+			doStand = strategy->getStand(seen_cards, wager.getHandTotal(), wager.isSoft(), up);
+		}
 	}
 }
 
 //
 void Player::playSplit(Wager* wager, Shoe* shoe, Card* up) {
-	if (rules->double_after_split && strategy.getDouble(seen_cards, wager->getHaveCards(), up)) {
+	if (rules->double_after_split && strategy->getDouble(seen_cards, wager->getHandTotal(), wager->isSoft(), up)) {
 		wager->doubleBet();
 		drawCard(wager, shoe->drawCard());
 		return;
@@ -95,7 +92,7 @@ void Player::playSplit(Wager* wager, Shoe* shoe, Card* up) {
 
 	if (wager->isPair()) {
 		if (wager->isPairOfAces()) {
-			if (rules->resplit_aces && strategy.getSplit(seen_cards, wager->getCardPair(), up)) {
+			if (rules->resplit_aces && strategy->getSplit(seen_cards, wager->getCardPair(), up)) {
 				Wager* split = new Wager();
 				splits.push_back(split);
 				wager->splitHand(split);
@@ -107,7 +104,7 @@ void Player::playSplit(Wager* wager, Shoe* shoe, Card* up) {
 				return;
 			}
 		} else {
-			if (strategy.getSplit(seen_cards, wager->getCardPair(), up)) {
+			if (strategy->getSplit(seen_cards, wager->getCardPair(), up)) {
 				Wager* split = new Wager();
 				splits.push_back(split);
 				wager->splitHand(split);
@@ -121,10 +118,12 @@ void Player::playSplit(Wager* wager, Shoe* shoe, Card* up) {
 		}
 	}
 
-	bool doStand = strategy.getStand(seen_cards, wager->getHaveCards(), up);
+	bool doStand = strategy->getStand(seen_cards, wager->getHandTotal(), wager->isSoft(), up);
 	while (!wager->isBusted() && !doStand) {
 		drawCard(wager, shoe->drawCard());
-		doStand = strategy.getStand(seen_cards, wager->getHaveCards(), up);
+		if (!wager->isBusted()) {
+			doStand = strategy->getStand(seen_cards, wager->getHandTotal(), wager->isSoft(), up);
+		}
 	}
 }
 

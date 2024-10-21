@@ -2,19 +2,19 @@
 #define PLAYER_HPP
 
 #include <vector>
-#include "strategy.hpp"
 #include "shoe.hpp"
 #include "hand.hpp"
 #include "report.hpp"
 #include "wager.hpp"
 #include "parameters.hpp"
 #include "rules.hpp"
+#include "strategy.hpp"
 #include "constants.hpp"
 
 //
 class Player {
 public:
-	Player(Parameters* params, Rules* rules, int num_cards);
+	Player(Parameters* params, Rules* rules, Strategy* strategy, int num_cards);
 
 	void shuffle();
 	void placeBet(bool mimic);
@@ -30,11 +30,11 @@ public:
 //private:
 	Parameters* parameters;
 	Rules* rules;
+	Strategy* strategy;
 	int number_of_cards;
 
 	Wager wager;
 	std::vector<Wager*> splits;
-	Strategy strategy;
 	Report report = Report();
 
 	int seen_cards[13] = {0};  // Keeps track of the cards the player has seen

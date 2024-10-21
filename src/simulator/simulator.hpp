@@ -7,11 +7,12 @@
 #include "table.hpp"
 #include "report.hpp"
 #include "simulation.hpp"
+#include "strategy.hpp"
 
 //
 class Simulator {
   public:
-	Simulator(Parameters* params, Rules* rules);
+	Simulator(Parameters* params, Rules* rules, Strategy* strategy);
 
 	void simulatorRunOnce();
 

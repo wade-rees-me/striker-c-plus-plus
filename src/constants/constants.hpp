@@ -6,7 +6,7 @@
 
 // General constants
 const static std::string STRIKER_WHO_AM_I = "striker-c-plus-plus";
-const static std::string STRIKER_VERSION = "v01.02.02";
+const static std::string STRIKER_VERSION = "v2.01.01";	 // Epoch.Major.Minor
 const static char* TIME_LAYOUT = "%Y-%m-%d %H:%M:%S %z";
 
 // Define the maximum sizesstring fields
@@ -18,7 +18,7 @@ const static char* TIME_LAYOUT = "%Y-%m-%d %H:%M:%S %z";
 const static int64_t MAXIMUM_NUMBER_OF_HANDS = 1000000000LL;
 const static int64_t MINIMUM_NUMBER_OF_HANDS = 100LL;
 const static int64_t DEFAULT_NUMBER_OF_HANDS = 1000000LL;
-const static int64_t DATABASE_NUMBER_OF_HANDS = 1000000LL;
+const static int64_t DATABASE_NUMBER_OF_HANDS = 250000000LL;
 
 // Bettting constants
 const static int64_t MAXIMUM_BET = 80LL;

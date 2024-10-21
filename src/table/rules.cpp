@@ -4,14 +4,13 @@
 #include <cstdio>
 #include <cstring>
 #include <exception>
-#include <curl/curl.h>
-#include <cjson/cJSON.h>
 #include "rules.hpp"
 
-// Function to load table rules by calling fetchRulesTable
-Rules::Rules(const std::string &decks) {
+//
+Rules::Rules(const std::string &decks) : Request() {
 	try {
-		rulesFetchTable(getRulesUrl() + "/" + decks);
+        fetchJson(getRulesUrl() + "/" + decks);
+		fetchTable();
 	}
 	catch (std::exception fault) {
 		std::cerr << "Error fetching rules table: " << fault.what() << std::endl;
@@ -19,57 +18,29 @@ Rules::Rules(const std::string &decks) {
 	}
 }
 
-// Function to fetch rules table using libcurl
-void Rules::rulesFetchTable(const std::string &url) {
-	CURLcode res;
-	CURL *curl_handle;
+//
+void Rules::fetchTable() {
+    auto itemPayload = jsonResponse["payload"];
+    if (itemPayload.is_null()) {
+        throw std::runtime_error("Error fetching rules table payload");
+    }
 
-	struct MemoryStruct chunk;
-	chunk.size = 0;
+    auto jsonPayload = nlohmann::json::parse(itemPayload.get<std::string>(), nullptr, false);
+    if (jsonPayload.is_discarded()) {
+        throw std::runtime_error("Error parsing JSON payload");
+    }
 
-	curl_global_init(CURL_GLOBAL_ALL);
-	curl_handle = curl_easy_init();
-
-	if(!curl_handle) {
-		throw std::runtime_error("cannot get curl handle");
-	}
-
-	curl_easy_setopt(curl_handle, CURLOPT_URL, url.c_str());
-	curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, writeMemoryCallback);
-	curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)&chunk);
-
-	res = curl_easy_perform(curl_handle);
-	if(res != CURLE_OK) {
-		throw std::runtime_error("curl_easy_perform() failed");
-	}
-
-	// Process the JSON response
-	cJSON *json = cJSON_Parse(chunk.memory);
-	if(json == NULL) {
-		throw std::runtime_error("Error parsing JSON response");
-	}
-
-	cJSON *itemPayload = cJSON_GetObjectItemCaseSensitive(json, "payload");
-	json = cJSON_Parse(itemPayload->valuestring);
-	if(json == NULL) {
-		throw std::runtime_error("Error parsing JSON response");
-	}
-
-	std::snprintf(playbook, 128, "%s", parseAuxString(json, "playbook").c_str());
-	hit_soft_17 = parseAuxBool(json, "hitSoft17", false);
-	surrender = parseAuxBool(json, "surrender", false);
-	double_any_two_cards = parseAuxBool(json, "doubleAnyTwoCards", false);
-	double_after_split = parseAuxBool(json, "doubleAfterSplit", false);
-	resplit_aces = parseAuxBool(json, "resplitAces", false);
-	hit_split_aces = parseAuxBool(json, "hitSplitAces", false);
-	blackjack_bets = parseAuxInt(json, "blackjackBets", 1);
-	blackjack_pays = parseAuxInt(json, "blackjackPays", 1);
-	penetration = parseAuxDouble(json, "penetration", 0.65);
-
-	// Cleanup
-	cJSON_Delete(json);
-	curl_easy_cleanup(curl_handle);
-	curl_global_cleanup();
+    // Extract values from JSON and set member variables
+	std::snprintf(playbook, sizeof(playbook), "%s", jsonPayload["playbook"].get<std::string>().c_str());
+    hit_soft_17 = jsonPayload.value("hitSoft17", false);
+    surrender = jsonPayload.value("surrender", false);
+    double_any_two_cards = jsonPayload.value("doubleAnyTwoCards", false);
+    double_after_split = jsonPayload.value("doubleAfterSplit", false);
+    resplit_aces = jsonPayload.value("resplitAces", false);
+    hit_split_aces = jsonPayload.value("hitSplitAces", false);
+    blackjack_bets = jsonPayload.value("blackjackBets", 1);
+    blackjack_pays = jsonPayload.value("blackjackPays", 1);
+    penetration = jsonPayload.value("penetration", 0.65f);
 }
 
 //
@@ -88,22 +59,20 @@ void Rules::print() {
 }
 
 //
-void Rules::serializeRules(char* buffer, int buffer_size) {
-    cJSON* json = cJSON_CreateObject();
+void Rules::serialize(char* buffer, int buffer_size) {
+    nlohmann::json json;
 
-    cJSON_AddStringToObject(json, "hit_soft_17", hit_soft_17 ? "true" : "false");
-    cJSON_AddStringToObject(json, "surrender", surrender ? "true" : "false");
-    cJSON_AddStringToObject(json, "double_any_two_cards", double_any_two_cards ? "true" : "false");
-    cJSON_AddStringToObject(json, "double_after_split", double_after_split ? "true" : "false");
-    cJSON_AddStringToObject(json, "resplit_aces", resplit_aces ? "true" : "false");
-    cJSON_AddStringToObject(json, "hit_split_aces", hit_split_aces ? "true" : "false");
-    cJSON_AddNumberToObject(json, "blackjack_bets", blackjack_bets);
-    cJSON_AddNumberToObject(json, "blackjack_pays", blackjack_pays);
-    cJSON_AddNumberToObject(json, "penetration", penetration);
+    json["hit_soft_17"] = hit_soft_17 ? "true" : "false";
+    json["surrender"] = surrender ? "true" : "false";
+    json["double_any_two_cards"] = double_any_two_cards ? "true" : "false";
+    json["double_after_split"] = double_after_split ? "true" : "false";
+    json["resplit_aces"] = resplit_aces ? "true" : "false";
+    json["hit_split_aces"] = hit_split_aces ? "true" : "false";
+    json["blackjack_bets"] = blackjack_bets;
+    json["blackjack_pays"] = blackjack_pays;
+    json["penetration"] = penetration;
 
-    char* jsonString = cJSON_Print(json);
-    snprintf(buffer, buffer_size, "%s", jsonString);
-    free(jsonString);
-    cJSON_Delete(json);
+    std::string jsonString = json.dump();
+    std::snprintf(buffer, buffer_size, "%s", jsonString.c_str());
 }
 

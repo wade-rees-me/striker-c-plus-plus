@@ -2,10 +2,11 @@
 #define RULES_HPP
 
 #include <string>
+#include "request.hpp"
 #include "constants.hpp"
 
 //
-class Rules {
+class Rules : public Request {
   public:
 	Rules(const std::string& decks);
 
@@ -23,10 +24,10 @@ class Rules {
 
   public:
 	void print();
-	void serializeRules(char* buffer, int buffer_size);
+	void serialize(char* buffer, int buffer_size);
 
   private:
-	void rulesFetchTable(const std::string& url);
+	void fetchTable();
 };
 
 #endif // RULES_HPP

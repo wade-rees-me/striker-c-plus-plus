@@ -7,27 +7,26 @@
 #include "rules.hpp"
 #include "parameters.hpp"
 #include "simulator.hpp"
+#include "strategy.hpp"
 #include "constants.hpp"
 
 //
 int main(int argc, char* argv[]) {
+	std::cout << "Start: " << STRIKER_WHO_AM_I << std::endl;
 	Arguments arguments(argc, argv);
-	Parameters parameters(arguments.getDecks(), arguments.getStrategy(), arguments.getNumberOfDecks(), arguments.getHands());
+	Parameters parameters(arguments.getDecks(), arguments.getStrategy(), arguments.getNumberOfDecks(), arguments.getNumberOfHands());
 	Rules rules(arguments.getDecks());
-	Simulator simulator(&parameters, &rules);
+	Strategy strategy(arguments.getDecks(), arguments.getStrategy(), arguments.getNumberOfDecks() * 52);
+	Simulator simulator(&parameters, &rules, &strategy);
 
-	//std::locale loc("");	// Set the global locale to the default system locale, which typically uses commas
-	//std::cout.imbue(loc);	// Imbue the locale into std::cout
-
-	std::cout << "Start: {}\n" << STRIKER_WHO_AM_I << std::endl;
-	std::cout << "  -- arguments -------------------------------------------------------------------\n";
+	std::cout << "  -- arguments -------------------------------------------------------------------" << std::endl;
 	parameters.print();
 	rules.print();
-	std::cout << "  --------------------------------------------------------------------------------\n\n";
+	std::cout << "  --------------------------------------------------------------------------------" << std::endl << std::endl;
 
 	simulator.simulatorRunOnce();
+	std::cout << "End: " << STRIKER_WHO_AM_I << std::endl;
 
-	std::cout << "End: {}\n" << STRIKER_WHO_AM_I << std::endl;
 	return 0;
 }
 

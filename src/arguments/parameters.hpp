@@ -23,11 +23,11 @@ class Parameters {
 
   public:
 	void print();
-	std::string serialize();
+	void serialize(char* buffer, int buffer_size);
 
   private:
-	void getCurrentTime(char* buffer);
-	void generateName(char* buffer);
+	void getCurrentTime();
+	void generateName();
 };
 
 #endif // PARAMETERS_HPP

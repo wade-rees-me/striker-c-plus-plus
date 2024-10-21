@@ -8,10 +8,11 @@
 #include "dealer.hpp"
 #include "shoe.hpp"
 #include "report.hpp"
+#include "strategy.hpp"
 
 class Table {
 public:
-	Table(Parameters* params, Rules* rules);
+	Table(Parameters* params, Rules* rules, Strategy* strategy);
 	~Table();
 
 	void session(bool mimic);

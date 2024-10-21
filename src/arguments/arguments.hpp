@@ -13,7 +13,7 @@ class Arguments {
 	std::string getDecks() const;
 	int getNumberOfDecks() const;
 
-	int64_t getHands() const {
+	int64_t getNumberOfHands() const {
 		return number_of_hands;
 	}
 
