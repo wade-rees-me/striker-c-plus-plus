@@ -77,9 +77,6 @@ void Simulator::simulatorInsert(Simulation* simulation, std::string playbook) {
 	struct curl_slist* headers = nullptr;
 	CURL* curl;
 
-	MemoryStruct chunk;
-	chunk.size = 0;
-
 	curl_global_init(CURL_GLOBAL_ALL);
 	curl = curl_easy_init();
 
