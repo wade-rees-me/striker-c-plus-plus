@@ -11,9 +11,9 @@ class Hand {
 
   public:
 	void reset();
-	Card* drawCard(Card* card);
-	Card* splitPair();
-	Card* getCardPair() const;
+	Card *drawCard(Card *card);
+	Card *splitPair();
+	Card *getCardPair() const;
 	bool isBlackjack() const;
 	bool isPair() const;
 	bool isPairOfAces() const;
@@ -24,7 +24,7 @@ class Hand {
 	int getHandTotal() const {
 		return hand_total;
 	}
-	int* getHaveCards() {
+	int *getHaveCards() {
 		return have_cards;
 	}
 	void surrender() {

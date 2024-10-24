@@ -4,10 +4,10 @@
 #include <iostream>
 #include <format>
 #include "arguments.hpp"
-#include "rules.hpp"
 #include "parameters.hpp"
-#include "simulator.hpp"
+#include "rules.hpp"
 #include "strategy.hpp"
+#include "simulator.hpp"
 #include "constants.hpp"
 
 //

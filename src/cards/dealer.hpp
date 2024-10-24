@@ -12,8 +12,8 @@ class Dealer {
 
   public:
 	void reset();
-	void drawCard(Card* card);
-	void play(Shoe* shoe);
+	void drawCard(Card *card);
+	void play(Shoe *shoe);
 
   //private:
 	Hand hand;

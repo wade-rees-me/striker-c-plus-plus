@@ -18,7 +18,7 @@ class Wager : public Hand {
 
   public:
 	void reset();
-	void splitHand(Wager* split);
+	void splitHand(Wager *split);
 
 	void placeBet(int64_t bet) {
 		amount_bet = (std::min(MAXIMUM_BET, std::max(MINIMUM_BET, bet)) + 1) / 2 * 2;

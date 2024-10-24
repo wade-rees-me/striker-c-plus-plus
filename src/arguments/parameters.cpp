@@ -48,7 +48,7 @@ void Parameters::generateName() {
 }
 
 //
-void Parameters::serialize(char* buffer, int buffer_size) {
+void Parameters::serialize(char *buffer, int buffer_size) {
     nlohmann::json json;
 
     json["name"] = name;

@@ -14,7 +14,7 @@ void Hand::reset() {
 	cards.clear();
 }
 
-Card* Hand::drawCard(Card* card) {
+Card *Hand::drawCard(Card *card) {
 	cards.push_back(card);
 	calculateTotal();
 	return card;
@@ -49,9 +49,9 @@ bool Hand::isSoft17() const {
 }
 
 // Split a pair from the hand
-Card* Hand::splitPair() {
+Card *Hand::splitPair() {
 	if (isPair()) {
-		Card* card = cards.back();
+		Card *card = cards.back();
 		cards.pop_back();
 		calculateTotal();
 		return card;

@@ -12,11 +12,11 @@ void Dealer::reset() {
 	hand.reset();
 }
 
-void Dealer::drawCard(Card* card) {
+void Dealer::drawCard(Card *card) {
 	hand.drawCard(card);
 }
 
-void Dealer::play(Shoe* shoe) {
+void Dealer::play(Shoe *shoe) {
 	while (!shouldStand()) {
 		drawCard(shoe->drawCard());
 	}

@@ -23,7 +23,7 @@ class Parameters {
 
   public:
 	void print();
-	void serialize(char* buffer, int buffer_size);
+	void serialize(char *buffer, int buffer_size);
 
   private:
 	void getCurrentTime();
