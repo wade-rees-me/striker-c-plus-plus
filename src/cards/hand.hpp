@@ -27,19 +27,12 @@ class Hand {
 	int *getHaveCards() {
 		return have_cards;
 	}
-	void surrender() {
-		hand_surrendered = true;
-	}
-	bool didSurrender() const {
-		return hand_surrendered;
-	}
 
   private:
 	std::vector<Card*> cards;
 	int have_cards[13] = {0};
 	int hand_total = 0;
 	int soft_ace = false;
-	bool hand_surrendered = false;
 
   private:
 	void calculateTotal();

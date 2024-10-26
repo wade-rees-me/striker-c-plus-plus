@@ -7,6 +7,7 @@
 #include <map>
 #include <nlohmann/json.hpp>
 #include "request.hpp"
+#include "machine.hpp"
 #include "card.hpp"
 
 //
@@ -27,16 +28,15 @@ class Strategy : public Request {
     std::map<std::string, std::vector<std::string>> PairSplit;
     std::map<std::string, std::vector<std::string>> SoftStand;
     std::map<std::string, std::vector<std::string>> HardStand;
-    std::map<std::string, std::vector<std::string>> HardSurrender;
-    std::map<std::string, std::vector<std::string>> SoftSurrender;
+
+	Machine* machine = NULL;
 
   public:
 	int getBet(const int* seenCards);
 	bool getInsurance(const int* seenCards);
-	bool getSurrender(const int* seenCards, const int total, bool soft, Card* up);
-	bool getDouble(const int* seenCards, const int total, bool soft, Card* up);
-	bool getSplit(const int* seenCards, Card* pair, Card* up);
-	bool getStand(const int* seenCards, const int total, bool soft, Card* up);
+	bool getDouble(const int* seenCards, const int total, bool soft, Card *up);
+	bool getSplit(const int* seenCards, Card *pair, Card *up);
+	bool getStand(const int* seenCards, const int total, bool soft, Card *up);
 
   private:
 	void fetchTable(const std::string& decks, const std::string& strategy);

@@ -42,12 +42,7 @@ void Player::play(Card* up, Shoe* shoe, bool mimic) {
 		return;
 	}
 
-	if (rules->surrender && strategy->getSurrender(seen_cards, wager.getHandTotal(), wager.isSoft(), up)) {
-		wager.surrender();
-		return;
-	}
-
-	if ((rules->double_any_two_cards || wager.getHandTotal() == 10 || wager.getHandTotal() == 11) && strategy->getDouble(seen_cards, wager.getHandTotal(), wager.isSoft(), up)) {
+	if (strategy->getDouble(seen_cards, wager.getHandTotal(), wager.isSoft(), up)) {
 		wager.doubleBet();
 		drawCard(&wager, shoe->drawCard());
 		return;
@@ -59,11 +54,9 @@ void Player::play(Card* up, Shoe* shoe, bool mimic) {
 		splits.push_back(split);
 
 		if (wager.isPairOfAces()) {
-			if (!rules->resplit_aces && !rules->hit_split_aces) {
-				drawCard(&wager, shoe->drawCard());
-				drawCard(split, shoe->drawCard());
-				return;
-			}
+			drawCard(&wager, shoe->drawCard());
+			drawCard(split, shoe->drawCard());
+			return;
 		}
 
 	  	drawCard(&wager, shoe->drawCard());
@@ -84,38 +77,16 @@ void Player::play(Card* up, Shoe* shoe, bool mimic) {
 
 //
 void Player::playSplit(Wager* wager, Shoe* shoe, Card* up) {
-	if (rules->double_after_split && strategy->getDouble(seen_cards, wager->getHandTotal(), wager->isSoft(), up)) {
-		wager->doubleBet();
-		drawCard(wager, shoe->drawCard());
+	if (wager->isPair() && strategy->getSplit(seen_cards, wager->getCardPair(), up)) {
+		Wager* split = new Wager();
+		splits.push_back(split);
+		wager->splitHand(split);
+
+  		drawCard(wager, shoe->drawCard());
+		playSplit(wager, shoe, up);
+		drawCard(split, shoe->drawCard());
+		playSplit(split, shoe, up);
 		return;
-	}
-
-	if (wager->isPair()) {
-		if (wager->isPairOfAces()) {
-			if (rules->resplit_aces && strategy->getSplit(seen_cards, wager->getCardPair(), up)) {
-				Wager* split = new Wager();
-				splits.push_back(split);
-				wager->splitHand(split);
-
-	  			drawCard(wager, shoe->drawCard());
-				playSplit(wager, shoe, up);
-				drawCard(split, shoe->drawCard());
-				playSplit(split, shoe, up);
-				return;
-			}
-		} else {
-			if (strategy->getSplit(seen_cards, wager->getCardPair(), up)) {
-				Wager* split = new Wager();
-				splits.push_back(split);
-				wager->splitHand(split);
-
-	  			drawCard(wager, shoe->drawCard());
-				playSplit(wager, shoe, up);
-				drawCard(split, shoe->drawCard());
-				playSplit(split, shoe, up);
-				return;
-			}
-		}
 	}
 
 	bool doStand = strategy->getStand(seen_cards, wager->getHandTotal(), wager->isSoft(), up);
@@ -166,12 +137,6 @@ void Player::payoff(bool dealer_blackjack, bool dealer_busted, int dealer_total)
 
 //
 void Player::payoffHand(Wager* wager, bool dealer_blackjack, bool dealer_busted, int dealer_total) {
-	if (wager->didSurrender()) {
-		report.total_bet += wager->amount_bet;
-		report.total_won -= wager->amount_bet / 2;
-		return;
-	}
-
 	if (dealer_blackjack) {
 		wager->wonInsurance();
 		if (wager->isBlackjack()) {

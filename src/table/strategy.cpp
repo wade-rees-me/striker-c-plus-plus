@@ -33,38 +33,37 @@ void Strategy::fetchTable(const std::string& decks, const std::string& strategy)
 	   		PairSplit = jsonPayload["pair-split"].get<const std::map<std::string, std::vector<std::string>>>();
 	   		SoftStand = jsonPayload["soft-stand"].get<const std::map<std::string, std::vector<std::string>>>();
 	   		HardStand = jsonPayload["hard-stand"].get<const std::map<std::string, std::vector<std::string>>>();
-	   		SoftSurrender = jsonPayload["soft-surrender"].get<const std::map<std::string, std::vector<std::string>>>();
-	   		HardSurrender = jsonPayload["hard-surrender"].get<const std::map<std::string, std::vector<std::string>>>();
 			return;
 		}
    	}
 }
 
 //
-int Strategy::getBet(const int* seenCards) {
+int Strategy::getBet(const int *seenCards) {
+	if (machine != NULL) {
+		return machine->getBet(seenCards);
+	}
+
 	int trueCount = getTrueCount(seenCards, getRunningCount(seenCards));
 	return (int)(std::min(MAXIMUM_BET, std::max(MINIMUM_BET, (long long)trueCount * 2)) + 1) / 2 * 2;
 }
 
 //
-bool Strategy::getInsurance(const int* seenCards) {
+bool Strategy::getInsurance(const int *seenCards) {
+	if (machine != NULL) {
+		return machine->getInsurance(seenCards);
+	}
+
 	int trueCount = getTrueCount(seenCards, getRunningCount(seenCards));
 	return processValue(Insurance.c_str(), trueCount, false);
 }
 
 //
-bool Strategy::getSurrender(const int* seenCards, const int total, bool soft, Card* up) {
-	int trueCount = getTrueCount(seenCards, getRunningCount(seenCards));
-	char buffer[MAX_STRING_SIZE];
-	std::snprintf(buffer, sizeof(buffer), "%d", total);
-	if (soft) {
-		return processValue(SoftSurrender[buffer][up->getOffset()].c_str(), trueCount, false);
+bool Strategy::getDouble(const int *seenCards, const int total, bool soft, Card *up) {
+	if (machine != NULL) {
+		return machine->getDouble(seenCards, total, soft, up);
 	}
-	return processValue(HardSurrender[buffer][up->getOffset()].c_str(), trueCount, false);
-}
 
-//
-bool Strategy::getDouble(const int* seenCards, const int total, bool soft, Card* up) {
 	int trueCount = getTrueCount(seenCards, getRunningCount(seenCards));
 	char buffer[MAX_STRING_SIZE];
 	std::snprintf(buffer, sizeof(buffer), "%d", total);
@@ -75,7 +74,11 @@ bool Strategy::getDouble(const int* seenCards, const int total, bool soft, Card*
 }
 
 //
-bool Strategy::getSplit(const int* seenCards, Card* pair, Card* up) {
+bool Strategy::getSplit(const int *seenCards, Card *pair, Card *up) {
+	if (machine != NULL) {
+		return machine->getSplit(seenCards, pair, up);
+	}
+
 	int trueCount = getTrueCount(seenCards, getRunningCount(seenCards));
 	char buffer[MAX_STRING_SIZE];
 	std::snprintf(buffer, sizeof(buffer), "%d", pair->getValue());
@@ -83,7 +86,11 @@ bool Strategy::getSplit(const int* seenCards, Card* pair, Card* up) {
 }
 
 //
-bool Strategy::getStand(const int* seenCards, const int total, bool soft, Card* up) {
+bool Strategy::getStand(const int *seenCards, const int total, bool soft, Card *up) {
+	if (machine != NULL) {
+		return machine->getStand(seenCards, total, soft, up);
+	}
+
 	int trueCount = getTrueCount(seenCards, getRunningCount(seenCards));
 	char buffer[MAX_STRING_SIZE];
 	std::snprintf(buffer, sizeof(buffer), "%d", total);
@@ -94,7 +101,7 @@ bool Strategy::getStand(const int* seenCards, const int total, bool soft, Card* 
 }
 
 //
-int Strategy::getRunningCount(const int* seenCards) {
+int Strategy::getRunningCount(const int *seenCards) {
 	int running = 0;
 	for (int i = 0; i <= 12; i++) {
 		running += Counts[i] * seenCards[i];
@@ -103,7 +110,7 @@ int Strategy::getRunningCount(const int* seenCards) {
 }
 
 //
-int Strategy::getTrueCount(const int* seenCards, int runningCount) {
+int Strategy::getTrueCount(const int *seenCards, int runningCount) {
 	int unseen = number_of_cards;
 	for (int i = 2; i <= 11; i++) {
 		unseen -= seenCards[i];

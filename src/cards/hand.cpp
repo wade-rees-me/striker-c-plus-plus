@@ -10,7 +10,6 @@ Hand::Hand() {
 void Hand::reset() {
 	hand_total = 0;
 	soft_ace = 0;
-	hand_surrendered = false;
 	cards.clear();
 }
 
