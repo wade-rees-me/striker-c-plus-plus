@@ -5,8 +5,8 @@
 #include "player.hpp"
 
 // Constructor for Player
-Player::Player(Parameters* parameters, Rules* rules, Strategy* strategy, int number_of_cards)
-	: parameters(parameters), rules(rules), strategy(strategy), number_of_cards(number_of_cards) {
+Player::Player(Rules* rules, Strategy* strategy, int number_of_cards)
+	: rules(rules), strategy(strategy), number_of_cards(number_of_cards) {
 }
 
 // Shuffle function (reinitializes seen cards)

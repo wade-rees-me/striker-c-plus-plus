@@ -6,8 +6,10 @@
 //
 Strategy::Strategy(const std::string& decks, const std::string& strategy, const int number_of_cards) : Request(), number_of_cards(number_of_cards) {
 	try {
-		fetchJson("http://localhost:57910/striker/v1/strategy");
-		fetchTable(decks, strategy);
+		if (strcasecmp("mimic", strategy.c_str()) != 0) {
+			fetchJson("http://localhost:57910/striker/v1/strategy");
+			fetchTable(decks, strategy);
+		}
 	}
 	catch (std::exception fault) {
 		std::cerr << "Error fetching strategy table: " << fault.what() << std::endl;

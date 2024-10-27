@@ -6,7 +6,6 @@
 #include "hand.hpp"
 #include "report.hpp"
 #include "wager.hpp"
-#include "parameters.hpp"
 #include "rules.hpp"
 #include "strategy.hpp"
 #include "constants.hpp"
@@ -14,7 +13,7 @@
 //
 class Player {
 public:
-	Player(Parameters* params, Rules* rules, Strategy* strategy, int num_cards);
+	Player(Rules* rules, Strategy* strategy, int num_cards);
 
 	void shuffle();
 	void placeBet(bool mimic);
@@ -28,7 +27,6 @@ public:
 	void payoffHand(Wager* w, bool dealer_blackjack, bool dealer_busted, int dealer_total);
 
 //private:
-	Parameters* parameters;
 	Rules* rules;
 	Strategy* strategy;
 	int number_of_cards;

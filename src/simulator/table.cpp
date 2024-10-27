@@ -7,10 +7,10 @@
 #include "shoe.hpp"
 
 //
-Table::Table(Parameters* params, Rules* rules, Strategy* strategy) : parameters(params) {
+Table::Table(Parameters* parameters, Rules* rules, Strategy* strategy) : parameters(parameters) {
 	shoe = new Shoe(parameters->number_of_decks, rules->penetration);
 	dealer = new Dealer(rules->hit_soft_17);
-	player = new Player(parameters, rules, strategy, shoe->getNumberOfCards());
+	player = new Player(rules, strategy, shoe->getNumberOfCards());
 	report = Report();
 }
 
