@@ -7,7 +7,7 @@
 #include "shoe.hpp"
 
 //
-Table::Table(Parameters* parameters, Rules* rules, Strategy* strategy) : parameters(parameters) {
+Table::Table(Parameters *parameters, Rules *rules, Strategy *strategy) : parameters(parameters) {
 	shoe = new Shoe(parameters->number_of_decks, rules->penetration);
 	dealer = new Dealer(rules->hit_soft_17);
 	player = new Player(rules, strategy, shoe->getNumberOfCards());
@@ -39,20 +39,24 @@ void Table::session(bool mimic) {
 			dealer->reset();
 			player->placeBet(mimic);
 
-			Card* up = dealCards(&player->wager);
+			dealCards(&player->wager);
 			if (!mimic && up->isAce()) {
 				player->insurance();
 			}
 
-			if (!dealer->hand.isBlackjack()) {
+			if (!dealer->isBlackjack()) {
 				player->play(up, shoe, mimic);
+				player->showCard(down);
 				if (!player->bustedOrBlackjack()) {
-					dealer->play(shoe);
+					while (!dealer->shouldStand()) {
+						Card *card = shoe->drawCard();
+						dealer->drawCard(card);
+						player->showCard(card);
+					}
 				}
 			}
 
-			player->payoff(dealer->hand.isBlackjack(), dealer->hand.isBusted(), dealer->hand.getHandTotal());
-			player->showCard(up);
+			player->payoff(dealer->isBlackjack(), dealer->isBusted(), dealer->getHandTotal());
 		}
 	}
 	std::cout << "\n";
@@ -64,19 +68,15 @@ void Table::session(bool mimic) {
 }
 
 // Function to deal cards
-Card* Table::dealCards(Hand* hand) {
+void Table::dealCards(Hand *hand) {
 	player->drawCard(hand, shoe->drawCard());
-	Card* up = shoe->drawCard();
+	up = shoe->drawCard();
 	dealer->drawCard(up);
-	player->drawCard(hand, shoe->drawCard());
-	dealer->drawCard(shoe->drawCard());
 	player->showCard(up);
-	return up;
-}
 
-// Function to show cards
-void Table::show(Card* card) {
-	player->showCard(card);
+	player->drawCard(hand, shoe->drawCard());
+	down = shoe->drawCard();
+	dealer->drawCard(down);
 }
 
 //

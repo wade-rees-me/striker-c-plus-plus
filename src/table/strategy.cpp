@@ -42,9 +42,9 @@ void Strategy::fetchTable(const std::string& decks, const std::string& strategy)
 
 //
 int Strategy::getBet(const int *seenCards) {
-	if (machine != NULL) {
-		return machine->getBet(seenCards);
-	}
+	//if (machine != NULL) {
+		//return machine->getBet(seenCards);
+	//}
 
 	int trueCount = getTrueCount(seenCards, getRunningCount(seenCards));
 	return (int)(std::min(MAXIMUM_BET, std::max(MINIMUM_BET, (long long)trueCount * 2)) + 1) / 2 * 2;
@@ -52,9 +52,9 @@ int Strategy::getBet(const int *seenCards) {
 
 //
 bool Strategy::getInsurance(const int *seenCards) {
-	if (machine != NULL) {
-		return machine->getInsurance(seenCards);
-	}
+	//if (machine != NULL) {
+		//return machine->getInsurance(seenCards);
+	//}
 
 	int trueCount = getTrueCount(seenCards, getRunningCount(seenCards));
 	return processValue(Insurance.c_str(), trueCount, false);
@@ -62,9 +62,9 @@ bool Strategy::getInsurance(const int *seenCards) {
 
 //
 bool Strategy::getDouble(const int *seenCards, const int total, bool soft, Card *up) {
-	if (machine != NULL) {
-		return machine->getDouble(seenCards, total, soft, up);
-	}
+	//if (machine != NULL) {
+		//return machine->getDouble(seenCards, total, soft, up);
+	//}
 
 	int trueCount = getTrueCount(seenCards, getRunningCount(seenCards));
 	char buffer[MAX_STRING_SIZE];
@@ -77,9 +77,9 @@ bool Strategy::getDouble(const int *seenCards, const int total, bool soft, Card 
 
 //
 bool Strategy::getSplit(const int *seenCards, Card *pair, Card *up) {
-	if (machine != NULL) {
-		return machine->getSplit(seenCards, pair, up);
-	}
+	//if (machine != NULL) {
+		//return machine->getSplit(seenCards, pair, up);
+	//}
 
 	int trueCount = getTrueCount(seenCards, getRunningCount(seenCards));
 	char buffer[MAX_STRING_SIZE];
@@ -89,9 +89,9 @@ bool Strategy::getSplit(const int *seenCards, Card *pair, Card *up) {
 
 //
 bool Strategy::getStand(const int *seenCards, const int total, bool soft, Card *up) {
-	if (machine != NULL) {
-		return machine->getStand(seenCards, total, soft, up);
-	}
+	//if (machine != NULL) {
+		//return machine->getStand(seenCards, total, soft, up);
+	//}
 
 	int trueCount = getTrueCount(seenCards, getRunningCount(seenCards));
 	char buffer[MAX_STRING_SIZE];
@@ -132,7 +132,7 @@ bool Strategy::processValue(const char* value, int trueCount, bool missing_value
 		if (strcasecmp("yes", value) == 0 || strcasecmp("y", value) == 0) {
 			return true;
 		}
-		if (strcasecmp("no", value) || strcasecmp("n", value)) {
+		if (strcasecmp("no", value) == 0 || strcasecmp("n", value) == 0 ) {
 			return false;
 		}
 		if (value[0] == 'R' || value[0] == 'r') {

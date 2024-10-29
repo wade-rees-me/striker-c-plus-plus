@@ -7,7 +7,7 @@
 #include <map>
 #include <nlohmann/json.hpp>
 #include "request.hpp"
-#include "machine.hpp"
+//#include "machine.hpp"
 #include "card.hpp"
 
 //
@@ -16,6 +16,7 @@ class Strategy : public Request {
 	Strategy(const std::string& decks, const std::string& strategy, int number_of_cards);
 
   private:
+	//Machine* machine = NULL;
 	int number_of_cards;
 
   public:
@@ -28,8 +29,6 @@ class Strategy : public Request {
     std::map<std::string, std::vector<std::string>> PairSplit;
     std::map<std::string, std::vector<std::string>> SoftStand;
     std::map<std::string, std::vector<std::string>> HardStand;
-
-	Machine* machine = NULL;
 
   public:
 	int getBet(const int* seenCards);

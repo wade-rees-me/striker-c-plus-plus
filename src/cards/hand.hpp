@@ -9,6 +9,11 @@ class Hand {
   public:
 	Hand();
 
+  private:
+	std::vector<Card*> cards;
+	int hand_total = 0;
+	int soft_ace = false;
+
   public:
 	void reset();
 	Card *drawCard(Card *card);
@@ -20,19 +25,9 @@ class Hand {
 	bool isBusted() const;
 	bool isSoft() const;
 	bool isSoft17() const;
-
 	int getHandTotal() const {
 		return hand_total;
 	}
-	int *getHaveCards() {
-		return have_cards;
-	}
-
-  private:
-	std::vector<Card*> cards;
-	int have_cards[13] = {0};
-	int hand_total = 0;
-	int soft_ace = false;
 
   private:
 	void calculateTotal();

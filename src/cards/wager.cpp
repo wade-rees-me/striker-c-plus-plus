@@ -15,7 +15,7 @@ void Wager::reset() {
 	insurance_won = 0;
 }
 
-// Split the wager
+// Split the hand
 void Wager::splitHand(Wager *split) {
 	split->amount_bet = amount_bet;
 	split->drawCard(splitPair());

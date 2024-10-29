@@ -13,22 +13,22 @@
 //
 class Player {
 public:
-	Player(Rules* rules, Strategy* strategy, int num_cards);
+	Player(Rules *rules, Strategy *strategy, int number_of_cards);
 
 	void shuffle();
 	void placeBet(bool mimic);
 	void insurance();
-	void play(Card* up, Shoe* shoe, bool mimic);
-	void playSplit(Wager* w, Shoe* shoe, Card* up);
-	void drawCard(Hand* hand, Card* card);
-	void showCard(Card* card);
+	void play(Card *up, Shoe *shoe, bool mimic);
+	void playSplit(Wager *w, Shoe *shoe, Card *up);
+	void drawCard(Hand *hand, Card *card);
+	void showCard(Card *card);
 	bool bustedOrBlackjack() const;
 	void payoff(bool dealer_blackjack, bool dealer_busted, int dealer_total);
-	void payoffHand(Wager* w, bool dealer_blackjack, bool dealer_busted, int dealer_total);
+	void payoffHand(Wager *w, bool dealer_blackjack, bool dealer_busted, int dealer_total);
 
 //private:
-	Rules* rules;
-	Strategy* strategy;
+	Rules *rules;
+	Strategy *strategy;
 	int number_of_cards;
 
 	Wager wager;
@@ -37,10 +37,8 @@ public:
 
 	int seen_cards[13] = {0};  // Keeps track of the cards the player has seen
 
-	void splitHand(Card* up, Shoe* shoe, Wager* wager);
-	void payoffSplit(Wager* wager, bool dealer_busted, int dealer_total);
-	void executeStand(int have_cards[], Card* up, Shoe* shoe);
-	void getHave(Hand* hand);
+	void splitHand(Card *up, Shoe *shoe, Wager *wager);
+	void payoffSplit(Wager *wager, bool dealer_busted, int dealer_total);
 	bool mimicStand();
 };
 

@@ -5,8 +5,7 @@
 #include "player.hpp"
 
 // Constructor for Player
-Player::Player(Rules* rules, Strategy* strategy, int number_of_cards)
-	: rules(rules), strategy(strategy), number_of_cards(number_of_cards) {
+Player::Player(Rules* rules, Strategy* strategy, int number_of_cards) : rules(rules), strategy(strategy), number_of_cards(number_of_cards) {
 }
 
 // Shuffle function (reinitializes seen cards)
@@ -18,14 +17,13 @@ void Player::shuffle() {
 void Player::placeBet(bool mimic) {
 	splits.clear();
 	wager.reset();
-	wager.amount_bet = mimic ? MINIMUM_BET : strategy->getBet(seen_cards);;
+	wager.setAmountBet(mimic ? MINIMUM_BET : strategy->getBet(seen_cards));
 }
 
 // Simulate an insurance bet
 void Player::insurance() {
-	//if (decision.getInsurance(seen_cards)) {
 	if (strategy->getInsurance(seen_cards)) {
-		wager.insurance_bet = wager.amount_bet / 2;
+		wager.placeInsuranceBet();
 	}
 }
 
@@ -105,8 +103,8 @@ void Player::drawCard(Hand* hand, Card* card) {
 }
 
 // Show the card
-void Player::showCard(Card* c) {
-	seen_cards[c->getOffset()]++;
+void Player::showCard(Card* card) {
+	seen_cards[card->getOffset()]++;
 }
 
 // Check if player busted or has blackjack
@@ -159,8 +157,8 @@ void Player::payoffHand(Wager* wager, bool dealer_blackjack, bool dealer_busted,
 		}
 	}
 
-	report.total_bet += wager->amount_bet + wager->insurance_bet;
-	report.total_won += wager->amount_won + wager->insurance_won;
+	report.total_bet += wager->getAmountBet() + wager->getInsuranceBet();
+	report.total_won += wager->getAmountWon() + wager->getInsuranceWon();
 }
 
 //
@@ -175,8 +173,8 @@ void Player::payoffSplit(Wager* wager, bool dealer_busted, int dealer_total) {
 		wager->push();
 	}
 
-	report.total_won += wager->amount_won;
-	report.total_bet += wager->amount_bet;
+	report.total_won += wager->getAmountWon();
+	report.total_bet += wager->getAmountBet();
 }
 
 //

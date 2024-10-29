@@ -12,19 +12,22 @@
 
 class Table {
 public:
-	Table(Parameters* params, Rules* rules, Strategy* strategy);
+	Table(Parameters *params, Rules *rules, Strategy *strategy);
 	~Table();
 
 	void session(bool mimic);
-	Card* dealCards(Hand* hand);
-	void show(Card* card);
+	void dealCards(Hand *hand);
+	void show(Card *card);
 
 //private:
-	Parameters* parameters;
-	Shoe* shoe;
-	Dealer* dealer;
-	Player* player;
+	Parameters *parameters;
+	Shoe *shoe;
+	Dealer *dealer;
+	Player *player;
 	Report report;
+
+	Card *up;
+	Card *down;
 
 private:
 	void status(int64_t round, int64_t hand);

@@ -14,12 +14,21 @@ class Shoe {
 	Shoe(int number_of_decks, float penetration);  // Constructor
 	~Shoe();
 
-	Card* drawCard();
+  private:
+	std::vector<Card*> cards;	// Cards currently in the shoe
+	bool force_shuffle = false;	// Flag to force a shuffle
+	int number_of_cards;		// Total number of cards
+	int cut_card;				// The cut card position in the shoe
+	int burn_card = 1;
+	int next_card;
+	int last_discard;
+
+  public:
+	Card *drawCard();
 	void shuffle();
 	void shuffle_random();
 	bool shouldShuffle();
-	bool isAce(const Card* card);
-
+	bool isAce(const Card *card);
 	int getNumberOfCards() {
 		return number_of_cards;
 	}
@@ -32,15 +41,6 @@ class Shoe {
     	}
 		std::cout << "--------------------------------------------------------------------------------" << std::endl;
     }
-
-  private:
-	std::vector<Card*> cards;	// Cards currently in the shoe
-	bool force_shuffle = false;	// Flag to force a shuffle
-	int number_of_cards;		// Total number of cards
-	int cut_card;				// The cut card position in the shoe
-	int burn_card = 1;
-	int next_card;
-	int last_discard;
 };
 
 #endif // SHOE_HPP
