@@ -4,7 +4,8 @@
 #include "constants.hpp"
 
 //
-Strategy::Strategy(const std::string& decks, const std::string& strategy, const int number_of_cards) : Request(), number_of_cards(number_of_cards) {
+Strategy::Strategy(const std::string& decks, const std::string& strategy, const int number_of_cards)
+		: Request(), number_of_cards(number_of_cards) {
 	try {
 		if (strcasecmp("mimic", strategy.c_str()) != 0) {
 			fetchJson("http://localhost:57910/striker/v1/strategy");
@@ -18,36 +19,13 @@ Strategy::Strategy(const std::string& decks, const std::string& strategy, const 
 }
 
 //
-void Strategy::fetchTable(const std::string& decks, const std::string& strategy) {
-   	for (const auto& item : jsonResponse) {
-		if (decks == item["playbook"].get<std::string>() && strategy == item["hand"].get<std::string>()) {
-   			nlohmann::json jsonPayload = nlohmann::json::parse(item["payload"].get<std::string>());
-			if (jsonPayload.is_null()) {
-				throw std::runtime_error("Error fetching strategy table payload");
-			}
-
-	   		Playbook = jsonPayload["playbook"].get<std::string>();
-	   		Counts = jsonPayload["counts"].get<std::vector<int>>();
-	   		Bets = jsonPayload["bets"].get<std::vector<int>>();
-	   		Insurance = jsonPayload["insurance"].get<std::string>();
-	   		SoftDouble = jsonPayload["soft-double"].get<const std::map<std::string, std::vector<std::string>>>();
-	   		HardDouble = jsonPayload["hard-double"].get<const std::map<std::string, std::vector<std::string>>>();
-	   		PairSplit = jsonPayload["pair-split"].get<const std::map<std::string, std::vector<std::string>>>();
-	   		SoftStand = jsonPayload["soft-stand"].get<const std::map<std::string, std::vector<std::string>>>();
-	   		HardStand = jsonPayload["hard-stand"].get<const std::map<std::string, std::vector<std::string>>>();
-			return;
-		}
-   	}
-}
-
-//
 int Strategy::getBet(const int *seenCards) {
 	//if (machine != NULL) {
 		//return machine->getBet(seenCards);
 	//}
 
 	int trueCount = getTrueCount(seenCards, getRunningCount(seenCards));
-	return (int)(std::min(MAXIMUM_BET, std::max(MINIMUM_BET, (long long)trueCount * 2)) + 1) / 2 * 2;
+	return trueCount * 2;
 }
 
 //
@@ -100,6 +78,29 @@ bool Strategy::getStand(const int *seenCards, const int total, bool soft, Card *
 		return processValue(SoftStand[buffer][up->getOffset()].c_str(), trueCount, true);
 	}
 	return processValue(HardStand[buffer][up->getOffset()].c_str(), trueCount, true);
+}
+
+//
+void Strategy::fetchTable(const std::string& decks, const std::string& strategy) {
+   	for (const auto& item : jsonResponse) {
+		if (decks == item["playbook"].get<std::string>() && strategy == item["hand"].get<std::string>()) {
+   			nlohmann::json jsonPayload = nlohmann::json::parse(item["payload"].get<std::string>());
+			if (jsonPayload.is_null()) {
+				throw std::runtime_error("Error fetching strategy table payload");
+			}
+
+	   		Playbook = jsonPayload["playbook"].get<std::string>();
+	   		Counts = jsonPayload["counts"].get<std::vector<int>>();
+	   		Bets = jsonPayload["bets"].get<std::vector<int>>();
+	   		Insurance = jsonPayload["insurance"].get<std::string>();
+	   		SoftDouble = jsonPayload["soft-double"].get<const std::map<std::string, std::vector<std::string>>>();
+	   		HardDouble = jsonPayload["hard-double"].get<const std::map<std::string, std::vector<std::string>>>();
+	   		PairSplit = jsonPayload["pair-split"].get<const std::map<std::string, std::vector<std::string>>>();
+	   		SoftStand = jsonPayload["soft-stand"].get<const std::map<std::string, std::vector<std::string>>>();
+	   		HardStand = jsonPayload["hard-stand"].get<const std::map<std::string, std::vector<std::string>>>();
+			return;
+		}
+   	}
 }
 
 //

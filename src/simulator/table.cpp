@@ -7,7 +7,8 @@
 #include "shoe.hpp"
 
 //
-Table::Table(Parameters *parameters, Rules *rules, Strategy *strategy) : parameters(parameters) {
+Table::Table(Parameters *parameters, Rules *rules, Strategy *strategy)
+		: parameters(parameters) {
 	shoe = new Shoe(parameters->number_of_decks, rules->penetration);
 	dealer = new Dealer(rules->hit_soft_17);
 	player = new Player(rules, strategy, shoe->getNumberOfCards());
@@ -39,7 +40,7 @@ void Table::session(bool mimic) {
 			dealer->reset();
 			player->placeBet(mimic);
 
-			dealCards(&player->wager);
+			dealCards(player->getWager());
 			if (!mimic && up->isAce()) {
 				player->insurance();
 			}

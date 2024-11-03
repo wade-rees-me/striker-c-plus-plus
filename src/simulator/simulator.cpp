@@ -10,7 +10,8 @@
 #include "constants.hpp"
 
 //
-Simulator::Simulator(Parameters* parameters, Rules* rules, Strategy* strategy) : parameters(parameters), rules(rules) {
+Simulator::Simulator(Parameters* parameters, Rules* rules, Strategy* strategy)
+		: parameters(parameters), rules(rules) {
 	table = new Table(parameters, rules, strategy);
 	report = Report();
 }
@@ -65,11 +66,11 @@ void Simulator::simulatorRunSimulation() {
 	table->session(parameters->strategy == "mimic");
 	std::cout << "    End: table session" << std::endl;
 
-	report.total_bet += table->player->report.total_bet;
-	report.total_won += table->player->report.total_won;
-	report.total_rounds += table->report.total_rounds;
-	report.total_hands += table->report.total_hands;
-	report.duration += table->report.duration;
+	report.total_bet += table->getPlayer()->getReport()->total_bet;
+	report.total_won += table->getPlayer()->getReport()->total_won;
+	report.total_rounds += table->getReport()->total_rounds;
+	report.total_hands += table->getReport()->total_hands;
+	report.duration += table->getReport()->duration;
 }
 
 // Function to insert simulation into the database (HTTP POST)

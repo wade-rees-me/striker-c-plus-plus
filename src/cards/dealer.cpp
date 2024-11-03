@@ -1,6 +1,7 @@
 #include "dealer.hpp"
 
-Dealer::Dealer(bool hitSoft17) : hitSoft17(hitSoft17) {
+Dealer::Dealer(bool hitSoft17)
+		: hitSoft17(hitSoft17) {
 	hand.reset();
 }
 

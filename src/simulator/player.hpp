@@ -12,34 +12,40 @@
 
 //
 class Player {
-public:
-	Player(Rules *rules, Strategy *strategy, int number_of_cards);
+	public:
+		Player(Rules *rules, Strategy *strategy, int number_of_cards);
 
-	void shuffle();
-	void placeBet(bool mimic);
-	void insurance();
-	void play(Card *up, Shoe *shoe, bool mimic);
-	void playSplit(Wager *w, Shoe *shoe, Card *up);
-	void drawCard(Hand *hand, Card *card);
-	void showCard(Card *card);
-	bool bustedOrBlackjack() const;
-	void payoff(bool dealer_blackjack, bool dealer_busted, int dealer_total);
-	void payoffHand(Wager *w, bool dealer_blackjack, bool dealer_busted, int dealer_total);
+	private:
+		Rules *rules;
+		Strategy *strategy;
+		Wager wager;
+		std::vector<Wager*> splits;
+		Report report = Report();
+		int number_of_cards;
+		int seen_cards[13] = {0};  // Keeps track of the cards the player has seen
 
-//private:
-	Rules *rules;
-	Strategy *strategy;
-	int number_of_cards;
+	public:
+		void shuffle();
+		void placeBet(bool mimic);
+		void insurance();
+		void play(Card *up, Shoe *shoe, bool mimic);
+		void playSplit(Wager *w, Shoe *shoe, Card *up);
+		void drawCard(Hand *hand, Card *card);
+		void showCard(Card *card);
+		bool bustedOrBlackjack() const;
+		void payoff(bool dealer_blackjack, bool dealer_busted, int dealer_total);
+		void payoffHand(Wager *w, bool dealer_blackjack, bool dealer_busted, int dealer_total);
+		Wager *getWager() {
+			return &wager;
+		}
+		Report *getReport() {
+			return &report;
+		}
 
-	Wager wager;
-	std::vector<Wager*> splits;
-	Report report = Report();
-
-	int seen_cards[13] = {0};  // Keeps track of the cards the player has seen
-
-	void splitHand(Card *up, Shoe *shoe, Wager *wager);
-	void payoffSplit(Wager *wager, bool dealer_busted, int dealer_total);
-	bool mimicStand();
+	private:
+		void splitHand(Card *up, Shoe *shoe, Wager *wager);
+		void payoffSplit(Wager *wager, bool dealer_busted, int dealer_total);
+		bool mimicStand();
 };
 
 #endif // PLAYER_HPP

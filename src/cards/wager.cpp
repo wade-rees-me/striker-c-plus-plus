@@ -3,7 +3,8 @@
 #include "wager.hpp"
 
 // Constructor: Reset the wager to its initial state
-Wager::Wager() {
+Wager::Wager(int64_t minimum_bet, int64_t maximum_bet)
+		: minimum_bet(minimum_bet), maximum_bet(maximum_bet) {
 	reset();
 }
 

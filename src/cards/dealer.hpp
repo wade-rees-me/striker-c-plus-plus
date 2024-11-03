@@ -6,30 +6,30 @@
 
 //
 class Dealer {
-  public:
-	Dealer(bool hitSoft17);
+	public:
+		Dealer(bool hitSoft17);
 
-  private:
-	Hand hand;
-	bool hitSoft17 = true;
+	private:
+		Hand hand;
+		bool hitSoft17 = true;
 
-  public:
-	bool shouldStand() const;
-	void reset() {
-		hand.reset();
-	}
-	void drawCard(Card *card) {
-		hand.drawCard(card);
-	}
-	bool isBlackjack() {
-		return hand.isBlackjack();
-	}
-	bool isBusted() {
-		return hand.isBusted();
-	}
-	int getHandTotal() {
-		return hand.getHandTotal();
-	}
+	public:
+		bool shouldStand() const;
+		void reset() {
+			hand.reset();
+		}
+		void drawCard(Card *card) {
+			hand.drawCard(card);
+		}
+		bool isBlackjack() {
+			return hand.isBlackjack();
+		}
+		bool isBusted() {
+			return hand.isBusted();
+		}
+		int getHandTotal() {
+			return hand.getHandTotal();
+		}
 };
 
 #endif // DEALER_HPP

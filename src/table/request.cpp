@@ -3,8 +3,8 @@
 #include "request.hpp"
 
 //
-Request::Request() {
-}
+//Request::Request() {
+//}
 
 // Function to handle HTTP requests with libcurl
 size_t WriteCallback(void* contents, size_t size, size_t nmemb, std::string* buffer) {

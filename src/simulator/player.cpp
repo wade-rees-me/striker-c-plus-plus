@@ -5,7 +5,8 @@
 #include "player.hpp"
 
 // Constructor for Player
-Player::Player(Rules* rules, Strategy* strategy, int number_of_cards) : rules(rules), strategy(strategy), number_of_cards(number_of_cards) {
+Player::Player(Rules* rules, Strategy* strategy, int number_of_cards)
+		: rules(rules), strategy(strategy), wager(MINIMUM_BET, MAXIMUM_BET), number_of_cards(number_of_cards) {
 }
 
 // Shuffle function (reinitializes seen cards)
@@ -17,7 +18,7 @@ void Player::shuffle() {
 void Player::placeBet(bool mimic) {
 	splits.clear();
 	wager.reset();
-	wager.setAmountBet(mimic ? MINIMUM_BET : strategy->getBet(seen_cards));
+	wager.placeAmountBet(mimic ? MINIMUM_BET : strategy->getBet(seen_cards));
 }
 
 // Simulate an insurance bet
@@ -47,7 +48,7 @@ void Player::play(Card* up, Shoe* shoe, bool mimic) {
 	}
 
 	if (wager.isPair() && strategy->getSplit(seen_cards, wager.getCardPair(), up)) {
-		Wager* split = new Wager();
+		Wager* split = new Wager(MINIMUM_BET, MAXIMUM_BET);
 		wager.splitHand(split);
 		splits.push_back(split);
 
@@ -76,7 +77,7 @@ void Player::play(Card* up, Shoe* shoe, bool mimic) {
 //
 void Player::playSplit(Wager* wager, Shoe* shoe, Card* up) {
 	if (wager->isPair() && strategy->getSplit(seen_cards, wager->getCardPair(), up)) {
-		Wager* split = new Wager();
+		Wager* split = new Wager(MINIMUM_BET, MAXIMUM_BET);
 		splits.push_back(split);
 		wager->splitHand(split);
 
