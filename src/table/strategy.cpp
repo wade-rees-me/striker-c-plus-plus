@@ -24,8 +24,7 @@ int Strategy::getBet(const int *seenCards) {
 		//return machine->getBet(seenCards);
 	//}
 
-	int trueCount = getTrueCount(seenCards, getRunningCount(seenCards));
-	return trueCount * 2;
+	return getTrueCount(seenCards, getRunningCount(seenCards)) * TRUE_COUNT_BET;
 }
 
 //
@@ -119,7 +118,7 @@ int Strategy::getTrueCount(const int *seenCards, int runningCount) {
 		unseen -= seenCards[i];
 	}
 	if (unseen > 0) {
-		return int(float(runningCount) / (float(unseen) / float(26)));
+		return int(float(runningCount) / (float(unseen) / float(TRUE_COUNT_MULTIPLIER)));
 	}
 	return 0;
 }

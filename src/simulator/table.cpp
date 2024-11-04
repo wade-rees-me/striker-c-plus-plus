@@ -47,7 +47,6 @@ void Table::session(bool mimic) {
 
 			if (!dealer->isBlackjack()) {
 				player->play(up, shoe, mimic);
-				player->showCard(down);
 				if (!player->bustedOrBlackjack()) {
 					while (!dealer->shouldStand()) {
 						Card *card = shoe->drawCard();
@@ -57,6 +56,7 @@ void Table::session(bool mimic) {
 				}
 			}
 
+			player->showCard(down);
 			player->payoff(dealer->isBlackjack(), dealer->isBusted(), dealer->getHandTotal());
 		}
 	}

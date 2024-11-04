@@ -23,6 +23,8 @@ const static int64_t DATABASE_NUMBER_OF_HANDS = 250000000LL;
 // Bettting constants
 const static int64_t MINIMUM_BET = 2LL;
 const static int64_t MAXIMUM_BET = 80LL;
+const static int64_t TRUE_COUNT_BET = 2;
+const static int64_t TRUE_COUNT_MULTIPLIER = 26;
 
 //
 #define STATUS_DOT 25000
