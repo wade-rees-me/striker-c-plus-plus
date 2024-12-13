@@ -28,11 +28,15 @@ void Parameters::print() {
     printf("    %-24s: %s\n", "Timestamp", timestamp);
 }
 
-// Function to get current time and format it
+//
 void Parameters::getCurrentTime() {
-	time_t t = time(NULL);
-	struct tm *tm_info = localtime(&t);
-	strftime(timestamp, sizeof(timestamp), TIME_LAYOUT, tm_info);
+    time_t rawtime;
+    struct tm *timeinfo;
+
+    time(&rawtime);
+    timeinfo = localtime(&rawtime);
+
+    strftime(timestamp, sizeof(timestamp), TIME_LAYOUT, timeinfo);
 }
 
 //

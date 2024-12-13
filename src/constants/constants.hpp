@@ -35,5 +35,6 @@ std::string getRulesUrl();
 std::string getStrategyUrl();
 std::string getSimulationUrl();
 const char* boolToString(bool b);
+std::string toUpperCase(std::string& str);
 
 #endif // CONSTANTS_HPP

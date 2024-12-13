@@ -23,11 +23,12 @@ class Player {
 		Report report = Report();
 		int number_of_cards;
 		int seen_cards[13] = {0};  // Keeps track of the cards the player has seen
+		int initial_bet;
 
 	public:
 		void shuffle();
 		void placeBet(bool mimic);
-		void insurance();
+		void insurance(bool dealer_blackjack);
 		void play(Card *up, Shoe *shoe, bool mimic);
 		void playSplit(Wager *w, Shoe *shoe, Card *up);
 		void drawCard(Hand *hand, Card *card);

@@ -26,8 +26,6 @@ Arguments::Arguments(int argc, char *argv[]) {
 			high_low_flag = true;
 		} else if (std::strcmp(argv[i], "-W") == 0 || std::strcmp(argv[i], "--wong") == 0) {
 			wong_flag = true;
-		} else if (std::strcmp(argv[i], "-S") == 0 || std::strcmp(argv[i], "--striker") == 0) {
-			striker_flag = true;
 		} else if (std::strcmp(argv[i], "-1") == 0 || std::strcmp(argv[i], "--single-deck") == 0) {
 			single_deck_flag = true;
 		} else if (std::strcmp(argv[i], "-2") == 0 || std::strcmp(argv[i], "--double-deck") == 0) {
@@ -65,7 +63,6 @@ void Arguments::printHelpMessage() const {
 			  << "  -P, --polynomial                         Use the polynomial regression player strategy\n"
 			  << "  -H, --high-low                           Use the high low count player strategy\n"
 			  << "  -W, --wong                               Use the Wong count player strategy\n"
-			  << "  -S, --striker                            Use the Striker machine learning player strategy\n"
 			  << "  -1, --single-deck                        Use a single deck of cards and rules\n"
 			  << "  -2, --double-deck                        Use a double deck of cards and rules\n"
 			  << "  -6, --six-shoe                           Use a six deck shoe of cards and rules\n"
@@ -88,9 +85,6 @@ std::string Arguments::getStrategy() const {
 	}
 	if (wong_flag) {
 		return "wong";
-	}
-	if (striker_flag) {
-		return "striker";
 	}
 	return "basic";
 }

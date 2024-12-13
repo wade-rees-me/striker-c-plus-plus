@@ -39,10 +39,10 @@ void Table::session(bool mimic) {
 			report.total_hands++;
 			dealer->reset();
 			player->placeBet(mimic);
-
 			dealCards(player->getWager());
+
 			if (!mimic && up->isAce()) {
-				player->insurance();
+				player->insurance(dealer->isBlackjack());
 			}
 
 			if (!dealer->isBlackjack()) {

@@ -6,9 +6,6 @@
 
 //
 class Request {
-  //public:
-	//Request();
-
 	protected:
     	std::string responseString;
     	nlohmann::json jsonResponse;

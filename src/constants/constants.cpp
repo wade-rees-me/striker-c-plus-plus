@@ -18,6 +18,12 @@ std::string getSimulationUrl() {
 
 // Function to convert bool to string
 const char* boolToString(bool b) {
-    return b ? "true" : "false";
+	return b ? "true" : "false";
+}
+
+//
+std::string toUpperCase(std::string& str) {
+	std::transform(str.begin(), str.end(), str.begin(), [](unsigned char c) { return std::toupper(c); });
+	return str;
 }
 

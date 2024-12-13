@@ -50,6 +50,12 @@ void Simulator::simulatorRunOnce() {
     printf("    %-24s: %lld\n", "Number of rounds", report.total_rounds);
     printf("    %-24s: %lld %+04.3f average bet per hand\n", "Total bet", report.total_bet, (double)report.total_bet / report.total_hands);
     printf("    %-24s: %lld %+04.3f average win per hand\n", "Total won", report.total_won, (double)report.total_won / report.total_hands);
+	printf("    %-24s: %lld %+04.3f percent of total hands\n", "Number of blackjacks", report.total_blackjacks, (double)report.total_blackjacks / report.total_hands * 100.0);
+    printf("    %-24s: %lld %+04.3f percent of total hands\n", "Number of doubles", report.total_doubles, (double)report.total_doubles / report.total_hands * 100.0);
+    printf("    %-24s: %lld %+04.3f percent of total hands\n", "Number of splits", report.total_splits, (double)report.total_splits / report.total_hands * 100.0);
+    printf("    %-24s: %lld %+04.3f percent of total hands\n", "Number of wins", report.total_wins, (double)report.total_wins / report.total_hands * 100.0);
+    printf("    %-24s: %lld %+04.3f percent of total hands\n", "Number of pushes", report.total_pushes, (double)report.total_pushes / report.total_hands * 100.0);
+    printf("    %-24s: %lld %+04.3f percent of total hands\n", "Number of loses", report.total_loses, (double)report.total_loses / report.total_hands * 100.0);
     printf("    %-24s: %s seconds\n", "Total time", simulation.total_time);
     printf("    %-24s: %s per 1,000,000 hands\n", "Average time", simulation.average_time);
     printf("    %-24s: %s\n", "Player advantage", simulation.advantage);
@@ -70,6 +76,12 @@ void Simulator::simulatorRunSimulation() {
 	report.total_won += table->getPlayer()->getReport()->total_won;
 	report.total_rounds += table->getReport()->total_rounds;
 	report.total_hands += table->getReport()->total_hands;
+	report.total_blackjacks += table->getPlayer()->getReport()->total_blackjacks;
+    report.total_doubles += table->getPlayer()->getReport()->total_doubles;
+    report.total_splits += table->getPlayer()->getReport()->total_splits;
+    report.total_wins += table->getPlayer()->getReport()->total_wins;
+    report.total_pushes += table->getPlayer()->getReport()->total_pushes;
+    report.total_loses += table->getPlayer()->getReport()->total_loses;
 	report.duration += table->getReport()->duration;
 }
 
