@@ -18,15 +18,6 @@ Strategy::Strategy(const std::string& decks, const std::string& strategy, const 
 			PairSplit.print();
 			SoftStand.print();
 			HardStand.print();
-
-			if(SoftDouble.getRowCount() != 10 ||
-			   HardDouble.getRowCount() != 18 ||
-			   PairSplit.getRowCount() != 13 ||
-			   SoftStand.getRowCount() != 10 ||
-			   HardStand.getRowCount() != 18) {
-				std::cerr << "Error fetching strategy table: " << strategy << std::endl;
-				std::exit(EXIT_FAILURE);
-			}
 		}
 	}
 	catch (std::exception fault) {
@@ -99,12 +90,6 @@ void Strategy::fetchTable(const std::string& decks, const std::string& strategy)
 	   		strategyLoadTable(jsonPayload["soft-stand"].get<const std::map<std::string, std::vector<std::string>>>(), &SoftStand);
 	   		strategyLoadTable(jsonPayload["hard-stand"].get<const std::map<std::string, std::vector<std::string>>>(), &HardStand);
 
-	   		//SoftDouble = jsonPayload["soft-double"].get<const std::map<std::string, std::vector<std::string>>>();
-	   		//HardDouble = jsonPayload["hard-double"].get<const std::map<std::string, std::vector<std::string>>>();
-	   		//PairSplit = jsonPayload["pair-split"].get<const std::map<std::string, std::vector<std::string>>>();
-	   		//SoftStand = jsonPayload["soft-stand"].get<const std::map<std::string, std::vector<std::string>>>();
-	   		//HardStand = jsonPayload["hard-stand"].get<const std::map<std::string, std::vector<std::string>>>();
-
 			return;
 		}
    	}
@@ -115,34 +100,12 @@ void strategyLoadTable(const std::map<std::string, std::vector<std::string>>& st
         const std::string& key = pair.first;           // Access the key
         const std::vector<std::string>& values = pair.second;  // Access the values
 
-        //std::cout << "Key: " << key << "\nValues: ";
 		int index = 0;
         for (const std::string& value : values) {  // Loop through the vector
 			chart->insert(key, index++, value);
-            //std::cout << value << " ";
-        }
-        //std::cout << "\n";
-    }
-}
-
-/*
-    if (strategy != NULL) {
-        cJSON *key;
-        cJSON *valueArray;
-        cJSON_ArrayForEach(key, strategy) {
-            valueArray = cJSON_GetObjectItem(strategy, key->string);
-            if (valueArray != NULL) {
-                cJSON *valueItem;
-                int index = 0;
-                cJSON_ArrayForEach(valueItem, valueArray) {
-                    chart->insert(key->string, index++, valueItem->valuestring);
-                }
-            }
         }
     }
 }
-*/
-
 
 //
 int Strategy::getRunningCount(const int *seenCards) {

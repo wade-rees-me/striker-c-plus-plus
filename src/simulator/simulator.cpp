@@ -10,7 +10,7 @@
 #include "constants.hpp"
 
 //
-Simulator::Simulator(Parameters* parameters, Rules* rules, Strategy* strategy)
+Simulator::Simulator(Parameters *parameters, Rules *rules, Strategy *strategy)
 		: parameters(parameters), rules(rules) {
 	table = new Table(parameters, rules, strategy);
 	report = Report();
@@ -86,7 +86,7 @@ void Simulator::simulatorRunSimulation() {
 }
 
 // Function to insert simulation into the database (HTTP POST)
-void Simulator::simulatorInsert(Simulation* simulation, std::string playbook) {
+void Simulator::simulatorInsert(Simulation *simulation, std::string playbook) {
 	struct curl_slist* headers = nullptr;
 	CURL* curl;
 

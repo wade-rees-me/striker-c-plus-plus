@@ -35,7 +35,7 @@ class Player {
 		void showCard(Card *card);
 		bool bustedOrBlackjack() const;
 		void payoff(bool dealer_blackjack, bool dealer_busted, int dealer_total);
-		void payoffHand(Wager *w, bool dealer_blackjack, bool dealer_busted, int dealer_total);
+		void payoffHand(Wager *wager, bool dealer_blackjack, bool dealer_busted, int dealer_total);
 		Wager *getWager() {
 			return &wager;
 		}

@@ -24,7 +24,7 @@ class Rules : public Request {
 
 	public:
 		void print();
-		void serialize(char* buffer, int buffer_size);
+		void serialize(char *buffer, int buffer_size);
 
 	private:
 		void fetchTable();

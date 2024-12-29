@@ -12,12 +12,12 @@
 //
 class Simulator {
 	public:
-		Simulator(Parameters* params, Rules* rules, Strategy* strategy);
+		Simulator(Parameters *params, Rules *rules, Strategy *strategy);
 
 	private:
-		Parameters* parameters;
-		Rules* rules;
-		Table* table;
+		Parameters *parameters;
+		Rules *rules;
+		Table *table;
 		Report report;
 
 	public:
@@ -25,7 +25,7 @@ class Simulator {
 
 	private:
 		void simulatorRunSimulation();
-		void simulatorInsert(Simulation* sdt, std::string playbook);
+		void simulatorInsert(Simulation *simulation, std::string playbook);
 };
 
 #endif // SIMULATOR_HPP

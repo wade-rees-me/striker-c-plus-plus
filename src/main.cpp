@@ -11,7 +11,7 @@
 #include "constants.hpp"
 
 //
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
 	std::cout << "Start: " << STRIKER_WHO_AM_I << std::endl;
 	Arguments arguments(argc, argv);
 	Parameters parameters(arguments.getDecks(), arguments.getStrategy(), arguments.getNumberOfDecks(), arguments.getNumberOfHands());

@@ -55,7 +55,6 @@ Shoe::Shoe(int number_of_decks, float penetration) {
 	last_discard = number_of_cards;
 	cut_card = static_cast<int>(number_of_cards * penetration);
 
-	//display();
 	shuffle();
 }
 
@@ -78,7 +77,6 @@ void Shoe::shuffle_random() {
 	static std::default_random_engine rng(std::random_device{}());
 	std::shuffle(cards.begin(), cards.begin() + last_discard, rng);
 	next_card = burn_card;
-	//display();
 }
 
 // Draw a card from the shoe

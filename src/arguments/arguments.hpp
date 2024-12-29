@@ -12,6 +12,7 @@ class Arguments {
 	private:
 		bool mimic_flag = false;
 		bool basic_flag = false;
+		bool neural_flag = false;
 		bool linear_flag = false;
 		bool polynomial_flag = false;
 		bool high_low_flag = false;
