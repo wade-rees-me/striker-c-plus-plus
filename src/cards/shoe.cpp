@@ -35,19 +35,19 @@ const std::vector<std::string> suits = {SPADES, DIAMONDS, CLUBS, HEARTS};
 Shoe::Shoe(int number_of_decks, float penetration) {
 	for (int i = 0; i < number_of_decks; i++) {
 		for (int j = 0; j < 4; j++) {
-			cards.push_back(new Card(suits[j], TWO, "2", 2, 0));
-			cards.push_back(new Card(suits[j], THREE, "3", 3, 1));
-			cards.push_back(new Card(suits[j], FOUR, "4", 4, 2));
-			cards.push_back(new Card(suits[j], FIVE, "5", 5, 3));
-			cards.push_back(new Card(suits[j], SIX, "6", 6, 4));
-			cards.push_back(new Card(suits[j], SEVEN, "7", 7, 5));
-			cards.push_back(new Card(suits[j], EIGHT, "8", 8, 6));
-			cards.push_back(new Card(suits[j], NINE, "9", 9, 7));
-			cards.push_back(new Card(suits[j], TEN, "T", 10, 8));
-			cards.push_back(new Card(suits[j], JACK, "J", 10, 9));
-			cards.push_back(new Card(suits[j], QUEEN, "Q", 10, 10));
-			cards.push_back(new Card(suits[j], KING, "K", 10, 11));
-			cards.push_back(new Card(suits[j], ACE, "A", 11, 12));
+			cards.push_back(new Card(suits[j], TWO, "2", 2));
+			cards.push_back(new Card(suits[j], THREE, "3", 3));
+			cards.push_back(new Card(suits[j], FOUR, "4", 4));
+			cards.push_back(new Card(suits[j], FIVE, "5", 5));
+			cards.push_back(new Card(suits[j], SIX, "6", 6));
+			cards.push_back(new Card(suits[j], SEVEN, "7", 7));
+			cards.push_back(new Card(suits[j], EIGHT, "8", 8));
+			cards.push_back(new Card(suits[j], NINE, "9", 9));
+			cards.push_back(new Card(suits[j], TEN, "X", 10));
+			cards.push_back(new Card(suits[j], JACK, "X", 10));
+			cards.push_back(new Card(suits[j], QUEEN, "X", 10));
+			cards.push_back(new Card(suits[j], KING, "X", 10));
+			cards.push_back(new Card(suits[j], ACE, "A", 11));
 		}
 	}
 	number_of_cards = cards.size();
@@ -97,7 +97,7 @@ bool Shoe::shouldShuffle() {
 }
 
 // Check if a card is an ace
-bool Shoe::isAce(const Card* card) {
+bool Shoe::isAce(const Card *card) {
 	return card->isAce();
 }
 

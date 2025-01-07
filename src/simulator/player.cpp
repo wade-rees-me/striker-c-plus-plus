@@ -114,7 +114,7 @@ void Player::drawCard(Hand *hand, Card *card) {
 
 // Show the card
 void Player::showCard(Card *card) {
-	seen_cards[card->getOffset()]++;
+	seen_cards[card->getValue()]++;
 }
 
 // Check if player busted or has blackjack

@@ -9,6 +9,9 @@
 #include <cstdint>
 #include "card.hpp"
 
+#define MINIMUM_CARD_VALUE 2
+#define MAXIMUM_CARD_VALUE 11
+
 class Shoe {
 	public:
 		Shoe(int number_of_decks, float penetration);  // Constructor

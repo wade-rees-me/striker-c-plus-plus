@@ -22,7 +22,7 @@ class Player {
 		std::vector<Wager*> splits;
 		Report report = Report();
 		int number_of_cards;
-		int seen_cards[13] = {0};  // Keeps track of the cards the player has seen
+		int seen_cards[MAXIMUM_CARD_VALUE + 1] = {0};  // Keeps track of the cards the player has seen
 		int initial_bet;
 
 	public:

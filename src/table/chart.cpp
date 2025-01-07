@@ -12,7 +12,7 @@ Chart::Chart(const std::string& name)
 	for (int i = 0; i < TABLE_SIZE; i++) {
 		ChartRow *row = &rows[i];
 		row->key = "--";
-		for (int j = 0; j < 13; j++) {
+		for (int j = MINIMUM_CARD_VALUE; j <= MAXIMUM_CARD_VALUE; j++) {
 			row->value[j] = "---";
 		}
 	}
@@ -55,16 +55,16 @@ const std::string Chart::getValue(int total, int up) {
 
 void Chart::print() {
 	printf("%s\n", name.c_str());
-	printf("--------2-----3-----4-----5-----6-----7-----8-----9-----T-----J-----Q-----K-----A---\n");
+	printf("--------------------2-----3-----4-----5-----6-----7-----8-----9-----X-----A---\n");
 	for (int i = 0; i < nextRow; i++) {
 		ChartRow *row = &rows[i];
 		printf("%2s : ", row->key.c_str());
-		for (int j = 0; j < 13; j++) {
+		for (int j = 0; j <= MAXIMUM_CARD_VALUE; j++) {
 			printf("%4s, ", row->value[j].c_str());
 		}
 		printf("\n");
 	}
-	printf("------------------------------------------------------------------------------------\n\n");
+	printf("------------------------------------------------------------------------------\n\n");
 }
 
 //

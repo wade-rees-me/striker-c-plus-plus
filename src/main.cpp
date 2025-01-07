@@ -12,7 +12,9 @@
 
 //
 int main(int argc, char *argv[]) {
+	std::cout.imbue(std::locale("en_US.UTF-8"));
 	std::cout << "Start: " << STRIKER_WHO_AM_I << std::endl;
+
 	Arguments arguments(argc, argv);
 	Parameters parameters(arguments.getDecks(), arguments.getStrategy(), arguments.getNumberOfDecks(), arguments.getNumberOfHands());
 	Rules rules(arguments.getDecks());

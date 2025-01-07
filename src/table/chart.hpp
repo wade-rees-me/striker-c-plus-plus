@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+#include "shoe.hpp"
 
 #define TABLE_SIZE 21
 
@@ -10,7 +11,7 @@ class Chart {
 	class ChartRow {
 		public:
 			std::string key;
-			std::string value[13];
+			std::string value[MAXIMUM_CARD_VALUE + 1];
 	};
 
 	public:

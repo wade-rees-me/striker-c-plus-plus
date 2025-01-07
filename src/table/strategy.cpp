@@ -18,6 +18,7 @@ Strategy::Strategy(const std::string& decks, const std::string& strategy, const 
 			PairSplit.print();
 			SoftStand.print();
 			HardStand.print();
+			printCount();
 		}
 	}
 	catch (std::exception fault) {
@@ -44,9 +45,9 @@ bool Strategy::getDouble(const int *seenCards, const int total, bool soft, Card 
 	std::snprintf(buffer, sizeof(buffer), "%d", total);
 	std::string key = buffer;
 	if (soft) {
-		return processValue(SoftDouble.getValue(key, up->getOffset()).c_str(), trueCount, false);
+		return processValue(SoftDouble.getValue(key, up->getValue()).c_str(), trueCount, false);
 	}
-	return processValue(HardDouble.getValue(key, up->getOffset()).c_str(), trueCount, false);
+	return processValue(HardDouble.getValue(key, up->getValue()).c_str(), trueCount, false);
 }
 
 //
@@ -55,7 +56,7 @@ bool Strategy::getSplit(const int *seenCards, Card *pair, Card *up) {
 	char buffer[MAX_STRING_SIZE];
 	std::snprintf(buffer, sizeof(buffer), "%s", (pair->getKey().c_str()));
 	std::string key = buffer;
-	return processValue(PairSplit.getValue(key, up->getOffset()).c_str(), trueCount, false);
+	return processValue(PairSplit.getValue(key, up->getValue()).c_str(), trueCount, false);
 }
 
 //
@@ -65,9 +66,9 @@ bool Strategy::getStand(const int *seenCards, const int total, bool soft, Card *
 	std::snprintf(buffer, sizeof(buffer), "%d", total);
 	std::string key = buffer;
 	if (soft) {
-		return processValue(SoftStand.getValue(key, up->getOffset()).c_str(), trueCount, true);
+		return processValue(SoftStand.getValue(key, up->getValue()).c_str(), trueCount, true);
 	}
-	return processValue(HardStand.getValue(key, up->getOffset()).c_str(), trueCount, true);
+	return processValue(HardStand.getValue(key, up->getValue()).c_str(), trueCount, true);
 }
 
 //
@@ -80,9 +81,10 @@ void Strategy::fetchTable(const std::string& decks, const std::string& strategy)
 			}
 
 	   		Playbook = jsonPayload["playbook"].get<std::string>();
-	   		Counts = jsonPayload["counts"].get<std::vector<int>>();
-	   		Bets = jsonPayload["bets"].get<std::vector<int>>();
 	   		Insurance = jsonPayload["insurance"].get<std::string>();
+	   		Counts = jsonPayload["counts"].get<std::vector<int>>();
+			Counts.insert(Counts.begin(), 0);
+			Counts.insert(Counts.begin(), 0);
 
 	   		strategyLoadTable(jsonPayload["soft-double"].get<const std::map<std::string, std::vector<std::string>>>(), &SoftDouble);
 	   		strategyLoadTable(jsonPayload["hard-double"].get<const std::map<std::string, std::vector<std::string>>>(), &HardDouble);
@@ -100,7 +102,7 @@ void strategyLoadTable(const std::map<std::string, std::vector<std::string>>& st
         const std::string& key = pair.first;           // Access the key
         const std::vector<std::string>& values = pair.second;  // Access the values
 
-		int index = 0;
+		int index = MINIMUM_CARD_VALUE;
         for (const std::string& value : values) {  // Loop through the vector
 			chart->insert(key, index++, value);
         }
@@ -110,7 +112,7 @@ void strategyLoadTable(const std::map<std::string, std::vector<std::string>>& st
 //
 int Strategy::getRunningCount(const int *seenCards) {
 	int running = 0;
-	for (int i = 0; i <= 12; i++) {
+	for (int i = MINIMUM_CARD_VALUE; i <= MAXIMUM_CARD_VALUE; i++) {
 		running += Counts[i] * seenCards[i];
 	}
 	return running;
@@ -119,7 +121,7 @@ int Strategy::getRunningCount(const int *seenCards) {
 //
 int Strategy::getTrueCount(const int *seenCards, int runningCount) {
 	int unseen = number_of_cards;
-	for (int i = 2; i <= 11; i++) {
+	for (int i = MINIMUM_CARD_VALUE; i <= MAXIMUM_CARD_VALUE; i++) {
 		unseen -= seenCards[i];
 	}
 	if (unseen > 0) {
@@ -147,5 +149,16 @@ bool Strategy::processValue(const char* value, int trueCount, bool missing_value
 	} catch (...) {
 		return missing_value;
 	}
+}
+
+void Strategy::printCount() {
+	printf("Counts\n");
+	printf("--------------------2-----3-----4-----5-----6-----7-----8-----9-----X-----A---\n");
+	printf("     ");
+	for (int i = 0; i <= MAXIMUM_CARD_VALUE; i++) {
+		printf("%4d, ", Counts[i]);
+	}
+	printf("\n");
+	printf("------------------------------------------------------------------------------\n\n");
 }
 
