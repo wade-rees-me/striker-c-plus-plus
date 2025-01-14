@@ -38,12 +38,12 @@ class Shoe {
 		void display() {
 			int index = 0;
 			std::cout << "--------------------------------------------------------------------------------" << std::endl;
-    		for (const auto& card : cards) {
+			for (const auto& card : cards) {
 				std::cout << std::setfill('0') << std::setw(3) << std::right << index++ << ": ";
-        		card->display();
-    		}
+				card->display();
+			}
 			std::cout << "--------------------------------------------------------------------------------" << std::endl;
-    	}
+		}
 };
 
 #endif // SHOE_HPP

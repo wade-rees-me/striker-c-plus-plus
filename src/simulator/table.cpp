@@ -24,7 +24,7 @@ Table::~Table() {
 
 // Function to simulate a session
 void Table::session(bool mimic) {
-    char buffer[256];
+	char buffer[256];
 	std::snprintf(buffer, sizeof(buffer), "      Start: table, playing %lld hands", parameters->number_of_hands);
 	std::cout << buffer << std::endl;
 
@@ -89,7 +89,7 @@ void Table::status(int64_t round, int64_t hand) {
 		std::cout << std::string(".") << std::flush;
 	}
 	if((round + 1) % STATUS_LINE == 0) {
-    	char buffer[256];
+		char buffer[256];
 		std::snprintf(buffer, sizeof(buffer), " : %lld (rounds), %lld (hands)\n", (round + 1), hand);
 		std::cout << buffer;
 		std::cout << std::string("        ") << std::flush;

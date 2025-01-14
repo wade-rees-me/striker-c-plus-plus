@@ -7,8 +7,8 @@
 //
 class Request {
 	protected:
-    	std::string responseString;
-    	nlohmann::json jsonResponse;
+		std::string responseString;
+		nlohmann::json jsonResponse;
 
 	protected:
 		void fetchJson(const std::string& url);

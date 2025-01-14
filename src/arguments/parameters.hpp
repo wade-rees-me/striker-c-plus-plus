@@ -12,12 +12,12 @@ class Parameters {
 		Parameters(std::string decks, std::string strategy, int number_of_decks, int64_t number_of_hands);
 
 	public:
-    	char name[MAX_STRING_SIZE];
-    	char playbook[MAX_STRING_SIZE];
-    	char processor[MAX_STRING_SIZE];
-    	char timestamp[MAX_STRING_SIZE];
-    	std::string decks;
-    	std::string strategy;
+		char name[MAX_STRING_SIZE];
+		char playbook[MAX_STRING_SIZE];
+		char processor[MAX_STRING_SIZE];
+		char timestamp[MAX_STRING_SIZE];
+		std::string decks;
+		std::string strategy;
 		int number_of_decks;
 		int64_t number_of_hands;
 

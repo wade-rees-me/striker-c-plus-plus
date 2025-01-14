@@ -12,31 +12,31 @@
 //
 Parameters::Parameters(std::string decks, std::string strategy, int number_of_decks, int64_t number_of_hands)
 		: decks(decks), strategy(strategy), number_of_decks(number_of_decks), number_of_hands(number_of_hands) {
-    generateName();
-    snprintf(playbook, sizeof(playbook), "%s-%s", decks.c_str(), strategy.c_str());
-    snprintf(processor, sizeof(processor), "%s", STRIKER_WHO_AM_I.c_str());
-    getCurrentTime();
+	generateName();
+	snprintf(playbook, sizeof(playbook), "%s-%s", decks.c_str(), strategy.c_str());
+	snprintf(processor, sizeof(processor), "%s", STRIKER_WHO_AM_I.c_str());
+	getCurrentTime();
 }
 
 //
 void Parameters::print() {
-    printf("    %-24s: %s\n", "Name", name);
-    printf("    %-24s: %s\n", "Playbook", playbook);
-    printf("    %-24s: %s\n", "Processor", processor);
-    printf("    %-24s: %s\n", "Version", STRIKER_VERSION.c_str());
-    printf("    %-24s: %lld\n", "Number of hands", number_of_hands);
-    printf("    %-24s: %s\n", "Timestamp", timestamp);
+	printf("    %-24s: %s\n", "Name", name);
+	printf("    %-24s: %s\n", "Playbook", playbook);
+	printf("    %-24s: %s\n", "Processor", processor);
+	printf("    %-24s: %s\n", "Version", STRIKER_VERSION.c_str());
+	printf("    %-24s: %lld\n", "Number of hands", number_of_hands);
+	printf("    %-24s: %s\n", "Timestamp", timestamp);
 }
 
 //
 void Parameters::getCurrentTime() {
-    time_t rawtime;
-    struct tm *timeinfo;
+	time_t rawtime;
+	struct tm *timeinfo;
 
-    time(&rawtime);
-    timeinfo = localtime(&rawtime);
+	time(&rawtime);
+	timeinfo = localtime(&rawtime);
 
-    strftime(timestamp, sizeof(timestamp), TIME_LAYOUT, timeinfo);
+	strftime(timestamp, sizeof(timestamp), TIME_LAYOUT, timeinfo);
 }
 
 //
@@ -53,18 +53,18 @@ void Parameters::generateName() {
 
 //
 void Parameters::serialize(char *buffer, int buffer_size) {
-    nlohmann::json json;
+	nlohmann::json json;
 
-    json["name"] = name;
-    json["playbook"] = playbook;
-    json["processor"] = processor;
-    json["timestamp"] = timestamp;
-    json["decks"] = decks.c_str();
-    json["strategy"] = strategy.c_str();
-    json["number_of_hands"] = number_of_hands;
-    json["number_of_decks"] = number_of_decks;
+	json["name"] = name;
+	json["playbook"] = playbook;
+	json["processor"] = processor;
+	json["timestamp"] = timestamp;
+	json["decks"] = decks.c_str();
+	json["strategy"] = strategy.c_str();
+	json["number_of_hands"] = number_of_hands;
+	json["number_of_decks"] = number_of_decks;
 
-    std::string jsonString = json.dump();
-    std::snprintf(buffer, buffer_size, "%s", jsonString.c_str());
+	std::string jsonString = json.dump();
+	std::snprintf(buffer, buffer_size, "%s", jsonString.c_str());
 }
 

@@ -98,15 +98,15 @@ void Strategy::fetchTable(const std::string& decks, const std::string& strategy)
 }
 
 void strategyLoadTable(const std::map<std::string, std::vector<std::string>>& strategy, Chart *chart) {
-    for (auto& pair : strategy) {  // Range-based for loop
-        const std::string& key = pair.first;           // Access the key
-        const std::vector<std::string>& values = pair.second;  // Access the values
+	for (auto& pair : strategy) {  // Range-based for loop
+		const std::string& key = pair.first; // Access the key
+		const std::vector<std::string>& values = pair.second;  // Access the values
 
 		int index = MINIMUM_CARD_VALUE;
-        for (const std::string& value : values) {  // Loop through the vector
+		for (const std::string& value : values) {  // Loop through the vector
 			chart->insert(key, index++, value);
-        }
-    }
+		}
+	}
 }
 
 //
