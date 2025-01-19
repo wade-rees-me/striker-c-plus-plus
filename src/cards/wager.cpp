@@ -3,7 +3,8 @@
 #include "wager.hpp"
 
 // Constructor: Reset the wager to its initial state
-Wager::Wager() {
+Wager::Wager(int64_t minimum_bet, int64_t maximum_bet)
+		: minimum_bet(minimum_bet), maximum_bet(maximum_bet) {
 	reset();
 }
 
@@ -15,7 +16,7 @@ void Wager::reset() {
 	insurance_won = 0;
 }
 
-// Split the wager
+// Split the hand
 void Wager::splitHand(Wager *split) {
 	split->amount_bet = amount_bet;
 	split->drawCard(splitPair());

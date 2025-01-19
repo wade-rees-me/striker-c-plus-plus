@@ -6,15 +6,12 @@
 
 //
 class Request {
-  public:
-	Request();
+	protected:
+		std::string responseString;
+		nlohmann::json jsonResponse;
 
-  protected:
-    std::string responseString;
-    nlohmann::json jsonResponse;
-
-  protected:
-	void fetchJson(const std::string& url);
+	protected:
+		void fetchJson(const std::string& url);
 };
 
 #endif // REQUEST_HPP

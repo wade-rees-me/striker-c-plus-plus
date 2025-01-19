@@ -5,8 +5,8 @@
 #include "player.hpp"
 
 // Constructor for Player
-Player::Player(Parameters* parameters, Rules* rules, Strategy* strategy, int number_of_cards)
-	: parameters(parameters), rules(rules), strategy(strategy), number_of_cards(number_of_cards) {
+Player::Player(Rules *rules, Strategy *strategy, int number_of_cards)
+		: rules(rules), strategy(strategy), wager(MINIMUM_BET, MAXIMUM_BET), number_of_cards(number_of_cards) {
 }
 
 // Shuffle function (reinitializes seen cards)
@@ -18,20 +18,25 @@ void Player::shuffle() {
 void Player::placeBet(bool mimic) {
 	splits.clear();
 	wager.reset();
-	wager.amount_bet = mimic ? MINIMUM_BET : strategy->getBet(seen_cards);;
+	if (mimic) {
+		wager.placeAmountBet(MINIMUM_BET);
+	} else {
+		int bet = strategy->getBet(seen_cards);
+		wager.placeAmountBet(bet);
+	}
 }
 
 // Simulate an insurance bet
-void Player::insurance() {
-	//if (decision.getInsurance(seen_cards)) {
+void Player::insurance(bool dealer_blackjack) {
 	if (strategy->getInsurance(seen_cards)) {
-		wager.insurance_bet = wager.amount_bet / 2;
+		wager.placeInsuranceBet();
 	}
 }
 
 // Play the hand
-void Player::play(Card* up, Shoe* shoe, bool mimic) {
+void Player::play(Card *up, Shoe *shoe, bool mimic) {
 	if (wager.isBlackjack()) {
+		report.total_blackjacks++;
 		return;
 	}
 
@@ -42,28 +47,23 @@ void Player::play(Card* up, Shoe* shoe, bool mimic) {
 		return;
 	}
 
-	if (rules->surrender && strategy->getSurrender(seen_cards, wager.getHandTotal(), wager.isSoft(), up)) {
-		wager.surrender();
-		return;
-	}
-
-	if ((rules->double_any_two_cards || wager.getHandTotal() == 10 || wager.getHandTotal() == 11) && strategy->getDouble(seen_cards, wager.getHandTotal(), wager.isSoft(), up)) {
+	if (strategy->getDouble(seen_cards, wager.getHandTotal(), wager.isSoft(), up)) {
 		wager.doubleBet();
 		drawCard(&wager, shoe->drawCard());
+		report.total_doubles++;
 		return;
 	}
 
 	if (wager.isPair() && strategy->getSplit(seen_cards, wager.getCardPair(), up)) {
-		Wager* split = new Wager();
+		Wager* split = new Wager(MINIMUM_BET, MAXIMUM_BET);
 		wager.splitHand(split);
 		splits.push_back(split);
+		report.total_splits++;
 
 		if (wager.isPairOfAces()) {
-			if (!rules->resplit_aces && !rules->hit_split_aces) {
-				drawCard(&wager, shoe->drawCard());
-				drawCard(split, shoe->drawCard());
-				return;
-			}
+			drawCard(&wager, shoe->drawCard());
+			drawCard(split, shoe->drawCard());
+			return;
 		}
 
 	  	drawCard(&wager, shoe->drawCard());
@@ -83,39 +83,18 @@ void Player::play(Card* up, Shoe* shoe, bool mimic) {
 }
 
 //
-void Player::playSplit(Wager* wager, Shoe* shoe, Card* up) {
-	if (rules->double_after_split && strategy->getDouble(seen_cards, wager->getHandTotal(), wager->isSoft(), up)) {
-		wager->doubleBet();
-		drawCard(wager, shoe->drawCard());
+void Player::playSplit(Wager *wager, Shoe *shoe, Card *up) {
+	if (wager->isPair() && strategy->getSplit(seen_cards, wager->getCardPair(), up)) {
+		Wager* split = new Wager(MINIMUM_BET, MAXIMUM_BET);
+		splits.push_back(split);
+		wager->splitHand(split);
+		report.total_splits++;
+
+  		drawCard(wager, shoe->drawCard());
+		playSplit(wager, shoe, up);
+		drawCard(split, shoe->drawCard());
+		playSplit(split, shoe, up);
 		return;
-	}
-
-	if (wager->isPair()) {
-		if (wager->isPairOfAces()) {
-			if (rules->resplit_aces && strategy->getSplit(seen_cards, wager->getCardPair(), up)) {
-				Wager* split = new Wager();
-				splits.push_back(split);
-				wager->splitHand(split);
-
-	  			drawCard(wager, shoe->drawCard());
-				playSplit(wager, shoe, up);
-				drawCard(split, shoe->drawCard());
-				playSplit(split, shoe, up);
-				return;
-			}
-		} else {
-			if (strategy->getSplit(seen_cards, wager->getCardPair(), up)) {
-				Wager* split = new Wager();
-				splits.push_back(split);
-				wager->splitHand(split);
-
-	  			drawCard(wager, shoe->drawCard());
-				playSplit(wager, shoe, up);
-				drawCard(split, shoe->drawCard());
-				playSplit(split, shoe, up);
-				return;
-			}
-		}
 	}
 
 	bool doStand = strategy->getStand(seen_cards, wager->getHandTotal(), wager->isSoft(), up);
@@ -128,14 +107,14 @@ void Player::playSplit(Wager* wager, Shoe* shoe, Card* up) {
 }
 
 // Draw a card
-void Player::drawCard(Hand* hand, Card* card) {
+void Player::drawCard(Hand *hand, Card *card) {
 	showCard(card);
 	hand->drawCard(card);
 }
 
 // Show the card
-void Player::showCard(Card* c) {
-	seen_cards[c->getOffset()]++;
+void Player::showCard(Card *card) {
+	seen_cards[card->getValue()]++;
 }
 
 // Check if player busted or has blackjack
@@ -159,59 +138,68 @@ void Player::payoff(bool dealer_blackjack, bool dealer_busted, int dealer_total)
 		return;
 	}
 
+	payoffSplit(&wager, dealer_busted, dealer_total);
 	for (const auto& split : splits) {
 		payoffSplit(split, dealer_busted, dealer_total);
 	}
 }
 
 //
-void Player::payoffHand(Wager* wager, bool dealer_blackjack, bool dealer_busted, int dealer_total) {
-	if (wager->didSurrender()) {
-		report.total_bet += wager->amount_bet;
-		report.total_won -= wager->amount_bet / 2;
-		return;
+void Player::payoffHand(Wager *wager, bool dealer_blackjack, bool dealer_busted, int dealer_total) {
+	if (dealer_blackjack) {
+		wager->wonInsurance();
+	} else {
+		wager->lostInsurance();
 	}
 
 	if (dealer_blackjack) {
-		wager->wonInsurance();
 		if (wager->isBlackjack()) {
 			wager->push();
+			report.total_pushes++;
 		} else {
 			wager->lost();
+			report.total_loses++;
 		}
 	} else {
-		wager->lostInsurance();
 		if (wager->isBlackjack()) {
 			wager->wonBlackjack(rules->blackjack_pays, rules->blackjack_bets);
 		} else if (wager->isBusted()) {
 			wager->lost();
+			report.total_loses++;
 		} else if (dealer_busted || (wager->getHandTotal() > dealer_total)) {
 			wager->won();
+	   	report.total_wins++;
 		} else if (dealer_total > wager->getHandTotal()) {
 			wager->lost();
+			report.total_loses++;
 		} else {
 			wager->push();
+			report.total_pushes++;
 		}
 	}
 
-	report.total_bet += wager->amount_bet + wager->insurance_bet;
-	report.total_won += wager->amount_won + wager->insurance_won;
+	report.total_bet += wager->getAmountBet() + wager->getInsuranceBet();
+	report.total_won += wager->getAmountWon() + wager->getInsuranceWon();
 }
 
 //
-void Player::payoffSplit(Wager* wager, bool dealer_busted, int dealer_total) {
+void Player::payoffSplit(Wager *wager, bool dealer_busted, int dealer_total) {
 	if (wager->isBusted()) {
 		wager->lost();
+	   	report.total_loses++;
 	} else if (dealer_busted || (wager->getHandTotal() > dealer_total)) {
 		wager->won();
+	   	report.total_wins++;
 	} else if (dealer_total > wager->getHandTotal()) {
 		wager->lost();
+	   	report.total_loses++;
 	} else {
 		wager->push();
+	   	report.total_pushes++;
 	}
 
-	report.total_won += wager->amount_won;
-	report.total_bet += wager->amount_bet;
+	report.total_won += wager->getAmountWon();
+	report.total_bet += wager->getAmountBet();
 }
 
 //

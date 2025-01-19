@@ -7,10 +7,11 @@
 #include "shoe.hpp"
 
 //
-Table::Table(Parameters* params, Rules* rules, Strategy* strategy) : parameters(params) {
+Table::Table(Parameters *parameters, Rules *rules, Strategy *strategy)
+		: parameters(parameters) {
 	shoe = new Shoe(parameters->number_of_decks, rules->penetration);
 	dealer = new Dealer(rules->hit_soft_17);
-	player = new Player(parameters, rules, strategy, shoe->getNumberOfCards());
+	player = new Player(rules, strategy, shoe->getNumberOfCards());
 	report = Report();
 }
 
@@ -23,7 +24,7 @@ Table::~Table() {
 
 // Function to simulate a session
 void Table::session(bool mimic) {
-    char buffer[256];
+	char buffer[256];
 	std::snprintf(buffer, sizeof(buffer), "      Start: table, playing %lld hands", parameters->number_of_hands);
 	std::cout << buffer << std::endl;
 
@@ -38,21 +39,25 @@ void Table::session(bool mimic) {
 			report.total_hands++;
 			dealer->reset();
 			player->placeBet(mimic);
+			dealCards(player->getWager());
 
-			Card* up = dealCards(&player->wager);
 			if (!mimic && up->isAce()) {
-				player->insurance();
+				player->insurance(dealer->isBlackjack());
 			}
 
-			if (!dealer->hand.isBlackjack()) {
+			if (!dealer->isBlackjack()) {
 				player->play(up, shoe, mimic);
 				if (!player->bustedOrBlackjack()) {
-					dealer->play(shoe);
+					while (!dealer->shouldStand()) {
+						Card *card = shoe->drawCard();
+						dealer->drawCard(card);
+						player->showCard(card);
+					}
 				}
 			}
 
-			player->payoff(dealer->hand.isBlackjack(), dealer->hand.isBusted(), dealer->hand.getHandTotal());
-			player->showCard(up);
+			player->showCard(down);
+			player->payoff(dealer->isBlackjack(), dealer->isBusted(), dealer->getHandTotal());
 		}
 	}
 	std::cout << "\n";
@@ -64,19 +69,15 @@ void Table::session(bool mimic) {
 }
 
 // Function to deal cards
-Card* Table::dealCards(Hand* hand) {
+void Table::dealCards(Hand *hand) {
 	player->drawCard(hand, shoe->drawCard());
-	Card* up = shoe->drawCard();
+	up = shoe->drawCard();
 	dealer->drawCard(up);
-	player->drawCard(hand, shoe->drawCard());
-	dealer->drawCard(shoe->drawCard());
 	player->showCard(up);
-	return up;
-}
 
-// Function to show cards
-void Table::show(Card* card) {
-	player->showCard(card);
+	player->drawCard(hand, shoe->drawCard());
+	down = shoe->drawCard();
+	dealer->drawCard(down);
 }
 
 //
@@ -88,7 +89,7 @@ void Table::status(int64_t round, int64_t hand) {
 		std::cout << std::string(".") << std::flush;
 	}
 	if((round + 1) % STATUS_LINE == 0) {
-    	char buffer[256];
+		char buffer[256];
 		std::snprintf(buffer, sizeof(buffer), " : %lld (rounds), %lld (hands)\n", (round + 1), hand);
 		std::cout << buffer;
 		std::cout << std::string("        ") << std::flush;
