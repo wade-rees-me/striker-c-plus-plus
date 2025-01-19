@@ -10,7 +10,8 @@
 #include "constants.hpp"
 
 //
-Simulator::Simulator(Parameters* parameters, Rules* rules, Strategy* strategy) : parameters(parameters), rules(rules) {
+Simulator::Simulator(Parameters *parameters, Rules *rules, Strategy *strategy)
+		: parameters(parameters), rules(rules) {
 	table = new Table(parameters, rules, strategy);
 	report = Report();
 }
@@ -18,12 +19,12 @@ Simulator::Simulator(Parameters* parameters, Rules* rules, Strategy* strategy) :
 // The simulator process function
 void Simulator::simulatorRunOnce() {
 	Simulation simulation;
-    char buffer[MAX_BUFFER_SIZE];
+	char buffer[MAX_BUFFER_SIZE];
 
-    std::snprintf(buffer, sizeof(buffer), "  Start: simulation %s", parameters->name);
+	std::snprintf(buffer, sizeof(buffer), "  Start: simulation %s", parameters->name);
 	std::cout << buffer << std::endl;
 	simulatorRunSimulation();
-    std::snprintf(buffer, sizeof(buffer), "  End: simulation");
+	std::snprintf(buffer, sizeof(buffer), "  End: simulation");
 	std::cout << buffer << std::endl;
 
 	simulation.playbook = parameters->playbook;
@@ -44,15 +45,21 @@ void Simulator::simulatorRunOnce() {
 	std::snprintf(simulation.advantage, sizeof(simulation.advantage), "%+04.3f %%", ((double)report.total_won / report.total_bet) * 100);
 
 	// Print out the results
-    printf("\n  -- results ---------------------------------------------------------------------\n");
-    printf("    %-24s: %lld\n", "Number of hands", report.total_hands);
-    printf("    %-24s: %lld\n", "Number of rounds", report.total_rounds);
-    printf("    %-24s: %lld %+04.3f average bet per hand\n", "Total bet", report.total_bet, (double)report.total_bet / report.total_hands);
-    printf("    %-24s: %lld %+04.3f average win per hand\n", "Total won", report.total_won, (double)report.total_won / report.total_hands);
-    printf("    %-24s: %s seconds\n", "Total time", simulation.total_time);
-    printf("    %-24s: %s per 1,000,000 hands\n", "Average time", simulation.average_time);
-    printf("    %-24s: %s\n", "Player advantage", simulation.advantage);
-    printf("  --------------------------------------------------------------------------------\n");
+	printf("\n  -- results ---------------------------------------------------------------------\n");
+	printf("    %-24s: %lld\n", "Number of hands", report.total_hands);
+	printf("    %-24s: %lld\n", "Number of rounds", report.total_rounds);
+	printf("    %-24s: %lld %+04.3f average bet per hand\n", "Total bet", report.total_bet, (double)report.total_bet / report.total_hands);
+	printf("    %-24s: %lld %+04.3f average win per hand\n", "Total won", report.total_won, (double)report.total_won / report.total_hands);
+	printf("    %-24s: %lld %+04.3f percent of total hands\n", "Number of blackjacks", report.total_blackjacks, (double)report.total_blackjacks / report.total_hands * 100.0);
+	printf("    %-24s: %lld %+04.3f percent of total hands\n", "Number of doubles", report.total_doubles, (double)report.total_doubles / report.total_hands * 100.0);
+	printf("    %-24s: %lld %+04.3f percent of total hands\n", "Number of splits", report.total_splits, (double)report.total_splits / report.total_hands * 100.0);
+	printf("    %-24s: %lld %+04.3f percent of total hands\n", "Number of wins", report.total_wins, (double)report.total_wins / report.total_hands * 100.0);
+	printf("    %-24s: %lld %+04.3f percent of total hands\n", "Number of pushes", report.total_pushes, (double)report.total_pushes / report.total_hands * 100.0);
+	printf("    %-24s: %lld %+04.3f percent of total hands\n", "Number of loses", report.total_loses, (double)report.total_loses / report.total_hands * 100.0);
+	printf("    %-24s: %s seconds\n", "Total time", simulation.total_time);
+	printf("    %-24s: %s per 1,000,000 hands\n", "Average time", simulation.average_time);
+	printf("    %-24s: %s\n", "Player advantage", simulation.advantage);
+	printf("  --------------------------------------------------------------------------------\n");
 
 	if(report.total_hands >= DATABASE_NUMBER_OF_HANDS) {
 		simulatorInsert(&simulation, parameters->playbook);
@@ -65,20 +72,23 @@ void Simulator::simulatorRunSimulation() {
 	table->session(parameters->strategy == "mimic");
 	std::cout << "    End: table session" << std::endl;
 
-	report.total_bet += table->player->report.total_bet;
-	report.total_won += table->player->report.total_won;
-	report.total_rounds += table->report.total_rounds;
-	report.total_hands += table->report.total_hands;
-	report.duration += table->report.duration;
+	report.total_bet += table->getPlayer()->getReport()->total_bet;
+	report.total_won += table->getPlayer()->getReport()->total_won;
+	report.total_rounds += table->getReport()->total_rounds;
+	report.total_hands += table->getReport()->total_hands;
+	report.total_blackjacks += table->getPlayer()->getReport()->total_blackjacks;
+	report.total_doubles += table->getPlayer()->getReport()->total_doubles;
+	report.total_splits += table->getPlayer()->getReport()->total_splits;
+	report.total_wins += table->getPlayer()->getReport()->total_wins;
+	report.total_pushes += table->getPlayer()->getReport()->total_pushes;
+	report.total_loses += table->getPlayer()->getReport()->total_loses;
+	report.duration += table->getReport()->duration;
 }
 
 // Function to insert simulation into the database (HTTP POST)
-void Simulator::simulatorInsert(Simulation* simulation, std::string playbook) {
+void Simulator::simulatorInsert(Simulation *simulation, std::string playbook) {
 	struct curl_slist* headers = nullptr;
 	CURL* curl;
-
-	MemoryStruct chunk;
-	chunk.size = 0;
 
 	curl_global_init(CURL_GLOBAL_ALL);
 	curl = curl_easy_init();
@@ -88,13 +98,13 @@ void Simulator::simulatorInsert(Simulation* simulation, std::string playbook) {
 		snprintf(url, sizeof(url), "http://%s/%s/%s/%s", getSimulationUrl().c_str(), simulation->simulator.c_str(), playbook.c_str(), simulation->name.c_str());
 		curl_easy_setopt(curl, CURLOPT_URL, url);
 
-    	std::cout << " -- insert ----------------------------------------------------------------------\n";
+		std::cout << " -- insert ----------------------------------------------------------------------\n";
 		// Set headers
 		headers = curl_slist_append(headers, "Content-Type: application/json");
 		curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
 
 		// Convert Simulation to JSON
-    	nlohmann::json json;
+		nlohmann::json json;
 
 		json["playbook"] = simulation->playbook.c_str();
 		json["name"] = simulation->name.c_str();
@@ -112,7 +122,7 @@ void Simulator::simulatorInsert(Simulation* simulation, std::string playbook) {
 		json["rules"] = simulation->rules;
 		json["payload"] = "n/a";
 
-    	std::string jsonString = json.dump();
+		std::string jsonString = json.dump();
 		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, jsonString.c_str());
 
 		CURLcode res = curl_easy_perform(curl);
@@ -122,7 +132,7 @@ void Simulator::simulatorInsert(Simulation* simulation, std::string playbook) {
 		}
 
 		curl_easy_cleanup(curl);
-    	std::cout << "  --------------------------------------------------------------------------------\n";
+		std::cout << "  --------------------------------------------------------------------------------\n";
 	}
 
 	curl_global_cleanup();

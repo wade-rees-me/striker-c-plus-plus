@@ -18,6 +18,8 @@ Arguments::Arguments(int argc, char *argv[]) {
 			mimic_flag = true;
 		} else if (std::strcmp(argv[i], "-B") == 0 || std::strcmp(argv[i], "--basic") == 0) {
 			basic_flag = true;
+		} else if (std::strcmp(argv[i], "-N") == 0 || std::strcmp(argv[i], "--neural") == 0) {
+			neural_flag = true;
 		} else if (std::strcmp(argv[i], "-L") == 0 || std::strcmp(argv[i], "--linear") == 0) {
 			linear_flag = true;
 		} else if (std::strcmp(argv[i], "-P") == 0 || std::strcmp(argv[i], "--polynomial") == 0) {
@@ -26,8 +28,6 @@ Arguments::Arguments(int argc, char *argv[]) {
 			high_low_flag = true;
 		} else if (std::strcmp(argv[i], "-W") == 0 || std::strcmp(argv[i], "--wong") == 0) {
 			wong_flag = true;
-		} else if (std::strcmp(argv[i], "-S") == 0 || std::strcmp(argv[i], "--striker") == 0) {
-			striker_flag = true;
 		} else if (std::strcmp(argv[i], "-1") == 0 || std::strcmp(argv[i], "--single-deck") == 0) {
 			single_deck_flag = true;
 		} else if (std::strcmp(argv[i], "-2") == 0 || std::strcmp(argv[i], "--double-deck") == 0) {
@@ -61,11 +61,11 @@ void Arguments::printHelpMessage() const {
 			  << "  -h, --number-of-hands <number of hands>  The number of hands to play in this simulation\n"
 			  << "  -M, --mimic                              Use the mimic dealer player strategy\n"
 			  << "  -B, --basic                              Use the basic player strategy\n"
+			  << "  -N, --neural                             Use the neural player strategy\n"
 			  << "  -L, --linear                             Use the liner regression player strategy\n"
 			  << "  -P, --polynomial                         Use the polynomial regression player strategy\n"
 			  << "  -H, --high-low                           Use the high low count player strategy\n"
 			  << "  -W, --wong                               Use the Wong count player strategy\n"
-			  << "  -S, --striker                            Use the Striker machine learning player strategy\n"
 			  << "  -1, --single-deck                        Use a single deck of cards and rules\n"
 			  << "  -2, --double-deck                        Use a double deck of cards and rules\n"
 			  << "  -6, --six-shoe                           Use a six deck shoe of cards and rules\n"
@@ -83,14 +83,14 @@ std::string Arguments::getStrategy() const {
 	if (linear_flag) {
 		return "linear";
 	}
+	if (neural_flag) {
+		return "neural";
+	}
 	if (high_low_flag) {
 		return "high-low";
 	}
 	if (wong_flag) {
 		return "wong";
-	}
-	if (striker_flag) {
-		return "striker";
 	}
 	return "basic";
 }

@@ -10,7 +10,6 @@ Hand::Hand() {
 void Hand::reset() {
 	hand_total = 0;
 	soft_ace = 0;
-	hand_surrendered = false;
 	cards.clear();
 }
 
@@ -64,13 +63,11 @@ Card *Hand::splitPair() {
 void Hand::calculateTotal() {
 	hand_total = 0;
 	soft_ace = 0;
-	std::memset(have_cards, 0, sizeof(have_cards));
 	for (const auto& card : cards) {
 		hand_total += card->getValue();
 		if (card->getValue() == 11) {
 			soft_ace++;
 		}
-		have_cards[card->getOffset()]++;;
 	}
 
 	// Adjust hand total if it's over 21 and there are soft aces

@@ -11,23 +11,32 @@
 #include "strategy.hpp"
 
 class Table {
-public:
-	Table(Parameters* params, Rules* rules, Strategy* strategy);
-	~Table();
+	public:
+		Table(Parameters *params, Rules *rules, Strategy *strategy);
+		~Table();
 
-	void session(bool mimic);
-	Card* dealCards(Hand* hand);
-	void show(Card* card);
+	private:
+		Parameters *parameters;
+		Shoe *shoe;
+		Dealer *dealer;
+		Player *player;
+		Report report;
+		Card *up;
+		Card *down;
 
-//private:
-	Parameters* parameters;
-	Shoe* shoe;
-	Dealer* dealer;
-	Player* player;
-	Report report;
+	public:
+		void session(bool mimic);
+		void dealCards(Hand *hand);
+		void show(Card *card);
+		Player *getPlayer() {
+			return player;
+		}
+		Report *getReport() {
+			return &report;
+		}
 
-private:
-	void status(int64_t round, int64_t hand);
+	private:
+		void status(int64_t round, int64_t hand);
 };
 
 #endif // TABLE_HPP
