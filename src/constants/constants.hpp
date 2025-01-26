@@ -6,7 +6,7 @@
 
 // General constants
 const static std::string STRIKER_WHO_AM_I = "striker-c-plus-plus";
-const static std::string STRIKER_VERSION = "v2.02.00";	 // Epoch.Major.Minor
+const static std::string STRIKER_VERSION = "v2.03.00";	 // Epoch.Major.Minor
 const static char* TIME_LAYOUT = "%Y-%m-%d %H:%M:%S %z";
 
 // Define the maximum sizesstring fields
