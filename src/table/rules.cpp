@@ -12,7 +12,7 @@ Rules::Rules(const std::string &decks) : Request() {
 		fetchJson(getRulesUrl() + "/" + decks);
 		fetchTable();
 	}
-	catch (std::exception fault) {
+	catch (const std::exception& fault) {
 		std::cerr << "Error fetching rules table: " << fault.what() << std::endl;
 		std::exit(EXIT_FAILURE);
 	}
@@ -20,27 +20,17 @@ Rules::Rules(const std::string &decks) : Request() {
 
 //
 void Rules::fetchTable() {
-	auto itemPayload = jsonResponse["payload"];
-	if (itemPayload.is_null()) {
-		throw std::runtime_error("Error fetching rules table payload");
-	}
-
-	auto jsonPayload = nlohmann::json::parse(itemPayload.get<std::string>(), nullptr, false);
-	if (jsonPayload.is_discarded()) {
-		throw std::runtime_error("Error parsing JSON payload");
-	}
-
 	// Extract values from JSON and set member variables
-	std::snprintf(playbook, sizeof(playbook), "%s", jsonPayload["playbook"].get<std::string>().c_str());
-	hit_soft_17 = jsonPayload.value("hitSoft17", false);
-	surrender = jsonPayload.value("surrender", false);
-	double_any_two_cards = jsonPayload.value("doubleAnyTwoCards", false);
-	double_after_split = jsonPayload.value("doubleAfterSplit", false);
-	resplit_aces = jsonPayload.value("resplitAces", false);
-	hit_split_aces = jsonPayload.value("hitSplitAces", false);
-	blackjack_bets = jsonPayload.value("blackjackBets", 1);
-	blackjack_pays = jsonPayload.value("blackjackPays", 1);
-	penetration = jsonPayload.value("penetration", 0.65f);
+	std::snprintf(playbook, sizeof(playbook), "%s", jsonResponse["playbook"].get<std::string>().c_str());
+	hit_soft_17 = jsonResponse.value("hitSoft17", false);
+	surrender = jsonResponse.value("surrender", false);
+	double_any_two_cards = jsonResponse.value("doubleAnyTwoCards", false);
+	double_after_split = jsonResponse.value("doubleAfterSplit", false);
+	resplit_aces = jsonResponse.value("resplitAces", false);
+	hit_split_aces = jsonResponse.value("hitSplitAces", false);
+	blackjack_bets = jsonResponse.value("blackjackBets", 1);
+	blackjack_pays = jsonResponse.value("blackjackPays", 1);
+	penetration = jsonResponse.value("penetration", 0.65f);
 }
 
 //

@@ -6,11 +6,12 @@
 void strategyLoadTable(const std::map<std::string, std::vector<std::string>>& strategy, Chart *chart);
 
 //
-Strategy::Strategy(const std::string& decks, const std::string& strategy, const int number_of_cards)
-		: Request(), number_of_cards(number_of_cards), SoftDouble("Soft Double"), HardDouble("Hard Double"), PairSplit("Pair Split"), SoftStand("Soft Stand"), HardStand("Hard Stand") {
+Strategy::Strategy(const std::string& decks, const std::string& strategy, const int number_of_decks)
+		: Request(), number_of_cards(number_of_decks * NUMBER_OF_CARDS_IN_DECK), SoftDouble("Soft Double"), HardDouble("Hard Double"),
+			PairSplit("Pair Split"), SoftStand("Soft Stand"), HardStand("Hard Stand") {
 	try {
 		if (strcasecmp("mimic", strategy.c_str()) != 0) {
-			fetchJson("http://localhost:57910/striker/v1/strategy");
+			fetchJson(getChartsUrl() + "/" + decks + "/" + strategy);
 			fetchTable(decks, strategy);
 
 			SoftDouble.print();
@@ -21,7 +22,7 @@ Strategy::Strategy(const std::string& decks, const std::string& strategy, const 
 			printCount();
 		}
 	}
-	catch (std::exception fault) {
+	catch (const std::exception& fault) {
 		std::cerr << "Error fetching strategy table: " << fault.what() << std::endl;
 		std::exit(EXIT_FAILURE);
 	}
@@ -73,28 +74,28 @@ bool Strategy::getStand(const int *seenCards, const int total, bool soft, Card *
 
 //
 void Strategy::fetchTable(const std::string& decks, const std::string& strategy) {
-   	for (const auto& item : jsonResponse) {
-		if (decks == item["playbook"].get<std::string>() && strategy == item["hand"].get<std::string>()) {
-   			nlohmann::json jsonPayload = nlohmann::json::parse(item["payload"].get<std::string>());
-			if (jsonPayload.is_null()) {
-				throw std::runtime_error("Error fetching strategy table payload");
-			}
+   	//for (const auto& item : jsonResponse) {
+		//if (decks == item["playbook"].get<std::string>() && strategy == item["hand"].get<std::string>()) {
+   			//nlohmann::json jsonPayload = nlohmann::json::parse(jsonResponse);
+			//if (jsonPayload.is_null()) {
+				//throw std::runtime_error("Error fetching strategy table payload");
+			//}
 
-	   		Playbook = jsonPayload["playbook"].get<std::string>();
-	   		Insurance = jsonPayload["insurance"].get<std::string>();
-	   		Counts = jsonPayload["counts"].get<std::vector<int>>();
+	   		Playbook = jsonResponse["playbook"].get<std::string>();
+	   		Insurance = jsonResponse["insurance"].get<std::string>();
+	   		Counts = jsonResponse["counts"].get<std::vector<int>>();
 			Counts.insert(Counts.begin(), 0);
 			Counts.insert(Counts.begin(), 0);
 
-	   		strategyLoadTable(jsonPayload["soft-double"].get<const std::map<std::string, std::vector<std::string>>>(), &SoftDouble);
-	   		strategyLoadTable(jsonPayload["hard-double"].get<const std::map<std::string, std::vector<std::string>>>(), &HardDouble);
-	   		strategyLoadTable(jsonPayload["pair-split"].get<const std::map<std::string, std::vector<std::string>>>(), &PairSplit);
-	   		strategyLoadTable(jsonPayload["soft-stand"].get<const std::map<std::string, std::vector<std::string>>>(), &SoftStand);
-	   		strategyLoadTable(jsonPayload["hard-stand"].get<const std::map<std::string, std::vector<std::string>>>(), &HardStand);
+	   		strategyLoadTable(jsonResponse["soft-double"].get<const std::map<std::string, std::vector<std::string>>>(), &SoftDouble);
+	   		strategyLoadTable(jsonResponse["hard-double"].get<const std::map<std::string, std::vector<std::string>>>(), &HardDouble);
+	   		strategyLoadTable(jsonResponse["pair-split"].get<const std::map<std::string, std::vector<std::string>>>(), &PairSplit);
+	   		strategyLoadTable(jsonResponse["soft-stand"].get<const std::map<std::string, std::vector<std::string>>>(), &SoftStand);
+	   		strategyLoadTable(jsonResponse["hard-stand"].get<const std::map<std::string, std::vector<std::string>>>(), &HardStand);
 
-			return;
-		}
-   	}
+			//return;
+		//}
+   	//}
 }
 
 void strategyLoadTable(const std::map<std::string, std::vector<std::string>>& strategy, Chart *chart) {

@@ -24,13 +24,17 @@ Table::~Table() {
 
 // Function to simulate a session
 void Table::session(bool mimic) {
-	char buffer[256];
-	std::snprintf(buffer, sizeof(buffer), "      Start: table, playing %lld hands", parameters->number_of_hands);
-	std::cout << buffer << std::endl;
+	if (parameters->verbose) {
+		char buffer[256];
+		std::snprintf(buffer, sizeof(buffer), "      Start: table, playing %ld hands", parameters->number_of_hands);
+		std::cout << buffer << std::endl;
+	}
 
 	report.start = std::time(nullptr);
-	while (report.total_hands < parameters->number_of_hands) {
-		status(report.total_rounds, report.total_hands);
+	while (report.total_hands < parameters->share_of_hands) {
+		if (parameters->verbose) {
+			status(report.total_rounds, report.total_hands);
+		}
 		shoe->shuffle();
 		player->shuffle();
 		report.total_rounds++;
@@ -60,12 +64,17 @@ void Table::session(bool mimic) {
 			player->payoff(dealer->isBlackjack(), dealer->isBusted(), dealer->getHandTotal());
 		}
 	}
-	std::cout << "\n";
+	if (parameters->verbose) {
+		std::cout << "\n";
+	}
 
 	report.end = std::time(nullptr);
 	report.duration = report.end - report.start;
-	std::snprintf(buffer, sizeof(buffer), "      End: table\n");
-	std::cout << buffer;
+	if (parameters->verbose) {
+		char buffer[256];
+		std::snprintf(buffer, sizeof(buffer), "      End: table\n");
+		std::cout << buffer;
+	}
 }
 
 // Function to deal cards
@@ -90,7 +99,7 @@ void Table::status(int64_t round, int64_t hand) {
 	}
 	if((round + 1) % STATUS_LINE == 0) {
 		char buffer[256];
-		std::snprintf(buffer, sizeof(buffer), " : %lld (rounds), %lld (hands)\n", (round + 1), hand);
+		std::snprintf(buffer, sizeof(buffer), " : %ld (rounds), %ld (hands)\n", (round + 1), hand);
 		std::cout << buffer;
 		std::cout << std::string("        ") << std::flush;
 	}

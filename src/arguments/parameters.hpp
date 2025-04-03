@@ -4,12 +4,14 @@
 #include <string>
 #include <ctime>
 #include <cstdint>
+#include "arguments.hpp"
 #include "constants.hpp"
 
 // Parameters class to store simulation parameters
 class Parameters {
 	public:
-		Parameters(std::string decks, std::string strategy, int number_of_decks, int64_t number_of_hands);
+		Parameters(Arguments *arguments);
+		//Parameters(std::string decks, std::string strategy, int number_of_decks, int64_t number_of_hands, int64_t number_of_threads);
 
 	public:
 		char name[MAX_STRING_SIZE];
@@ -20,6 +22,9 @@ class Parameters {
 		std::string strategy;
 		int number_of_decks;
 		int64_t number_of_hands;
+		int64_t share_of_hands;
+		int64_t number_of_threads;
+		bool verbose = true;
 
 	public:
 		void print();

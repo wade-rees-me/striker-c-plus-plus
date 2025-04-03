@@ -1,11 +1,14 @@
 #include <iostream>
 #include <curl/curl.h>
+#include "constants.hpp"
 #include "request.hpp"
 
 // Function to handle HTTP requests with libcurl
 size_t WriteCallback(void* contents, size_t size, size_t nmemb, std::string* buffer) {
 	size_t newLength = size * nmemb;
 	buffer->append((char*)contents, newLength);
+	unescape_json(*buffer);
+	strip_quotes(*buffer);
 	return newLength;
 }
 

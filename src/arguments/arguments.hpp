@@ -20,7 +20,8 @@ class Arguments {
 		bool single_deck_flag = false;
 		bool double_deck_flag = false;
 		bool six_shoe_flag = false;
-		int64_t number_of_hands = DEFAULT_NUMBER_OF_HANDS;
+		int64_t number_of_hands = NUMBER_OF_HANDS_DEFAULT;
+		int64_t number_of_threads = NUMBER_OF_CORES_DEFAULT;
 
 	public:
 		std::string getStrategy() const;
@@ -28,6 +29,9 @@ class Arguments {
 		int getNumberOfDecks() const;
 		int64_t getNumberOfHands() const {
 			return number_of_hands;
+		}
+		int64_t getNumberOfThreads() const {
+			return number_of_threads;
 		}
 
 	private:

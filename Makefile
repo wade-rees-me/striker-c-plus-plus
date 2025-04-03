@@ -1,10 +1,11 @@
 # Compiler and flags
 CXX = g++
-CXXFLAGS = -O3 -Wall -std=c++20 -I/usr/include -I/usr/local/include
+#CXXFLAGS = -O3 -Wall -std=c++20 -I/usr/include -I/usr/local/include  -I/usr/include/libmongoc-1.0 -I/usr/include/libbson-1.0 -L/usr/lib/x86_64-linux-gnu -fsanitize=address 
+CXXFLAGS = -O3 -Wall -std=c++20 -I/usr/include -I/usr/local/include  -I/usr/include/libmongoc-1.0 -I/usr/include/libbson-1.0 -L/usr/lib/x86_64-linux-gnu -march=native -pthread
 
 # Directories
 SRC_DIR = src
-SRC_DIRS = arguments cards constants table simulator machine
+SRC_DIRS = arguments cards constants table simulator aws
 INCLUDE_DIRS = $(SRC_DIRS)
 OBJ_DIR = obj
 
@@ -20,13 +21,16 @@ OBJ_FILES = $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRC_FILES))
 # Output binary
 TARGET = bin/strikerC++
 
+#
+STRIKER = /home/wade/Striker
+
 # Default target
 all: $(TARGET)
 
 # Build target
 $(TARGET): $(OBJ_FILES)
 	@mkdir -p bin
-	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $(TARGET) $(OBJ_FILES) -luuid -lcjson -lcurl
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $(TARGET) $(OBJ_FILES) -luuid -lcjson -lcurl -L/usr/lib/x86_64-linux-gnu -lbson-1.0 -lmongoc-1.0 -march=native -pthread
 
 # Compile source files into object files in obj/ directory
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
@@ -36,4 +40,8 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 # Clean up object files and the binary
 clean:
 	rm -f $(OBJ_DIR)/*.o $(OBJ_DIR)/*/*.o $(TARGET)
+
+# Install
+install:
+	cp -rf $(TARGET) $(STRIKER)/bin
 

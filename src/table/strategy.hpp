@@ -14,7 +14,7 @@
 //
 class Strategy : public Request {
 	public:
-		Strategy(const std::string& decks, const std::string& strategy, int number_of_cards);
+		Strategy(const std::string& decks, const std::string& strategy, int number_of_decks);
 
 	private:
 		int number_of_cards;

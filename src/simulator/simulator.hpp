@@ -6,7 +6,6 @@
 #include "rules.hpp"
 #include "table.hpp"
 #include "report.hpp"
-#include "simulation.hpp"
 #include "strategy.hpp"
 
 //
@@ -21,11 +20,13 @@ class Simulator {
 		Report report;
 
 	public:
-		void simulatorRunOnce();
+		Simulator* simulatorRunOnce();
+		Report *getReport() {
+			return &report;
+		}
 
 	private:
 		void simulatorRunSimulation();
-		void simulatorInsert(Simulation *simulation, std::string playbook);
 };
 
 #endif // SIMULATOR_HPP

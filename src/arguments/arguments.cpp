@@ -9,9 +9,18 @@
 Arguments::Arguments(int argc, char *argv[]) {
 	for (int i = 1; i < argc; ++i) {
 		if ((std::strcmp(argv[i], "-h") == 0 || std::strcmp(argv[i], "--number-of-hands") == 0) && i + 1 < argc) {
-			number_of_hands = std::atoll(argv[++i]);
-			if (number_of_hands < MINIMUM_NUMBER_OF_HANDS || number_of_hands > MAXIMUM_NUMBER_OF_HANDS) {
-				std::cerr << "Number of hands must be between " << MINIMUM_NUMBER_OF_HANDS << " and " << MAXIMUM_NUMBER_OF_HANDS << std::endl;
+            char buffer[MAX_BUFFER_SIZE];
+            snprintf(buffer, MAX_BUFFER_SIZE, "%s", argv[++i]);
+            number_of_hands = atoll(removeAllSubstrings(buffer, ",").c_str());
+			//number_of_hands = std::atoll(argv[++i]);
+			if (number_of_hands < NUMBER_OF_HANDS_MINIMUM || number_of_hands > NUMBER_OF_HANDS_MAXIMUM) {
+				std::cerr << "Number of hands must be between " << NUMBER_OF_HANDS_MINIMUM << " and " << NUMBER_OF_HANDS_MAXIMUM << std::endl;
+				std::exit(EXIT_FAILURE);
+			}
+		} else if ((std::strcmp(argv[i], "-t") == 0 || std::strcmp(argv[i], "--number-of-threads") == 0) && i + 1 < argc) {
+			number_of_threads = std::atoll(argv[++i]);
+			if (number_of_threads < 1 || number_of_threads > NUMBER_OF_CORES_LOGICAL) {
+				std::cerr << "Number of threads must be between 1 and " << NUMBER_OF_CORES_LOGICAL << std::endl;
 				std::exit(EXIT_FAILURE);
 			}
 		} else if (std::strcmp(argv[i], "-M") == 0 || std::strcmp(argv[i], "--mimic") == 0) {
@@ -56,19 +65,20 @@ void Arguments::printVersion() const {
 void Arguments::printHelpMessage() const {
 	std::cout << "Usage: strikerC++ [options]\n"
 			  << "Options:\n"
-			  << "  --help                                   Show this help message\n"
-			  << "  --version                                Display the program version\n"
-			  << "  -h, --number-of-hands <number of hands>  The number of hands to play in this simulation\n"
-			  << "  -M, --mimic                              Use the mimic dealer player strategy\n"
-			  << "  -B, --basic                              Use the basic player strategy\n"
-			  << "  -N, --neural                             Use the neural player strategy\n"
-			  << "  -L, --linear                             Use the liner regression player strategy\n"
-			  << "  -P, --polynomial                         Use the polynomial regression player strategy\n"
-			  << "  -H, --high-low                           Use the high low count player strategy\n"
-			  << "  -W, --wong                               Use the Wong count player strategy\n"
-			  << "  -1, --single-deck                        Use a single deck of cards and rules\n"
-			  << "  -2, --double-deck                        Use a double deck of cards and rules\n"
-			  << "  -6, --six-shoe                           Use a six deck shoe of cards and rules\n"
+			  << "  --help                                       Show this help message\n"
+			  << "  --version                                    Display the program version\n"
+			  << "  -h, --number-of-hands <number of hands>      The number of hands to play in this simulation\n"
+			  << "  -t, --number-of-threads <number of threads>  The number of threads to use in this simulation\n"
+			  << "  -M, --mimic                                  Use the mimic dealer player strategy\n"
+			  << "  -B, --basic                                  Use the basic player strategy\n"
+			  << "  -N, --neural                                 Use the neural player strategy\n"
+			  << "  -L, --linear                                 Use the liner regression player strategy\n"
+			  << "  -P, --polynomial                             Use the polynomial regression player strategy\n"
+			  << "  -H, --high-low                               Use the high low count player strategy\n"
+			  << "  -W, --wong                                   Use the Wong count player strategy\n"
+			  << "  -1, --single-deck                            Use a single deck of cards and rules\n"
+			  << "  -2, --double-deck                            Use a double deck of cards and rules\n"
+			  << "  -6, --six-shoe                               Use a six deck shoe of cards and rules\n"
 			  << std::endl;
 }
 

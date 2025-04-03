@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <cstdint>
 #include <string>
+#include <cstring>
 #include <iostream>
 #include <cctype>
 #include "chart.hpp"
