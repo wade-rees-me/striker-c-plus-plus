@@ -1,48 +1,39 @@
-#include <cstdlib>
-#include <string>
-#include <string>
-#include <cstring>
-#include <iostream>
-#include <fstream>
-#include <sstream>
 #include "constants.hpp"
+#include <cstdlib>
+#include <cstring>
+#include <fstream>
+#include <iostream>
+#include <sstream>
+#include <string>
 
 //
-std::string getRulesUrl() {
-	return std::getenv("STRIKER_URL_RULES");
-}
+std::string getRulesUrl() { return std::getenv("STRIKER_URL_RULES"); }
 
 //
-std::string getChartsUrl() {
-	return std::getenv("STRIKER_URL_CHARTS");
-}
+std::string getChartsUrl() { return std::getenv("STRIKER_URL_CHARTS"); }
 
 //
-std::string getSimulationsUrl() {
-	return std::getenv("STRIKER_URL_SIMULATIONS");
-}
+std::string getSimulationsUrl() { return std::getenv("STRIKER_URL_SIMULATIONS"); }
 
 // Function to convert bool to string
-const char* boolToString(bool b) {
-	return b ? "true" : "false";
+const char *boolToString(bool b) { return b ? "true" : "false"; }
+
+//
+std::string toUpperCase(std::string &str) {
+    std::transform(str.begin(), str.end(), str.begin(), [](unsigned char c) { return std::toupper(c); });
+    return str;
 }
 
 //
-std::string toUpperCase(std::string& str) {
-	std::transform(str.begin(), str.end(), str.begin(), [](unsigned char c) { return std::toupper(c); });
-	return str;
-}
-
-//
-std::string removeAllSubstrings(const std::string& src, const std::string& substr) {
+std::string removeAllSubstrings(const std::string &src, const std::string &substr) {
     std::string result;
     size_t pos = 0, found;
-    
+
     while ((found = src.find(substr, pos)) != std::string::npos) {
-        result.append(src, pos, found - pos);  // Copy up to substring
+        result.append(src, pos, found - pos); // Copy up to substring
         pos = found + substr.length();        // Skip substring
     }
-    result.append(src, pos);  // Copy remaining part
+    result.append(src, pos); // Copy remaining part
     return result;
 }
 
@@ -67,7 +58,7 @@ std::string readJsonFile(const std::string &filename) {
 
     // Read entire file into a string
     std::ostringstream buffer;
-    buffer << file.rdbuf();  
+    buffer << file.rdbuf();
     return buffer.str();
 }
 
@@ -83,14 +74,14 @@ void unescape_json(std::string &str) {
             // Handle known escape sequences
             if (i < len) {
                 if (str[i] == 'n') {
-                    str[i - 1] = '\n';  // Convert \n to newline (optional)
-                    str.erase(i, 1);     /* Remove the 'n' */
+                    str[i - 1] = '\n'; // Convert \n to newline (optional)
+                    str.erase(i, 1);   /* Remove the 'n' */
                 } else if (str[i] == '\"') {
-                    str[i - 1] = '\"';  /* Convert \" to " */
-                    str.erase(i, 1);    // Remove the quote
+                    str[i - 1] = '\"'; /* Convert \" to " */
+                    str.erase(i, 1);   // Remove the quote
                 } else if (str[i] == '\\') {
-                    str[i - 1] = '\\';  /* Convert \\ to \ */
-                    str.erase(i, 1);    // Remove the second backslash
+                    str[i - 1] = '\\'; /* Convert \\ to \ */
+                    str.erase(i, 1);   // Remove the second backslash
                 } else {
                     // Default: Just leave the character
                     i++;

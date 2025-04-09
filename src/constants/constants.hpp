@@ -1,12 +1,12 @@
 #ifndef CONSTANTS_HPP
 #define CONSTANTS_HPP
 
-#include <string>
 #include <cjson/cJSON.h>
+#include <string>
 
 // General constants
 const static std::string STRIKER_WHO_AM_I = "striker-c-plus-plus";
-const static std::string STRIKER_VERSION = "v3.00.00";	 // Epoch.Major.Minor
+const static std::string STRIKER_VERSION = "v3.00.00"; // Epoch.Major.Minor
 const static std::string TIME_LAYOUT = "%Y-%m-%d %H:%M:%S %z";
 
 // Define the maximum sizes-string fields
@@ -14,11 +14,11 @@ const static int64_t MAX_STRING_SIZE = 128;
 const static int64_t MAX_BUFFER_SIZE = 4096;
 const static int64_t MAX_MEMORY_SIZE = 1048576;
 
-// 
+//
 const static int64_t NUMBER_OF_CARDS_IN_DECK = 52;
 const static int64_t NUMBER_OF_CORES_PHYSICAL = 24;
 const static int64_t NUMBER_OF_CORES_LOGICAL = 32;
-const static int64_t NUMBER_OF_CORES_DEFAULT = 16;
+const static int64_t NUMBER_OF_CORES_DEFAULT = 20;
 
 // Simulation constants
 const static int64_t MILLION = 1000000LL;
@@ -42,9 +42,9 @@ const static int64_t STATUS_LINE = 1000000;
 std::string getRulesUrl();
 std::string getChartsUrl();
 std::string getSimulationsUrl();
-const char* boolToString(bool b);
-std::string toUpperCase(std::string& str);
-std::string removeAllSubstrings(const std::string& src, const std::string& substr);
+const char *boolToString(bool b);
+std::string toUpperCase(std::string &str);
+std::string removeAllSubstrings(const std::string &src, const std::string &substr);
 std::string formatWithCommas(long long num);
 std::string readJsonFile(const std::string &filename);
 void unescape_json(std::string &str);
