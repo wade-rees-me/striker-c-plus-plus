@@ -11,8 +11,6 @@
 class Parameters {
   public:
     Parameters(Arguments *arguments);
-    // Parameters(std::string decks, std::string strategy, int number_of_decks, int64_t number_of_hands, int64_t
-    // number_of_threads);
 
   public:
     char name[MAX_STRING_SIZE];

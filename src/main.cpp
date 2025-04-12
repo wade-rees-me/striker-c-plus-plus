@@ -27,7 +27,6 @@ int main(int argc, char *argv[]) {
     parameters.print();
     rules.print();
     std::cout << "  --------------------------------------------------------------------------------" << std::endl;
-    std::cout << "  Start: simulation(" << parameters.name << ") on " << arguments.getNumberOfThreads() << " cores\n";
 
     // Launch simulations asynchronously
     finalReport.init(&parameters, (int64_t)std::time(nullptr));
@@ -38,15 +37,10 @@ int main(int argc, char *argv[]) {
     for (auto &fut : futures) { // Merge results
         finalReport.merge(fut.get()->getReport());
     }
+
     finalReport.finish((int64_t)std::time(nullptr));
-
-    std::cout << "  End: simulation" << std::endl;
-    std::cout << "End: " << STRIKER_WHO_AM_I << std::endl;
-
     finalReport.print();
-    if (finalReport.total_hands >= NUMBER_OF_HANDS_DATABASE) {
-        finalReport.insert();
-    }
+    finalReport.insert();
 
     return 0;
 }

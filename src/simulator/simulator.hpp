@@ -22,9 +22,6 @@ class Simulator {
   public:
     Simulator *simulatorRunOnce();
     Report *getReport() { return &report; }
-
-  private:
-    void simulatorRunSimulation();
 };
 
 #endif // SIMULATOR_HPP

@@ -45,7 +45,7 @@ void Report::finish(int64_t endTime) {
 
 // Print out the results
 void Report::print() {
-    printf("\n  -- results ---------------------------------------------------------------------\n");
+    printf("  -- results ---------------------------------------------------------------------\n");
     printf("    %-26s: %17s\n", "Number of hands", formatWithCommas(total_hands).c_str());
     printf("    %-26s: %17s\n", "Number of rounds", formatWithCommas(total_rounds).c_str());
     printf("    %-26s: %17s %+08.3f average bet per hand\n", "Total bet", formatWithCommas(total_bet).c_str(),
@@ -75,68 +75,83 @@ void Report::print() {
 
 // Function to insert simulation into the database (HTTP POST)
 void Report::insert() {
-    struct curl_slist *headers = nullptr;
-    CURL *curl;
+    std::cout << "  -- insert ----------------------------------------------------------------------\n";
+    if (this->total_hands >= NUMBER_OF_HANDS_DATABASE) {
+        struct curl_slist *headers = nullptr;
+        CURL *curl;
 
-    curl_global_init(CURL_GLOBAL_ALL);
-    curl = curl_easy_init();
+        curl_global_init(CURL_GLOBAL_ALL);
+        curl = curl_easy_init();
 
-    if (curl) {
-        char url[MAX_BUFFER_SIZE];
-        // char buffer[MAX_BUFFER_SIZE];
-        snprintf(url, sizeof(url), "http://%s/%s/%s/%s", getSimulationsUrl().c_str(), this->simulator, this->playbook,
-                 this->name);
-        curl_easy_setopt(curl, CURLOPT_URL, url);
+        if (curl) {
+            char url[MAX_BUFFER_SIZE];
+            snprintf(url, sizeof(url), "http://%s/%s/%s/%s", getSimulationsUrl().c_str(), this->simulator,
+                     this->playbook, this->name);
 
-        std::cout << std::endl << " -- insert ----------------------------------------------------------------------\n";
-        // Set headers
-        headers = curl_slist_append(headers, "Content-Type: application/json");
-        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+            curl_easy_setopt(curl, CURLOPT_URL, url);
+            curl_easy_setopt(curl, CURLOPT_VERBOSE, 0L);
+            curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1L);
 
-        // Convert Simulation to JSON
-        nlohmann::json json;
+            curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, NULL);
+            curl_easy_setopt(curl, CURLOPT_WRITEDATA, fopen("/dev/null", "w"));
+            curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, NULL);
+            curl_easy_setopt(curl, CURLOPT_HEADERDATA, fopen("/dev/null", "w"));
 
-        json["guid"] = this->name;
-        json["version"] = STRIKER_VERSION;
-        json["simulator"] = this->simulator;
-        json["threads"] = this->total_threads;
-        json["playbook"] = this->playbook;
-        json["decks"] = this->decks;
-        json["strategy"] = this->strategy;
-        json["rounds"] = this->total_rounds;
-        json["hands"] = this->total_hands;
-        json["total_bet"] = this->total_bet;
-        json["total_won"] = this->total_won;
-        json["total_blackjacks"] = this->total_blackjacks;
-        json["total_doubles"] = this->total_doubles;
-        json["total_splits"] = this->total_splits;
-        json["total_wins"] = this->total_wins;
-        json["total_loses"] = this->total_loses;
-        json["total_pushes"] = this->total_pushes;
-        json["advantage"] = ((double)this->total_won / this->total_bet) * 100;
-        json["epoch"] = this->epoch;
-        json["start"] = this->start;
-        json["end"] = this->end;
-        json["duration"] = this->duration;
-        json["per_billion"] = ((float)this->duration * (float)BILLION / (float)this->total_hands);
-        // rules->serialize(buffer, sizeof(buffer));
-        // json["rules"] = buffer;
+            // Set headers
+            headers = curl_slist_append(headers, "Content-Type: application/json");
+            curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
 
-        std::string jsonString = json.dump();
-        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, jsonString.c_str());
+            // Convert Simulation to JSON
+            nlohmann::json json;
+            toJsonObject(json);
 
-        CURLcode res = curl_easy_perform(curl);
-        if (res != CURLE_OK) {
-            std::cout << std::string("curl -X POST ") + std::string(url) +
-                             std::string(" -H \"Content-Type: application/json\" -d") + jsonString +
-                             std::string("\n\n");
-            std::cerr << "curl_easy_perform() failed: " << curl_easy_strerror(res) << "\n";
+            std::string jsonString = json.dump();
+            curl_easy_setopt(curl, CURLOPT_POSTFIELDS, jsonString.c_str());
+
+            CURLcode res = curl_easy_perform(curl);
+            if (res != CURLE_OK) {
+                std::cerr << "    curl_easy_perform() failed: " << curl_easy_strerror(res) << "\n";
+            } else {
+                printf("    Code: HTTP-200-OK\n");
+            }
+
+            curl_easy_cleanup(curl);
+        } else {
+            printf("    Curl failed to generate\n");
         }
-
-        curl_easy_cleanup(curl);
-        std::cout << "  --------------------------------------------------------------------------------\n";
+    } else {
+        printf("    Error: Not enough hands played (%s). Minimum required is %s\n",
+               formatWithCommas(total_hands).c_str(), formatWithCommas(NUMBER_OF_HANDS_DATABASE).c_str());
     }
+    std::cout << "  --------------------------------------------------------------------------------\n";
 
     curl_global_cleanup();
+}
+
+// Convert Simulation to JSON
+void Report::toJsonObject(nlohmann::json json) {
+    json["guid"] = this->name;
+    json["version"] = STRIKER_VERSION;
+    json["simulator"] = this->simulator;
+    json["threads"] = this->total_threads;
+    json["playbook"] = this->playbook;
+    json["decks"] = this->decks;
+    json["strategy"] = this->strategy;
+    json["rounds"] = this->total_rounds;
+    json["hands"] = this->total_hands;
+    json["total_bet"] = this->total_bet;
+    json["total_won"] = this->total_won;
+    json["total_blackjacks"] = this->total_blackjacks;
+    json["total_doubles"] = this->total_doubles;
+    json["total_splits"] = this->total_splits;
+    json["total_wins"] = this->total_wins;
+    json["total_loses"] = this->total_loses;
+    json["total_pushes"] = this->total_pushes;
+    json["advantage"] = ((double)this->total_won / this->total_bet) * 100;
+    json["epoch"] = this->epoch;
+    json["start"] = this->start;
+    json["end"] = this->end;
+    json["duration"] = this->duration;
+    json["per_billion"] = ((float)this->duration * (float)BILLION / (float)this->total_hands);
 }
 

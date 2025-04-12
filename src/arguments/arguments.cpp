@@ -12,7 +12,6 @@ Arguments::Arguments(int argc, char *argv[]) {
             char buffer[MAX_BUFFER_SIZE];
             snprintf(buffer, MAX_BUFFER_SIZE, "%s", argv[++i]);
             number_of_hands = atoll(removeAllSubstrings(buffer, ",").c_str());
-            // number_of_hands = std::atoll(argv[++i]);
             if (number_of_hands < NUMBER_OF_HANDS_MINIMUM || number_of_hands > NUMBER_OF_HANDS_MAXIMUM) {
                 std::cerr << "Number of hands must be between " << NUMBER_OF_HANDS_MINIMUM << " and "
                           << NUMBER_OF_HANDS_MAXIMUM << std::endl;

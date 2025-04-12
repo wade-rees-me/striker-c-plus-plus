@@ -59,22 +59,3 @@ void Parameters::generateName() {
     std::snprintf(name, sizeof(name), "%s_%4d_%02d_%02d_%012ld", STRIKER_WHO_AM_I.c_str(), year, month, day, t);
 }
 
-/*
-//
-void Parameters::serialize(char *buffer, int buffer_size) {
-    nlohmann::json json;
-
-    json["name"] = name;
-    json["playbook"] = playbook;
-    json["processor"] = processor;
-    json["epoch"] = epoch;
-    json["decks"] = decks.c_str();
-    json["strategy"] = strategy.c_str();
-    json["number_of_hands"] = number_of_hands;
-    json["number_of_decks"] = number_of_decks;
-
-    std::string jsonString = json.dump();
-    std::snprintf(buffer, buffer_size, "%s", jsonString.c_str());
-}
-*/
-

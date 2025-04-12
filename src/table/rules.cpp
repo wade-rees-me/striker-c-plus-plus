@@ -47,21 +47,3 @@ void Rules::print() {
     printf("      %-24s: %0.3f %%\n", "Penetration", penetration);
 }
 
-//
-void Rules::serialize(char *buffer, int buffer_size) {
-    nlohmann::json json;
-
-    json["hit_soft_17"] = hit_soft_17 ? "true" : "false";
-    json["surrender"] = surrender ? "true" : "false";
-    json["double_any_two_cards"] = double_any_two_cards ? "true" : "false";
-    json["double_after_split"] = double_after_split ? "true" : "false";
-    json["resplit_aces"] = resplit_aces ? "true" : "false";
-    json["hit_split_aces"] = hit_split_aces ? "true" : "false";
-    json["blackjack_bets"] = blackjack_bets;
-    json["blackjack_pays"] = blackjack_pays;
-    json["penetration"] = penetration;
-
-    std::string jsonString = json.dump();
-    std::snprintf(buffer, buffer_size, "%s", jsonString.c_str());
-}
-

@@ -15,6 +15,7 @@ class Report {
     void merge(Report *a);
     void print();
     void insert();
+    void toJsonObject(nlohmann::json json);
 
   public:
     char name[MAX_STRING_SIZE];
