@@ -45,7 +45,6 @@ void Report::finish(int64_t endTime) {
 
 // Print out the results
 void Report::print() {
-    printf("  -- results ---------------------------------------------------------------------\n");
     printf("    %-26s: %17s\n", "Number of hands", formatWithCommas(total_hands).c_str());
     printf("    %-26s: %17s\n", "Number of rounds", formatWithCommas(total_rounds).c_str());
     printf("    %-26s: %17s %+08.3f average bet per hand\n", "Total bet", formatWithCommas(total_bet).c_str(),
@@ -70,61 +69,58 @@ void Report::print() {
            formatWithCommas((int)((float)duration * BILLION / (float)total_hands)).c_str(),
            formatWithCommas(BILLION).c_str());
     printf("    %-26s: %17s %+08.3f %%\n", "Player advantage", "", advantage);
-    printf("  --------------------------------------------------------------------------------\n");
 }
 
 // Function to insert simulation into the database (HTTP POST)
 void Report::insert() {
-    std::cout << "  -- insert ----------------------------------------------------------------------\n";
-    if (this->total_hands >= NUMBER_OF_HANDS_DATABASE) {
-        struct curl_slist *headers = nullptr;
-        CURL *curl;
-
-        curl_global_init(CURL_GLOBAL_ALL);
-        curl = curl_easy_init();
-
-        if (curl) {
-            char url[MAX_BUFFER_SIZE];
-            snprintf(url, sizeof(url), "http://%s/%s/%s/%s", getSimulationsUrl().c_str(), this->simulator,
-                     this->playbook, this->name);
-
-            curl_easy_setopt(curl, CURLOPT_URL, url);
-            curl_easy_setopt(curl, CURLOPT_VERBOSE, 0L);
-            curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1L);
-
-            curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, NULL);
-            curl_easy_setopt(curl, CURLOPT_WRITEDATA, fopen("/dev/null", "w"));
-            curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, NULL);
-            curl_easy_setopt(curl, CURLOPT_HEADERDATA, fopen("/dev/null", "w"));
-
-            // Set headers
-            headers = curl_slist_append(headers, "Content-Type: application/json");
-            curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-
-            // Convert Simulation to JSON
-            nlohmann::json json;
-            toJsonObject(json);
-
-            std::string jsonString = json.dump();
-            curl_easy_setopt(curl, CURLOPT_POSTFIELDS, jsonString.c_str());
-
-            CURLcode res = curl_easy_perform(curl);
-            if (res != CURLE_OK) {
-                std::cerr << "    curl_easy_perform() failed: " << curl_easy_strerror(res) << "\n";
-            } else {
-                printf("    Code: HTTP-200-OK\n");
-            }
-
-            curl_easy_cleanup(curl);
-        } else {
-            printf("    Curl failed to generate\n");
-        }
-    } else {
+    if (this->total_hands < NUMBER_OF_HANDS_DATABASE) {
         printf("    Error: Not enough hands played (%s). Minimum required is %s\n",
                formatWithCommas(total_hands).c_str(), formatWithCommas(NUMBER_OF_HANDS_DATABASE).c_str());
+        return;
     }
-    std::cout << "  --------------------------------------------------------------------------------\n";
 
+    struct curl_slist *headers = nullptr;
+    CURL *curl;
+
+    curl_global_init(CURL_GLOBAL_ALL);
+    curl = curl_easy_init();
+
+    if (!curl) {
+        std::cout << "    Curl failed to generate" << std::endl;
+        return;
+    }
+    char url[MAX_BUFFER_SIZE];
+    snprintf(url, sizeof(url), "http://%s/%s/%s/%s", getSimulationsUrl().c_str(), this->simulator, this->playbook,
+             this->name);
+
+    curl_easy_setopt(curl, CURLOPT_URL, url);
+    curl_easy_setopt(curl, CURLOPT_VERBOSE, 0L);
+    curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1L);
+
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, NULL);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, fopen("/dev/null", "w"));
+    curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, NULL);
+    curl_easy_setopt(curl, CURLOPT_HEADERDATA, fopen("/dev/null", "w"));
+
+    // Set headers
+    headers = curl_slist_append(headers, "Content-Type: application/json");
+    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+
+    // Convert Simulation to JSON
+    nlohmann::json json;
+    toJsonObject(json);
+
+    std::string jsonString = json.dump();
+    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, jsonString.c_str());
+
+    CURLcode res = curl_easy_perform(curl);
+    if (res == CURLE_OK) {
+        std::cout << "    Insert successful" << std::endl;
+    } else {
+        std::cout << "    curl_easy_perform() failed: " << curl_easy_strerror(res) << std::endl;
+    }
+
+    curl_easy_cleanup(curl);
     curl_global_cleanup();
 }
 

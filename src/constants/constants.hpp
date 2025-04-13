@@ -34,10 +34,6 @@ const static int64_t MAXIMUM_BET = 80LL;
 const static int64_t TRUE_COUNT_BET = 2;
 const static int64_t TRUE_COUNT_MULTIPLIER = 26;
 
-//
-const static int64_t STATUS_DOT = 25000;
-const static int64_t STATUS_LINE = 1000000;
-
 // Function declarations for getting environment variables
 std::string getRulesUrl();
 std::string getChartsUrl();
