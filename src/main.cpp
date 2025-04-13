@@ -21,6 +21,7 @@ int main(int argc, char *argv[]) {
     std::vector<std::future<Simulator *>> futures;
 
     std::cout.imbue(std::locale("en_US.UTF-8"));
+    std::cout.setf(std::ios::unitbuf);
 
     std::cout << "Start: " << STRIKER_WHO_AM_I << std::endl;
     std::cout << "  -- arguments -------------------------------------------------------------------" << std::endl;
