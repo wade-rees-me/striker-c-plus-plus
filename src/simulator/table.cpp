@@ -79,8 +79,10 @@ void Table::dealCards(Hand *hand) {
 
 //
 void Table::status(int64_t round, int64_t hand) {
-    const char *spinner = "|/-\\";
-    printf("\r%c Simulating...", spinner[hand % 4]);
-    fflush(stdout);
+    if (round % STATUS_ROUNDS == 0) {
+        printf("\r    Rounds: [%13sd] Hands [%13sd]: Simulating...", formatWithCommas(round).c_str(),
+               formatWithCommas(hand).c_str());
+        fflush(stdout);
+    }
 }
 

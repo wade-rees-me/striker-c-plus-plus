@@ -8,6 +8,7 @@
 const static std::string STRIKER_WHO_AM_I = "striker-c-plus-plus";
 const static std::string STRIKER_VERSION = "v3.00.00"; // Epoch.Major.Minor
 const static std::string TIME_LAYOUT = "%Y-%m-%d %H:%M:%S %z";
+const static int64_t STATUS_ROUNDS = 1000000;
 
 // Define the maximum sizes-string fields
 const static int64_t MAX_STRING_SIZE = 128;

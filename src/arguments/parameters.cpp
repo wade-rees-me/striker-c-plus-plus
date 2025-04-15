@@ -32,7 +32,7 @@ void Parameters::print() {
     printf("    %-26s: %s\n", "Decks", decks);
     printf("    %-26s: %s\n", "Strategy", strategy);
     printf("    %-26s: %17s\n", "Number of hands", formatWithCommas(number_of_hands).c_str());
-    printf("    %-26s: %17s\n", "Thread's share of hands", formatWithCommas(share_of_hands).c_str());
+    printf("    %-26s: %17s\n", "Thread share of hands", formatWithCommas(share_of_hands).c_str());
     printf("    %-26s: %s\n", "Epoch", epoch);
 }
 
