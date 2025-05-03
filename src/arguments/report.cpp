@@ -30,6 +30,7 @@ void Report::merge(Report *a) {
     this->total_blackjacks += a->total_blackjacks;
     this->total_doubles += a->total_doubles;
     this->total_splits += a->total_splits;
+    this->total_splits_ace += a->total_splits_ace;
     this->total_wins += a->total_wins;
     this->total_loses += a->total_loses;
     this->total_pushes += a->total_pushes;
@@ -57,6 +58,8 @@ void Report::print() {
            (double)total_doubles / total_hands * 100.0);
     printf("    %-26s: %17s %+08.3f %% of total hands\n", "Number of splits", formatWithCommas(total_splits).c_str(),
            (double)total_splits / total_hands * 100.0);
+    printf("    %-26s: %17s %+08.3f %% of total hands\n", "Number of splits - Aces",
+           formatWithCommas(total_splits_ace).c_str(), (double)total_splits_ace / total_hands * 100.0);
     printf("    %-26s: %17s %+08.3f %% of total hands\n", "Number of wins", formatWithCommas(total_wins).c_str(),
            (double)total_wins / total_hands * 100.0);
     printf("    %-26s: %17s %+08.3f %% of total hands\n", "Number of pushes", formatWithCommas(total_pushes).c_str(),
@@ -140,6 +143,7 @@ void Report::toJsonObject(nlohmann::json json) {
     json["total_blackjacks"] = this->total_blackjacks;
     json["total_doubles"] = this->total_doubles;
     json["total_splits"] = this->total_splits;
+    json["total_splits_ace"] = this->total_splits_ace;
     json["total_wins"] = this->total_wins;
     json["total_loses"] = this->total_loses;
     json["total_pushes"] = this->total_pushes;

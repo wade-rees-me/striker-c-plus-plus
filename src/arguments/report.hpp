@@ -32,6 +32,7 @@ class Report {
     int64_t total_blackjacks = 0;
     int64_t total_doubles = 0;
     int64_t total_splits = 0;
+    int64_t total_splits_ace = 0;
     int64_t total_wins = 0;
     int64_t total_loses = 0;
     int64_t total_pushes = 0;

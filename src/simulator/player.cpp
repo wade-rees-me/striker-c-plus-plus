@@ -58,6 +58,7 @@ void Player::play(Card *up, Shoe *shoe, bool mimic) {
         report.total_splits++;
 
         if (wager.isPairOfAces()) {
+            report.total_splits_ace++;
             drawCard(&wager, shoe->drawCard());
             drawCard(split, shoe->drawCard());
             return;
