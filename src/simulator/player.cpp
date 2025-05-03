@@ -53,16 +53,21 @@ void Player::play(Card *up, Shoe *shoe, bool mimic) {
 
     if (wager.isPair() && strategy->getSplit(seen_cards, wager.getCardPair(), up)) {
         Wager *split = new Wager(MINIMUM_BET, MAXIMUM_BET);
-        wager.splitHand(split);
-        splits.push_back(split);
         report.total_splits++;
 
         if (wager.isPairOfAces()) {
             report.total_splits_ace++;
+
+            wager.splitHand(split);
+            splits.push_back(split);
+
             drawCard(&wager, shoe->drawCard());
             drawCard(split, shoe->drawCard());
             return;
         }
+
+        wager.splitHand(split);
+        splits.push_back(split);
 
         drawCard(&wager, shoe->drawCard());
         playSplit(&wager, shoe, up);

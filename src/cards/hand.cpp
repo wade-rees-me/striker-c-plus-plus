@@ -19,11 +19,11 @@ Card *Hand::drawCard(Card *card) {
 
 bool Hand::isBlackjack() const { return cards.size() == 2 && hand_total == 21; }
 
-bool Hand::isPair() const { return cards.size() == 2 && cards[0]->getRank() == cards[1]->getRank(); }
+bool Hand::isPair() const { return cards.size() == 2 && cards[0]->getValue() == cards[1]->getValue(); }
 
 Card *Hand::getCardPair() const { return cards[0]; }
 
-bool Hand::isPairOfAces() const { return isPair() && cards[0]->getRank() == "ace"; }
+bool Hand::isPairOfAces() const { return isPair() && cards[0]->isAce(); }
 
 bool Hand::isBusted() const { return hand_total > 21; }
 
