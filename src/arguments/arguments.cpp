@@ -62,7 +62,7 @@ void Arguments::printVersion() const { std::cout << STRIKER_WHO_AM_I << ": versi
 
 //
 void Arguments::printHelpMessage() const {
-    std::cout << "Usage: strikerC++ [options]\n"
+    std::cout << "Usage: striker-plus [options]\n"
               << "Options:\n"
               << "  --help                                       Show this help message\n"
               << "  --version                                    Display the program version\n"

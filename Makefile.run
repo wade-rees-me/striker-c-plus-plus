@@ -16,7 +16,7 @@ INCLUDE_DIRS = $(SRC_DIRS)
 OBJ_DIR = obj
 
 # Binary
-TARGET = bin/strikerC++
+TARGET = bin/striker-plus
 STRIKER = ${HOME}/Striker
 
 # Params

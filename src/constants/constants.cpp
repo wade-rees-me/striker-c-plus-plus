@@ -5,6 +5,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <unistd.h>
 
 //
 std::string getRulesUrl() { return std::getenv("STRIKER_URL_RULES"); }
@@ -17,6 +18,21 @@ std::string getSimulationsUrl() { return std::getenv("STRIKER_URL_SIMULATIONS");
 
 // Function to convert bool to string
 const char *boolToString(bool b) { return b ? "true" : "false"; }
+
+// Get hostname and check if it matches
+bool is_my_computer() {
+    char hostname[MAX_BUFFER_SIZE];
+    const std::string my_hostname = MY_HOSTNAME;
+
+    if (gethostname(hostname, sizeof(hostname)) != 0) {
+        perror("gethostname");
+        return false;
+    }
+
+    hostname[MAX_BUFFER_SIZE - 1] = '\0'; // Ensure null-termination
+
+    return my_hostname == hostname;
+}
 
 //
 std::string toUpperCase(std::string &str) {

@@ -9,6 +9,7 @@ const static std::string STRIKER_WHO_AM_I = "striker-c-plus-plus";
 const static std::string STRIKER_VERSION = "v3.00.00"; // Epoch.Major.Minor
 const static std::string TIME_LAYOUT = "%Y-%m-%d %H:%M:%S %z";
 const static int64_t STATUS_ROUNDS = 1000000;
+const static std::string MY_HOSTNAME = "Striker";
 
 // Define the maximum sizes-string fields
 const static int64_t MAX_STRING_SIZE = 128;
@@ -36,6 +37,7 @@ const static int64_t TRUE_COUNT_BET = 2;
 const static int64_t TRUE_COUNT_MULTIPLIER = 26;
 
 // Function declarations for getting environment variables
+bool is_my_computer();
 std::string getRulesUrl();
 std::string getChartsUrl();
 std::string getSimulationsUrl();

@@ -76,6 +76,10 @@ void Report::print() {
 
 // Function to insert simulation into the database (HTTP POST)
 void Report::insert() {
+    if (!is_my_computer()) {
+        std::cout << "    This code is restricted to running only on my computer.\n";
+        return;
+    }
     if (this->total_hands < NUMBER_OF_HANDS_DATABASE) {
         printf("    Error: Not enough hands played (%s). Minimum required is %s\n",
                formatWithCommas(total_hands).c_str(), formatWithCommas(NUMBER_OF_HANDS_DATABASE).c_str());

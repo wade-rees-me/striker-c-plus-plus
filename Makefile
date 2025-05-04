@@ -29,7 +29,7 @@ SRC_FILES = $(wildcard $(SRC_DIR)/main.cpp $(foreach dir,$(SRC_DIRS),$(SRC_DIR)/
 OBJ_FILES = $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRC_FILES))
 
 # Binary
-TARGET = bin/strikerC++
+TARGET = bin/striker-plus
 STRIKER = ${HOME}/Striker
 
 # Params
@@ -44,7 +44,7 @@ LOG = $(LOG_DIR)/$(notdir $(TARGET))-$(shell date +%H%M%S).log
 .DEFAULT_GOAL := help
 
 help:
-	@echo "Makefile for StrikerC++ project"
+	@echo "Makefile for Striker-plus project"
 	@echo "  all            - Build the binary"
 	@echo "  clean          - Remove build artifacts"
 	@echo "  lint           - Run clang-tidy"
