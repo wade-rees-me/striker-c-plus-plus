@@ -17,7 +17,7 @@ DECKS := single-deck double-deck six-shoe
 
 # Directories
 SRC_DIR = src
-SRC_DIRS = arguments cards constants table simulator aws
+SRC_DIRS = arguments cards constants table simulator xlog
 INCLUDE_DIRS = $(SRC_DIRS)
 OBJ_DIR = obj
 
@@ -31,14 +31,6 @@ OBJ_FILES = $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRC_FILES))
 # Binary
 TARGET = bin/striker-plus
 STRIKER = ${HOME}/Striker
-
-# Params
-HANDS ?= 500000000
-THREADS ?= 24
-STRATEGY ?= mimic
-DECKS ?= single-deck
-LOG_DIR = $(STRIKER)/Simulations/$(shell date +%Y)/$(shell date +%m)/$(shell date +%d)
-LOG = $(LOG_DIR)/$(notdir $(TARGET))-$(shell date +%H%M%S).log
 
 # Default
 .DEFAULT_GOAL := help

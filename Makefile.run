@@ -10,14 +10,14 @@ DECKS := single-deck double-deck six-shoe
 	rb rb1 rb2 rb6 rh rh1 rh2 rh6 rw rw1 rw2 rw6
 
 # Directories
-SRC_DIR = src
-SRC_DIRS = arguments cards constants table simulator aws
-INCLUDE_DIRS = $(SRC_DIRS)
-OBJ_DIR = obj
+#SRC_DIR = src
+#SRC_DIRS = arguments cards constants table simulator xlog
+#INCLUDE_DIRS = $(SRC_DIRS)
+#OBJ_DIR = obj
 
 # Binary
-TARGET = bin/striker-plus
-STRIKER = ${HOME}/Striker
+#TARGET = bin/striker-plus
+#STRIKER = ${HOME}/Striker
 
 # Params
 HANDS ?= 500000000

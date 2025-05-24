@@ -4,6 +4,7 @@
 #include "rules.hpp"
 #include "simulator.hpp"
 #include "strategy.hpp"
+#include "xlog/xlog.hpp"
 #include <cstdlib>
 #include <ctime>
 #include <future>
@@ -12,6 +13,7 @@
 
 //
 int main(int argc, char *argv[]) {
+    xlog::init(xlog::SYSLOG_ADDRESS, xlog::SYSLOG_PORT);
     Arguments arguments(argc, argv);
     Parameters parameters(&arguments);
     Rules rules(arguments.getDecks());
@@ -23,6 +25,8 @@ int main(int argc, char *argv[]) {
     std::cout.imbue(std::locale("en_US.UTF-8"));
     std::cout.setf(std::ios::unitbuf);
 
+    time_t start = xlog::start("Simulation started, strategy=%s, decks=%s, hands=%d", arguments.getStrategy().c_str(),
+                               arguments.getDecks().c_str(), arguments.getNumberOfHands());
     std::cout << "Start: " << STRIKER_WHO_AM_I << std::endl;
     std::cout << "  -- arguments -------------------------------------------------------------------" << std::endl;
     parameters.print();
@@ -46,6 +50,9 @@ int main(int argc, char *argv[]) {
     std::cout << "  -- insert ----------------------------------------------------------------------" << std::endl;
     finalReport.insert();
     std::cout << "  --------------------------------------------------------------------------------" << std::endl;
+    xlog::stop(start, "Simulation started, strategy=%s, decks=%s, hands=%d", arguments.getStrategy().c_str(),
+               arguments.getDecks().c_str(), arguments.getNumberOfHands());
 
+    xlog::close();
     return 0;
 }
