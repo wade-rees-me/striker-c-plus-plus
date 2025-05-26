@@ -1,39 +1,72 @@
 # Compiler and flags
 CXX = g++
-CXXFLAGS = -O3 -Wall -std=c++20 -I/usr/include -I/usr/local/include
+TIDY = clang-tidy
+CXXFLAGS = -O3 -Wall -std=c++20 -I/usr/include -I/usr/local/include -I/usr/include/libmongoc-1.0 -I/usr/include/libbson-1.0 -L/usr/lib/x86_64-linux-gnu -march=native -pthread
+LDFLAGS = -static-libgcc -static-libstdc++ -luuid -lcjson -lcurl -lbson-1.0 -lmongoc-1.0 -pthread
+
+# Strategies and decks
+STRATEGIES := mimic linear polynomial neural basic high-low wong
+DECKS := single-deck double-deck six-shoe
+
+# .PHONY targets
+.PHONY: all clean lint bear install help run run-all \
+	$(foreach s,$(STRATEGIES),run-$(s) $(foreach d,$(DECKS),run-$(s)-$(d))) \
+	run-single-deck run-double-deck run-six-shoe \
+	rm rm1 rm2 rm6 rl rl1 rl2 rl6 rp rp1 rp2 rp6 rn rn1 rn2 rn6 \
+	rb rb1 rb2 rb6 rh rh1 rh2 rh6 rw rw1 rw2 rw6
 
 # Directories
 SRC_DIR = src
-SRC_DIRS = arguments cards constants table simulator machine
+SRC_DIRS = arguments cards constants table simulator xlog
 INCLUDE_DIRS = $(SRC_DIRS)
 OBJ_DIR = obj
 
-# Include all directories for header files
-INCLUDES = $(foreach dir, $(INCLUDE_DIRS), -I$(SRC_DIR)/$(dir)) -I/usr/local/Cellar/eigen/3.4.0_1/include/eigen3
+# Includes
+INCLUDES = $(foreach dir,$(SRC_DIRS), -I$(SRC_DIR)/$(dir))
 
-# Source files (located in the src/ directory)
-SRC_FILES = $(wildcard $(SRC_DIR)/main.cpp $(foreach dir, $(SRC_DIRS), $(SRC_DIR)/$(dir)/*.cpp))
+# Files
+SRC_FILES = $(wildcard $(SRC_DIR)/main.cpp $(foreach dir,$(SRC_DIRS),$(SRC_DIR)/$(dir)/*.cpp))
+OBJ_FILES = $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRC_FILES))
 
-# Object files (place them in the obj/ directory)
-OBJ_FILES = $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRC_FILES))
+# Binary
+TARGET = bin/striker-plus
+STRIKER = ${HOME}/Striker
 
-# Output binary
-TARGET = bin/strikerC++
+# Default
+.DEFAULT_GOAL := help
 
-# Default target
+help:
+	@echo "Makefile for Striker-plus project"
+	@echo "  all            - Build the binary"
+	@echo "  clean          - Remove build artifacts"
+	@echo "  lint           - Run clang-tidy"
+	@echo "  bear           - Generate compile_commands.json"
+	@echo "  install        - Install binary to $(STRIKER)/bin"
+	@echo "  run            - Run a simulation"
+	@echo "  run-all        - Run all strategy/deck combinations"
+
+# Build
 all: $(TARGET)
 
-# Build target
 $(TARGET): $(OBJ_FILES)
 	@mkdir -p bin
-	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $(TARGET) $(OBJ_FILES) -luuid -lcjson -lcurl
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS)
 
-# Compile source files into object files in obj/ directory
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
 
-# Clean up object files and the binary
 clean:
-	rm -f $(OBJ_DIR)/*.o $(OBJ_DIR)/*/*.o $(TARGET)
+	rm -rf $(OBJ_DIR) $(TARGET)
+
+lint:
+	$(TIDY) $(SRC_FILES)
+
+bear:
+	bear -- make clean all
+
+install:
+	cp -rf $(TARGET) $(STRIKER)/bin
+
+include Makefile.run
 
