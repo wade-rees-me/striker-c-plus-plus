@@ -8,4 +8,3 @@ bool Dealer::shouldStand() const {
     }
     return hand.getHandTotal() >= 17;
 }
-

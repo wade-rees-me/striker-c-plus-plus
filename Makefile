@@ -42,8 +42,6 @@ help:
 	@echo "  lint           - Run clang-tidy"
 	@echo "  bear           - Generate compile_commands.json"
 	@echo "  install        - Install binary to $(STRIKER)/bin"
-	@echo "  run            - Run a simulation"
-	@echo "  run-all        - Run all strategy/deck combinations"
 
 # Build
 all: $(TARGET)
@@ -67,6 +65,4 @@ bear:
 
 install:
 	cp -rf $(TARGET) $(STRIKER)/bin
-
-include Makefile.run
 

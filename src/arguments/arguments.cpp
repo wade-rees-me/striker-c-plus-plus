@@ -125,4 +125,3 @@ int Arguments::getNumberOfDecks() const {
     }
     return 1;
 }
-

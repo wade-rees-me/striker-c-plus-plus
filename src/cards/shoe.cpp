@@ -101,4 +101,3 @@ bool Shoe::shouldShuffle() {
 
 // Check if a card is an ace
 bool Shoe::isAce(const Card *card) { return card->isAce(); }
-

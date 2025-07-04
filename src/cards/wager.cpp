@@ -18,4 +18,3 @@ void Wager::splitHand(Wager *split) {
     split->amount_bet = amount_bet;
     split->drawCard(splitPair());
 }
-
