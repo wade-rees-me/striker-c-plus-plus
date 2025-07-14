@@ -9,11 +9,7 @@ STRATEGIES := mimic linear polynomial neural basic high-low wong
 DECKS := single-deck double-deck six-shoe
 
 # .PHONY targets
-.PHONY: all clean lint bear install help run run-all \
-	$(foreach s,$(STRATEGIES),run-$(s) $(foreach d,$(DECKS),run-$(s)-$(d))) \
-	run-single-deck run-double-deck run-six-shoe \
-	rm rm1 rm2 rm6 rl rl1 rl2 rl6 rp rp1 rp2 rp6 rn rn1 rn2 rn6 \
-	rb rb1 rb2 rb6 rh rh1 rh2 rh6 rw rw1 rw2 rw6
+.PHONY: all clean lint bear install help
 
 # Directories
 SRC_DIR = src

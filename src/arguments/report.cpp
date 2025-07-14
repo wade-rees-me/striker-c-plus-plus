@@ -97,8 +97,7 @@ void Report::insert() {
         return;
     }
     char url[MAX_BUFFER_SIZE];
-    snprintf(url, sizeof(url), "http://%s/%s/%s/%s", getSimulationsUrl().c_str(), this->simulator, this->playbook,
-             this->name);
+    snprintf(url, sizeof(url), "http://%s/%s/%s/%s", getSimulationsUrl().c_str(), this->simulator, this->playbook, this->name);
 
     curl_easy_setopt(curl, CURLOPT_URL, url);
     curl_easy_setopt(curl, CURLOPT_VERBOSE, 0L);
@@ -120,7 +119,7 @@ void Report::insert() {
     std::string jsonString = json.dump();
     curl_easy_setopt(curl, CURLOPT_POSTFIELDS, jsonString.c_str());
 
-    CURLcode res = curl_easy_perform(curl);
+	CURLcode res = curl_easy_perform(curl);
     if (res == CURLE_OK) {
         std::cout << "    Insert successful" << std::endl;
     } else {
@@ -132,7 +131,7 @@ void Report::insert() {
 }
 
 // Convert Simulation to JSON
-void Report::toJsonObject(nlohmann::json json) {
+void Report::toJsonObject(nlohmann::json& json) {
     json["guid"] = this->name;
     json["version"] = STRIKER_VERSION;
     json["simulator"] = this->simulator;

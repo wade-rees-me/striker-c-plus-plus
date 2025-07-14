@@ -41,6 +41,7 @@ bool is_my_computer();
 std::string getRulesUrl();
 std::string getChartsUrl();
 std::string getSimulationsUrl();
+std::string getResourcesUrl();
 const char *boolToString(bool b);
 std::string toUpperCase(std::string &str);
 std::string removeAllSubstrings(const std::string &src, const std::string &substr);

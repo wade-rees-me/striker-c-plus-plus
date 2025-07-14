@@ -16,6 +16,9 @@ std::string getChartsUrl() { return std::getenv("STRIKER_URL_CHARTS"); }
 //
 std::string getSimulationsUrl() { return std::getenv("STRIKER_URL_SIMULATIONS"); }
 
+//
+std::string getResourcesUrl() { return std::getenv("STRIKER_RESOURCES"); }
+
 // Function to convert bool to string
 const char *boolToString(bool b) { return b ? "true" : "false"; }
 
