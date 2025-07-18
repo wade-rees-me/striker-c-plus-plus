@@ -27,8 +27,8 @@ const static int64_t MILLION = 1000000LL;
 const static int64_t BILLION = MILLION * 1000LL;
 const static int64_t NUMBER_OF_HANDS_MAXIMUM = 10 * BILLION;
 const static int64_t NUMBER_OF_HANDS_MINIMUM = 100LL;
-const static int64_t NUMBER_OF_HANDS_DEFAULT = 500LL * MILLION;
-const static int64_t NUMBER_OF_HANDS_DATABASE = 500LL * MILLION;
+const static int64_t NUMBER_OF_HANDS_DEFAULT = 100LL * MILLION;
+const static int64_t NUMBER_OF_HANDS_DATABASE = 100LL * MILLION;
 
 // Betting constants
 const static int64_t MINIMUM_BET = 2LL;
